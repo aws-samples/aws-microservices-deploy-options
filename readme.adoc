@@ -1,0 +1,26 @@
+= AWS Compute Options
+
+This repo contains a simple application that consists of three microservices. Each application is deployed using the following AWS Compute options:
+
+. BYO K8s cluster
+. Amazon EKS
+. Amazon ECS
+. AWS Fargate
+. AWS Lambda
+. SAM Local
+
+Each deployment model will highlight:
+
+. How service discovery can be used
+. How to debug the application
+. Monitor the application using X-Ray
+
+== Services
+
+. Run the service: `mvn -f services/name wildfly-swarm:run`
+. Test the service: `curl http://localhost:8080/resources/employees`
+
+== License
+
+This library is licensed under the Amazon Software License.
+
