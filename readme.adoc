@@ -17,17 +17,21 @@ Each deployment model will highlight:
 
 == Services
 
+Change to the services directory: `cd services`
+
 === Name service
 
-. Run the service: `mvn -f services/name wildfly-swarm:run`
+. Run the service: `mvn -pl name wildfly-swarm:run`
 . Test the service
 .. `curl http://localhost:8080/resources/employees`
 .. `curl http://localhost:8080/resources/employees/1`
+. Create Docker image: `mvn -pl name package -Pdocker`
 
 === Greeting service
 
-. Run the service: `mvn -f services/greeting wildfly-swarm:run`
+. Run the service: `mvn -pl greeting wildfly-swarm:run`
 . Test the service: `curl http://localhost:8080/resources/greeting`
+. Create Docker image: `mvn -pl greeting package -Pdocker`
 
 == License
 
