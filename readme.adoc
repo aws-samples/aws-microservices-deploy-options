@@ -17,8 +17,17 @@ Each deployment model will highlight:
 
 == Services
 
+=== Name service
+
 . Run the service: `mvn -f services/name wildfly-swarm:run`
-. Test the service: `curl http://localhost:8080/resources/employees`
+. Test the service
+.. `curl http://localhost:8080/resources/employees`
+.. `curl http://localhost:8080/resources/employees/1`
+
+=== Greeting service
+
+. Run the service: `mvn -f services/greeting wildfly-swarm:run`
+. Test the service: `curl http://localhost:8080/resources/greeting`
 
 == License
 
