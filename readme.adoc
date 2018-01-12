@@ -2,7 +2,7 @@
 
 This repo contains a simple application that consists of three microservices. Each application is deployed using the following AWS Compute options:
 
-. BYO K8s cluster
+. BYO-K8s cluster
 . Amazon EKS
 . Amazon ECS
 . AWS Fargate
