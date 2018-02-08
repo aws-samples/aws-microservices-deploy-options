@@ -18,7 +18,7 @@ Each deployment model will highlight:
 
 == Services
 
-Change to the services directory: `cd services`
+Change to the "`services`" directory: `cd services`
 
 === Name service
 
@@ -34,10 +34,11 @@ Change to the services directory: `cd services`
 . Test the service: `curl http://localhost:8082/resources/greeting`
 . Create Docker image: `mvn -pl greeting package -Pdocker`
 
-=== Webapp service
+=== Webapp service (need debugging)
 
 . Run the service: `mvn -pl webapp wildfly-swarm:run`
 . Test the service: `curl http://localhost:8080/`
+. Create Docker image: `mvn -pl webapp package -Pdocker`
 
 == License
 
