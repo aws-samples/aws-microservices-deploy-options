@@ -11,9 +11,10 @@ This repo contains a simple application that consists of three microservices. Ea
 
 Each deployment model will highlight:
 
-. How service discovery can be used
-. How to debug the application
-. Monitor the application using X-Ray
+. Local dev, test and debug
+. How service discovery is used
+. Remote debugging
+. Monitoring using X-Ray
 
 == Services
 
