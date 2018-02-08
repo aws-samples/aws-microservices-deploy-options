@@ -1,0 +1,92 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.aws.samples.compute</groupId>
+        <artifactId>services</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>webapp</artifactId>
+    <packaging>war</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-plugin</artifactId>
+                <version>${version.wildfly.swarm}</version>
+                <configuration>
+                    <mainClass>${project.groupId}.${project.artifactId}.Main</mainClass>
+                    <properties>
+                        <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+                    </properties>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.22.1</version>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>${docker.repo}/${project.build.finalName}</name>
+                                    <run>
+                                        <ports>
+                                            <port>8080:8080</port>
+                                        </ports>
+                                    </run>
+                                    <build>
+                                        <from>openjdk:8-jre-slim</from>
+                                        <ports>
+                                            <port>8080</port>
+                                        </ports>
+                                        <assembly>
+                                            <basedir>/</basedir>
+                                            <inline>
+                                                <files>
+                                                    <file>
+                                                        <source>${project.build.directory}/${project.build.finalName}-swarm.jar</source>
+                                                        <outputDirectory>/opt</outputDirectory>
+                                                    </file>
+                                                </files>
+                                            </inline>
+                                        </assembly>
+                                        <entryPoint>
+                                            <shell>java -jar /opt/${project.build.finalName}-swarm.jar</shell>
+                                        </entryPoint>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
+

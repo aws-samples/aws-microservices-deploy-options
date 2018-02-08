@@ -74,5 +74,6 @@
     <modules>
         <module>name</module>
         <module>greeting</module>
+        <module>webapp</module>
     </modules>
 </project>
