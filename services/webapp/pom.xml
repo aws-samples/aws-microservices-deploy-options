@@ -9,6 +9,9 @@
 
     <artifactId>webapp</artifactId>
     <packaging>war</packaging>
+    <properties>
+        <webapp.port>8080</webapp.port>
+    </properties>
 
     <build>
         <plugins>
@@ -20,7 +23,7 @@
                     <mainClass>${project.groupId}.${project.artifactId}.Main</mainClass>
                     <properties>
                         <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
-                        <swarm.http.port>8080</swarm.http.port>
+                        <swarm.http.port>${webapp.port}</swarm.http.port>
                     </properties>
                 </configuration>
                 <executions>
