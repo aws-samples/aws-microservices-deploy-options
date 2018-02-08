@@ -9,8 +9,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Undertow server = Undertow.builder()
                 .addHttpListener(
-                        Integer.getInteger(System.getenv("port")),
-                        System.getenv("host"))
+                        Integer.getInteger(System.getenv("swarm.http.port")),
+                        System.getenv("swarm.http.host"))
                 .setHandler(new HttpHandler() {
                     @Override
                     public void handleRequest(HttpServerExchange exchange) throws Exception {

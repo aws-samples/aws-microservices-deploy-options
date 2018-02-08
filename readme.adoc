@@ -34,6 +34,11 @@ Change to the services directory: `cd services`
 . Test the service: `curl http://localhost:8080/resources/greeting`
 . Create Docker image: `mvn -pl greeting package -Pdocker`
 
+=== Webapp service
+
+. Run the service: `mvn -pl webapp wildfly-swarm:run`
+. Test the service: `curl http://localhost:8080/`
+
 == License
 
 This library is licensed under the Amazon Software License.
