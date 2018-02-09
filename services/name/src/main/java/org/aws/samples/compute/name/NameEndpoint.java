@@ -7,6 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 /**
  * @author Arun Gupta
@@ -19,7 +20,8 @@ public class NameEndpoint {
     EntityManager em;
     
     @GET
-    @Produces({"application/xml", "application/json"})
+    @Produces({MediaType.APPLICATION_XML + "; qs=0.50",
+            MediaType.APPLICATION_JSON + "; qs=0.75"})
     public Name[] get() {
         return em
                 .createNamedQuery("Name.findAll", Name.class)
@@ -29,7 +31,9 @@ public class NameEndpoint {
     
     @GET
     @Path("{id}")
-    @Produces({"application/xml", "application/json", "text/plain"})
+    @Produces({MediaType.APPLICATION_XML + "; qs=0.50",
+            MediaType.APPLICATION_JSON + "; qs=0.75",
+            MediaType.TEXT_PLAIN + "; qs=1.0"})
     public Name get(@PathParam("id") int id) {
         return em
                 .createNamedQuery("Name.findById", Name.class)
