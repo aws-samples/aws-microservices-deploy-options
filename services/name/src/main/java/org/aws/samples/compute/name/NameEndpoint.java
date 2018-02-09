@@ -21,7 +21,10 @@ public class NameEndpoint {
     @GET
     @Produces({"application/xml", "application/json"})
     public Name[] get() {
-        return em.createNamedQuery("Name.findAll", Name.class).getResultList().toArray(new Name[0]);
+        return em
+                .createNamedQuery("Name.findAll", Name.class)
+                .getResultList()
+                .toArray(new Name[0]);
     }
     
     @GET
