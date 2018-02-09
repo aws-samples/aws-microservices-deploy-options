@@ -5,6 +5,11 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+
 public class Main {
     public static void main(String[] args) throws Exception {
         Undertow server = Undertow.builder()
@@ -15,24 +20,36 @@ public class Main {
                     @Override
                     public void handleRequest(HttpServerExchange exchange) throws Exception {
                         exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                        String greeterEndpoint = "http://"
-                                + System.getProperty("GREETING_SERVICE_HOST")
-                                + ":"
-                                + System.getProperty("GREETING_SERVICE_PORT")
-                                + System.getProperty("GREETING_SERVICE_PATH");
-                        String nameEndpoint = "http://"
-                                + System.getProperty("NAME_SERVICE_HOST")
-                                + ":"
-                                + System.getProperty("NAME_SERVICE_PORT")
-                                + System.getProperty("NAME_SERVICE_PATH");
-                        // TODO: Invoke greeterEndpoint and nameEndpoint
-                        // TODO: Return the concatenated results
+                        String greetingEndpoint = getEndpoint("GREETING");
+                        String nameEndpoint = getEndpoint("NAME");
+
+                        Client client = ClientBuilder.newClient();
+                        WebTarget target = client.target(greetingEndpoint);
+
+                        String greeting = target
+                                .path(greetingEndpoint)
+                                .request(MediaType.TEXT_PLAIN)
+                                .get(String.class);
+
+                        String name = target
+                                .path(nameEndpoint)
+                                .request()
+                                .get(String.class);
+
                         exchange
                                 .getResponseSender()
-                                .send(greeterEndpoint + " " + nameEndpoint);
+                                .send(greeting + " " + name);
                     }
                 })
                 .build();
         server.start();
+    }
+
+    private static String getEndpoint(String type) {
+        return "http://"
+                + System.getProperty(type + "_SERVICE_HOST")
+                + ":"
+                + System.getProperty(type + "_SERVICE_PORT")
+                + System.getProperty(type + "_SERVICE_PATH");
     }
 }
