@@ -15,17 +15,21 @@ public class Main {
                     @Override
                     public void handleRequest(HttpServerExchange exchange) throws Exception {
                         exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                        String greeter = "http://"
+                        String greeterEndpoint = "http://"
                                 + System.getProperty("GREETING_SERVICE_HOST")
                                 + ":"
                                 + System.getProperty("GREETING_SERVICE_PORT")
                                 + System.getProperty("GREETING_SERVICE_PATH");
-                        String name = "http://"
+                        String nameEndpoint = "http://"
                                 + System.getProperty("NAME_SERVICE_HOST")
                                 + ":"
                                 + System.getProperty("NAME_SERVICE_PORT")
                                 + System.getProperty("NAME_SERVICE_PATH");
-                        exchange.getResponseSender().send(greeter + " " + name);
+                        // TODO: Invoke greeterEndpoint and nameEndpoint
+                        // TODO: Return the concatenated results
+                        exchange
+                                .getResponseSender()
+                                .send(greeterEndpoint + " " + nameEndpoint);
                     }
                 })
                 .build();
