@@ -26,7 +26,7 @@ public class NameEndpoint {
     
     @GET
     @Path("{id}")
-    @Produces({"application/xml", "application/json"})
+    @Produces({"application/xml", "application/json", "text/plain"})
     public Name get(@PathParam("id") int id) {
         return em
                 .createNamedQuery("Name.findById", Name.class)
