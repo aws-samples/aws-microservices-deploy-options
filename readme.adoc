@@ -20,13 +20,22 @@ Each deployment model will highlight:
 
 Change to the "`services`" directory: `cd services`
 
-=== Greeting service
+=== Run application
+
+. In Terminal 1: `mvn -pl greeting wildfly-swarm:run`
+. In Terminal 2: `mvn -pl name wildfly-swarm:run`
+. In Terminal 3: `mvn -pl webapp wildfly-swarm:run`
+. In Terminal 4: `curl http://localhost:8080/`
+
+=== Run/test individual services
+
+==== Greeting service
 
 . Run the service: `mvn -pl greeting wildfly-swarm:run`
 . Test the service: `curl http://localhost:8081/resources/greeting`
 . Create Docker image: `mvn -pl greeting package -Pdocker`
 
-=== Name service
+==== Name service
 
 . Run the service: `mvn -pl name wildfly-swarm:run`
 . Test the service
@@ -34,7 +43,7 @@ Change to the "`services`" directory: `cd services`
 .. `curl http://localhost:8082/resources/names/1`
 . Create Docker image: `mvn -pl name package -Pdocker`
 
-=== Webapp service (needs debugging)
+==== Webapp service
 
 . Run the service: `mvn -pl webapp wildfly-swarm:run`
 . Test the service: `curl http://localhost:8080/`
