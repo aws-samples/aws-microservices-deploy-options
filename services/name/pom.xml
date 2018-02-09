@@ -9,9 +9,6 @@
 
     <artifactId>name</artifactId>
     <packaging>war</packaging>
-    <properties>
-        <name.port>8081</name.port>
-    </properties>
 
     <build>
         <plugins>

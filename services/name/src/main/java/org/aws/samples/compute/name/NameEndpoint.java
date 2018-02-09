@@ -11,25 +11,25 @@ import javax.ws.rs.Produces;
 /**
  * @author Arun Gupta
  */
-@Path("employees")
+@Path("names")
 @ApplicationScoped
-public class EmployeeEndpoint {
+public class NameEndpoint {
 
     @PersistenceContext
     EntityManager em;
     
     @GET
     @Produces({"application/xml", "application/json"})
-    public Employee[] get() {
-        return em.createNamedQuery("Employee.findAll", Employee.class).getResultList().toArray(new Employee[0]);
+    public Name[] get() {
+        return em.createNamedQuery("Name.findAll", Name.class).getResultList().toArray(new Name[0]);
     }
     
     @GET
     @Path("{id}")
     @Produces({"application/xml", "application/json"})
-    public Employee get(@PathParam("id") int id) {
+    public Name get(@PathParam("id") int id) {
         return em
-                .createNamedQuery("Employee.findById", Employee.class)
+                .createNamedQuery("Name.findById", Name.class)
                 .setParameter("id", id)
                 .getSingleResult();
     }

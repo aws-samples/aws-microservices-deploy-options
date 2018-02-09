@@ -20,21 +20,21 @@ Each deployment model will highlight:
 
 Change to the "`services`" directory: `cd services`
 
+=== Greeting service
+
+. Run the service: `mvn -pl greeting wildfly-swarm:run`
+. Test the service: `curl http://localhost:8081/resources/greeting`
+. Create Docker image: `mvn -pl greeting package -Pdocker`
+
 === Name service
 
 . Run the service: `mvn -pl name wildfly-swarm:run`
 . Test the service
-.. `curl http://localhost:8081/resources/employees`
-.. `curl http://localhost:8081/resources/employees/1`
+.. `curl http://localhost:8082/resources/names`
+.. `curl http://localhost:8082/resources/names/1`
 . Create Docker image: `mvn -pl name package -Pdocker`
 
-=== Greeting service
-
-. Run the service: `mvn -pl greeting wildfly-swarm:run`
-. Test the service: `curl http://localhost:8082/resources/greeting`
-. Create Docker image: `mvn -pl greeting package -Pdocker`
-
-=== Webapp service (need debugging)
+=== Webapp service (needs debugging)
 
 . Run the service: `mvn -pl webapp wildfly-swarm:run`
 . Test the service: `curl http://localhost:8080/`

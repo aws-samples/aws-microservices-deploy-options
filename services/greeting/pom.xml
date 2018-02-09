@@ -9,9 +9,6 @@
 
     <artifactId>greeting</artifactId>
     <packaging>war</packaging>
-    <properties>
-        <greeting.port>8082</greeting.port>
-    </properties>
 
     <build>
         <plugins>

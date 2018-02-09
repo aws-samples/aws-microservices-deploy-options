@@ -15,13 +15,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Arun Gupta
  */
 @Entity
-@Table(name = "EMPLOYEE_SCHEMA")
+@Table(name = "NAME_SCHEMA")
 @NamedQueries({
-    @NamedQuery(name = "Employee.findAll", query = "SELECT e FROM Employee e"),
-    @NamedQuery(name = "Employee.findById", query = "SELECT e FROM Employee e where e.id = :id")
+    @NamedQuery(name = "Name.findAll", query = "SELECT e FROM Name e"),
+    @NamedQuery(name = "Name.findById", query = "SELECT e FROM Name e where e.id = :id")
 })
 @XmlRootElement
-public class Employee implements Serializable {
+public class Name implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,9 +30,9 @@ public class Employee implements Serializable {
     @Column(length=40)
     private String name;
     
-    public Employee() { }
+    public Name() { }
     
-    public Employee(String name) {
+    public Name(String name) {
         this.name = name;
     }
     
