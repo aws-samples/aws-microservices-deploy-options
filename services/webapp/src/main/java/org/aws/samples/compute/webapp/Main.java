@@ -19,20 +19,20 @@ public class Main {
                 .setHandler(new HttpHandler() {
                     @Override
                     public void handleRequest(HttpServerExchange exchange) throws Exception {
-                        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+                        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, MediaType.TEXT_PLAIN);
                         String greetingEndpoint = getEndpoint("GREETING");
                         String nameEndpoint = getEndpoint("NAME");
 
                         Client client = ClientBuilder.newClient();
-                        WebTarget target = client.target(greetingEndpoint);
-
-                        String greeting = target
-                                .path(greetingEndpoint)
+                        System.out.println("Calling greeting: " + greetingEndpoint);
+                        String greeting = client
+                                .target(greetingEndpoint)
                                 .request(MediaType.TEXT_PLAIN)
                                 .get(String.class);
 
-                        String name = target
-                                .path(nameEndpoint)
+                        System.out.println("Calling name: " + nameEndpoint);
+                        String name = client
+                                .target(nameEndpoint)
                                 .request()
                                 .get(String.class);
 
