@@ -1,13 +1,24 @@
 = AWS Compute Options
 
-This repo contains a simple application that consists of three microservices. Each application is deployed using the following AWS Compute options:
+This repo contains a simple application that consists of three microservices. The sample application uses three services:
 
-. BYO K8s cluster
-. Amazon EKS
-. Amazon ECS
-. AWS Fargate
-. AWS Lambda
-. SAM Local
+`webapp`: Web application microservice uses greeter and name microservice to generate a greeting for a person.
+`greeter`: A microservice returns a greeting based upon greet name/value keypair in the URL.
+`name`: A microservice that returns person’s name based upon id name/value keypair in the URL.
+
+Each application is deployed using the following AWS Compute options:
+
+. EC2
+. Beanstalk
+. Containers
+.. Kubernetes
+... BYO K8s cluster
+... Amazon EKS
+.. Amazon ECS
+... AWS Fargate
+. Serverless
+.. AWS Lambda
+.. SAM Local
 
 Each deployment model will highlight:
 
