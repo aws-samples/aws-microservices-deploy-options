@@ -2,9 +2,9 @@
 
 This repo contains a simple application that consists of three microservices. The sample application uses three services:
 
-`webapp`: Web application microservice uses greeter and name microservice to generate a greeting for a person.
-`greeter`: A microservice returns a greeting based upon greet name/value keypair in the URL.
-`name`: A microservice that returns person’s name based upon id name/value keypair in the URL.
+. "`webapp`": Web application microservice uses "`greeting`" and "`name`"" microservice to generate a greeting for a person.
+. "`greeting`": A microservice that returns a greeting.
+. "`name`": A microservice that returns a person’s name based upon `{id}` in the URL.
 
 Each application is deployed using the following AWS Compute options:
 
