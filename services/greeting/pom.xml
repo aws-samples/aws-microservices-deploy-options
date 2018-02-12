@@ -17,7 +17,6 @@
                 <artifactId>wildfly-swarm-plugin</artifactId>
                 <version>${version.wildfly.swarm}</version>
                 <configuration>
-                    <mainClass>${project.groupId}.${project.artifactId}.Main</mainClass>
                     <properties>
                         <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                         <swarm.http.port>${greeting.port}</swarm.http.port>
