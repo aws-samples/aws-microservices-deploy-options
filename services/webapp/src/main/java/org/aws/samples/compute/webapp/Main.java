@@ -1,13 +1,10 @@
 package org.aws.samples.compute.webapp;
 
 import io.undertow.Undertow;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
 public class Main {
@@ -16,30 +13,27 @@ public class Main {
                 .addHttpListener(
                         Integer.valueOf(System.getProperty("swarm.http.port")),
                         System.getProperty("swarm.http.host"))
-                .setHandler(new HttpHandler() {
-                    @Override
-                    public void handleRequest(HttpServerExchange exchange) throws Exception {
-                        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, MediaType.TEXT_PLAIN);
-                        String greetingEndpoint = getEndpoint("GREETING");
-                        String nameEndpoint = getEndpoint("NAME");
+                .setHandler(exchange -> {
+                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, MediaType.TEXT_PLAIN);
+                    String greetingEndpoint = getEndpoint("GREETING");
+                    String nameEndpoint = getEndpoint("NAME");
 
-                        Client client = ClientBuilder.newClient();
-                        System.out.println("Calling greeting: " + greetingEndpoint);
-                        String greeting = client
-                                .target(greetingEndpoint)
-                                .request(MediaType.TEXT_PLAIN)
-                                .get(String.class);
+                    Client client = ClientBuilder.newClient();
+                    System.out.println("Calling greeting: " + greetingEndpoint);
+                    String greeting = client
+                            .target(greetingEndpoint)
+                            .request(MediaType.TEXT_PLAIN)
+                            .get(String.class);
 
-                        System.out.println("Calling name: " + nameEndpoint);
-                        String name = client
-                                .target(nameEndpoint)
-                                .request()
-                                .get(String.class);
+                    System.out.println("Calling name: " + nameEndpoint);
+                    String name = client
+                            .target(nameEndpoint)
+                            .request()
+                            .get(String.class);
 
-                        exchange
-                                .getResponseSender()
-                                .send(greeting + " " + name);
-                    }
+                    exchange
+                            .getResponseSender()
+                            .send(greeting + " " + name);
                 })
                 .build();
         server.start();
