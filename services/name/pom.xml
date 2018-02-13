@@ -13,6 +13,13 @@
         <fabric8.generator.name>${docker.repo}/${project.build.finalName}</fabric8.generator.name>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>jaxrs</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
