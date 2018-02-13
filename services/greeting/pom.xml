@@ -9,6 +9,9 @@
 
     <artifactId>greeting</artifactId>
     <packaging>war</packaging>
+    <properties>
+        <fabric8.generator.name>${docker.repo}/${project.build.finalName}</fabric8.generator.name>
+    </properties>
 
     <build>
         <plugins>
@@ -40,40 +43,8 @@
                 <plugins>
                     <plugin>
                         <groupId>io.fabric8</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.22.1</version>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <name>${docker.repo}/${project.build.finalName}</name>
-                                    <run>
-                                        <ports>
-                                            <port>8080:8080</port>
-                                        </ports>
-                                    </run>
-                                    <build>
-                                        <from>openjdk:8-jre-slim</from>
-                                        <ports>
-                                            <port>8080</port>
-                                        </ports>
-                                        <assembly>
-                                            <basedir>/</basedir>
-                                            <inline>
-                                                <files>
-                                                    <file>
-                                                        <source>${project.build.directory}/${project.build.finalName}-swarm.jar</source>
-                                                        <outputDirectory>/opt</outputDirectory>
-                                                    </file>
-                                                </files>
-                                            </inline>
-                                        </assembly>
-                                        <entryPoint>
-                                            <shell>java -jar /opt/${project.build.finalName}-swarm.jar</shell>
-                                        </entryPoint>
-                                    </build>
-                                </image>
-                            </images>
-                        </configuration>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <version>${version.fabric8.maven.plugin}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
