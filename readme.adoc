@@ -11,7 +11,7 @@ Each application is deployed using the following AWS Compute options:
 . EC2
 . Beanstalk
 . Containers
-.. Docker
+.. Docker EE
 .. Kubernetes
 ... BYO K8s cluster
 ... Amazon EKS
@@ -46,7 +46,6 @@ Change to the "`services`" directory: `cd services`
 . Run the service: `mvn -pl greeting wildfly-swarm:run`
 . Test the service: `curl http://localhost:8081/resources/greeting`
 . Create Docker image: `mvn -pl greeting package -Pdocker`
-.. BY default, the image name is `arungupta/greeting`. Create the image in your repo as: `mvn -pl greeting package -Pdocker -Ddocker.repo=<repo>`
 
 ==== Name service
 
@@ -55,14 +54,27 @@ Change to the "`services`" directory: `cd services`
 .. `curl http://localhost:8082/resources/names`
 .. `curl http://localhost:8082/resources/names/1`
 . Create Docker image: `mvn -pl name package -Pdocker`
-.. BY default, the image name is `arungupta/name`. Create the image in your repo as: `mvn -pl name package -Pdocker -Ddocker.repo=<repo>`
 
 ==== Webapp service
 
 . Run the service: `mvn -pl webapp wildfly-swarm:run`
 . Test the service: `curl http://localhost:8080/`
 . Create Docker image: `mvn -pl webapp package -Pdocker`
-.. BY default, the image name is `arungupta/webapp`. Create the image in your repo as: `mvn -pl webapp package -Pdocker -Ddocker.repo=<repo>`
+
+=== Docker images
+
+. *Docker image name*: By default, the Docker image name is `arungupta/<service>` where `<service>` is `greeting`, `name` or `webapp`. Create the image in your repo as: `mvn -pl <service> package -Pdocker -Ddocker.repo=<repo>`
+. *Push Docker images to repo*:
++
+```
+docker push <repo>/greeting
+docker push <repo>/name
+docker push <repo>/webapp
+
+```
++
+This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
+
 
 == License
 
