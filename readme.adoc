@@ -11,6 +11,7 @@ Each application is deployed using the following AWS Compute options:
 . EC2
 . Beanstalk
 . Containers
+.. Docker
 .. Kubernetes
 ... BYO K8s cluster
 ... Amazon EKS
