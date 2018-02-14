@@ -75,6 +75,14 @@ docker push <repo>/webapp
 +
 This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
 
+=== Helm charts
+
+Make sure `kubectl` CLI and is configured for the Kubernetes cluster. Also, make sure Helm is installed on that Kubernetes cluster.
+
+. Create Helm charts: `helm install --name myapp app-helm`
+. Delete Helm charts: `helm delete --purge myapp`
+
+Accessing the application will not work because of https://github.com/aws-samples/aws-compute-options/issues/6.
 
 == License
 
