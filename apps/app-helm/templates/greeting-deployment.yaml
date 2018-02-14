@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: greeting-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: greeting
+    spec:
+      containers:
+      - name: greeting
+        image: arungupta/greeting
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
