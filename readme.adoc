@@ -45,7 +45,6 @@ Change to the "`services`" directory: `cd services`
 
 . Run the service: `mvn -pl greeting wildfly-swarm:run`
 . Test the service: `curl http://localhost:8081/resources/greeting`
-. Create Docker image: `mvn -pl greeting package -Pdocker`
 
 ==== Name service
 
@@ -53,17 +52,16 @@ Change to the "`services`" directory: `cd services`
 . Test the service
 .. `curl http://localhost:8082/resources/names`
 .. `curl http://localhost:8082/resources/names/1`
-. Create Docker image: `mvn -pl name package -Pdocker`
 
 ==== Webapp service
 
 . Run the service: `mvn -pl webapp wildfly-swarm:run`
 . Test the service: `curl http://localhost:8080/`
-. Create Docker image: `mvn -pl webapp package -Pdocker`
 
 === Docker images
 
-. *Docker image name*: By default, the Docker image name is `arungupta/<service>` where `<service>` is `greeting`, `name` or `webapp`. Create the image in your repo as: `mvn -pl <service> package -Pdocker -Ddocker.repo=<repo>`
+. *Create Docker image*: `mvn -pl <service> package -Pdocker` where `<service>` is `greeting`, `name` or `webapp`.
+. *Docker image name*: By default, the Docker image name is `arungupta/<service>`. Create the image in your repo as: `mvn -pl <service> package -Pdocker -Ddocker.repo=<repo>`
 . *Push Docker images to repo*:
 +
 ```
