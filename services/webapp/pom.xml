@@ -16,12 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
-            <artifactId>undertow</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>3.1.4.Final</version>
+            <artifactId>jaxrs</artifactId>
         </dependency>
     </dependencies>
 
@@ -32,7 +27,6 @@
                 <artifactId>wildfly-swarm-plugin</artifactId>
                 <version>${version.wildfly.swarm}</version>
                 <configuration>
-                    <mainClass>${project.groupId}.${project.artifactId}.Main</mainClass>
                     <properties>
                         <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                         <swarm.http.host>${webapp.host}</swarm.http.host>
