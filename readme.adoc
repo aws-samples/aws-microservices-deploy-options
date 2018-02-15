@@ -9,14 +9,14 @@ This repo contains a simple application that consists of three microservices. Th
 Each application is deployed using the following AWS Compute options:
 
 . EC2
-. Beanstalk
 . Containers
 .. Docker EE
 .. Kubernetes
 ... BYO K8s cluster
 ... Amazon EKS
 .. Amazon ECS
-... AWS Fargate
+... EC2
+... Fargate
 . Serverless
 .. AWS Lambda
 .. SAM Local
