@@ -26,6 +26,8 @@
         <name.port>8082</name.port>
         <name.path>/resources/names/1</name.path>
         <version.fabric8.maven.plugin>3.5.30</version.fabric8.maven.plugin>
+        <docker.username>arungupta</docker.username>
+        <docker.password>password</docker.password>
     </properties>
 
     <dependencyManagement>
