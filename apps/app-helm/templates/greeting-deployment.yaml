@@ -7,7 +7,7 @@ spec:
   template:
     metadata:
       labels:
-        app: greeting
+        app: greeting-pod
     spec:
       containers:
       - name: greeting

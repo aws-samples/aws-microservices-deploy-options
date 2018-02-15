@@ -7,7 +7,7 @@ spec:
   template:
     metadata:
       labels:
-        app: webapp
+        app: webapp-pod
     spec:
       containers:
       - name: webapp
