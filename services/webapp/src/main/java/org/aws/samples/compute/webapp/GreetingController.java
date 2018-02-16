@@ -17,13 +17,11 @@ public class GreetingController {
         String nameEndpoint = getEndpoint("NAME");
 
         Client client = ClientBuilder.newClient();
-        System.out.println("Calling greeting: " + greetingEndpoint);
         String greeting = client
                 .target(greetingEndpoint)
                 .request(MediaType.TEXT_PLAIN)
                 .get(String.class);
 
-        System.out.println("Calling name: " + nameEndpoint);
         String name = client
                 .target(nameEndpoint)
                 .request()
@@ -33,11 +31,14 @@ public class GreetingController {
     }
 
     private String getEndpoint(String type) {
-        return "http://"
-                + System.getProperty(type + "_SERVICE_HOST")
+        String endpoint = "http://"
+                + System.getenv(type + "_SERVICE_HOST")
                 + ":"
-                + System.getProperty(type + "_SERVICE_PORT")
-                + System.getProperty(type + "_SERVICE_PATH");
+                + System.getenv(type + "_SERVICE_PORT")
+                + System.getenv(type + "_SERVICE_PATH");
+
+        System.out.println(type + " endpoint: " + endpoint);
+        return endpoint;
     }
 
 }
