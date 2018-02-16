@@ -31,12 +31,12 @@
                         <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                         <swarm.http.host>${webapp.host}</swarm.http.host>
                         <swarm.http.port>${webapp.port}</swarm.http.port>
-                        <NAME_SERVICE_HOST>${name.host}</NAME_SERVICE_HOST>
-                        <NAME_SERVICE_PORT>${name.port}</NAME_SERVICE_PORT>
-                        <NAME_SERVICE_PATH>${name.path}</NAME_SERVICE_PATH>
                         <GREETING_SERVICE_HOST>${greeting.host}</GREETING_SERVICE_HOST>
                         <GREETING_SERVICE_PORT>${greeting.port}</GREETING_SERVICE_PORT>
                         <GREETING_SERVICE_PATH>${greeting.path}</GREETING_SERVICE_PATH>
+                        <NAME_SERVICE_HOST>${name.host}</NAME_SERVICE_HOST>
+                        <NAME_SERVICE_PORT>${name.port}</NAME_SERVICE_PORT>
+                        <NAME_SERVICE_PATH>${name.path}</NAME_SERVICE_PATH>
                     </properties>
                 </configuration>
                 <executions>
