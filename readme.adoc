@@ -63,6 +63,7 @@ This repo will use Helm charts to deploy the application to a Kubernetes cluster
 Make sure `kubectl` CLI and is configured for the Kubernetes cluster. Also, make sure Helm is installed on that Kubernetes cluster.
 
 . Create Helm chart: `helm install --name myapp app-helm`
+. Access the application: `curl <URL>`
 . Delete Helm chart: `helm delete --purge myapp`
 
 Accessing the application will not work because of https://github.com/aws-samples/aws-compute-options/issues/6.
@@ -81,8 +82,6 @@ Accessing the application will not work because of https://github.com/aws-sample
 ... Greeting endpoint: `curl http://localhost:8081/resources/greeting`
 ... Name endpoint: `curl http://localhost:8082/resources/names/1`
 . Remove the stack: `docker stack rm myapp`
-
-TODO: How to make sure that ingress ports are dynamically assigned?
 
 === Debug
 
