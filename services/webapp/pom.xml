@@ -50,6 +50,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>fabric8-maven-plugin</artifactId>
+                <version>${version.fabric8.maven.plugin}</version>
             </plugin>
         </plugins>
     </build>
