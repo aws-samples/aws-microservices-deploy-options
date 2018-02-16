@@ -28,41 +28,24 @@ Each deployment model will highlight:
 . Remote debugging
 . Monitoring using X-Ray
 
-== Services
+== Build and Test Services
 
 Change to the "`services`" directory: `cd services`
 
-=== Run application
+. Greeting service in Terminal 1: `mvn -pl greeting wildfly-swarm:run`
+.. Optionally test: `curl http://localhost:8081/resources/greeting`
+. Name service in Terminal 2: `mvn -pl name wildfly-swarm:run`
+.. Optionally test:
+... `curl http://localhost:8082/resources/names`
+... `curl http://localhost:8082/resources/names/1`
+. Webapp service in Terminal 3: `mvn -pl webapp wildfly-swarm:run`
+. Invoke the application in Terminal 4: `curl http://localhost:8080/`
 
-. In Terminal 1: `mvn -pl greeting wildfly-swarm:run`
-. In Terminal 2: `mvn -pl name wildfly-swarm:run`
-. In Terminal 3: `mvn -pl webapp wildfly-swarm:run`
-. In Terminal 4: `curl http://localhost:8080/`
+== Build and Push Docker images
 
-=== Run/test individual services
-
-==== Greeting service
-
-. Run the service: `mvn -pl greeting wildfly-swarm:run`
-. Test the service: `curl http://localhost:8081/resources/greeting`
-
-==== Name service
-
-. Run the service: `mvn -pl name wildfly-swarm:run`
-. Test the service
-.. `curl http://localhost:8082/resources/names`
-.. `curl http://localhost:8082/resources/names/1`
-
-==== Webapp service
-
-. Run the service: `mvn -pl webapp wildfly-swarm:run`
-. Test the service: `curl http://localhost:8080/`
-
-=== Docker images
-
-. *Create Docker image*: `mvn -pl <service> package -Pdocker` where `<service>` is `greeting`, `name` or `webapp`.
+. *Create Docker image*: `mvn -pl <service> package -Pdocker` where `<service>` is `greeting`, `name` or `webapp`
 . *Docker image name*: By default, the Docker image name is `arungupta/<service>`. Create the image in your repo as: `mvn -pl <service> package -Pdocker -Ddocker.repo=<repo>`
-. *Push Docker images to repo*:
+. *Push Docker images to registry*:
 +
 ```
 docker push <repo>/greeting
@@ -73,14 +56,22 @@ docker push <repo>/webapp
 +
 This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
 
-=== Helm charts
+== Deploy Application to Kubernetes
+
+This repo will use Helm charts to deploy the application to a Kubernetes cluster.
 
 Make sure `kubectl` CLI and is configured for the Kubernetes cluster. Also, make sure Helm is installed on that Kubernetes cluster.
 
-. Create Helm charts: `helm install --name myapp app-helm`
-. Delete Helm charts: `helm delete --purge myapp`
+. Create Helm chart: `helm install --name myapp app-helm`
+. Delete Helm chart: `helm delete --purge myapp`
 
 Accessing the application will not work because of https://github.com/aws-samples/aws-compute-options/issues/6.
+
+== Deploy Application to Amazon ECS
+
+== Deploy Application to AWS Lambda
+
+== Deploy Application to Docker Swarm
 
 == License
 
