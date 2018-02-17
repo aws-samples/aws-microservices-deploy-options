@@ -31,11 +31,22 @@ public class GreetingController {
     }
 
     private String getEndpoint(String type) {
-        String endpoint = "http://"
-                + System.getenv(type + "_SERVICE_HOST")
-                + ":"
-                + System.getenv(type + "_SERVICE_PORT")
-                + System.getenv(type + "_SERVICE_PATH");
+        String host = System.getenv(type + "_SERVICE_HOST");
+        if (null == host) {
+            throw new RuntimeException(type + "_SERVICE_HOST environment variable not found");
+        }
+
+        String port = System.getenv(type + "_SERVICE_PORT");
+        if (null == port) {
+            throw new RuntimeException(type + "_SERVICE_PORT environment variable not found");
+        }
+
+        String path = System.getenv(type + "_SERVICE_PATH");
+        if (null == path) {
+            throw new RuntimeException(type + "_SERVICE_PATH environment variable not found");
+        }
+
+        String endpoint = "http://" + host + ":" + port + path;
 
         System.out.println(type + " endpoint: " + endpoint);
         return endpoint;
