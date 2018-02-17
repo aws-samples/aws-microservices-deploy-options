@@ -27,10 +27,12 @@
                 <artifactId>wildfly-swarm-plugin</artifactId>
                 <version>${version.wildfly.swarm}</version>
                 <configuration>
-                    <environment>
+                    <properties>
                         <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                         <swarm.http.host>${webapp.host}</swarm.http.host>
                         <swarm.http.port>${webapp.port}</swarm.http.port>
+                    </properties>
+                    <environment>
                         <GREETING_SERVICE_HOST>${greeting.host}</GREETING_SERVICE_HOST>
                         <GREETING_SERVICE_PORT>${greeting.port}</GREETING_SERVICE_PORT>
                         <GREETING_SERVICE_PATH>${greeting.path}</GREETING_SERVICE_PATH>
