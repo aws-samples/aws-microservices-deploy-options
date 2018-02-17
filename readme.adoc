@@ -62,7 +62,9 @@ This repo will use Helm charts to deploy the application to a Kubernetes cluster
 
 Make sure `kubectl` CLI and is configured for the Kubernetes cluster. Also, make sure Helm is installed on that Kubernetes cluster.
 
-. Create Helm chart: `helm install --name myapp app-helm`
+. Install Helm CLI: `brew install kubernetes-helm`
+. Install Helm in Kubernetes cluster: `helm init`
+. Create Helm chart: `helm install --name myapp myapp`
 . Access the application: `curl <URL>`
 . Delete Helm chart: `helm delete --purge myapp`
 
