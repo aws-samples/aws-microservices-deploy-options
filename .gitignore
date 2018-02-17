@@ -2,4 +2,5 @@
 **/*.iml
 **/target
 **/audit.log
+**/.DS_Store
 
