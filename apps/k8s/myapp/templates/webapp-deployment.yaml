@@ -17,14 +17,14 @@ spec:
         - containerPort: 8080
         env:
         - name: GREETING_SERVICE_HOST
-          value: greeting-service
+          value: "greeting-service"
         - name: GREETING_SERVICE_PORT
-          value: 80
+          value: "80"
         - name: GREETING_SERVICE_PATH
-          value: /resources/greeting
+          value: "/resources/greeting"
         - name: NAME_SERVICE_HOST
-          value: name-service
+          value: "name-service"
         - name: NAME_SERVICE_PORT
-          value: 80
+          value: "80"
         - name: NAME_SERVICE_PATH
-          value: /resources/names/1
+          value: "/resources/names/1"

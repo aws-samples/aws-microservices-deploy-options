@@ -1,22 +1,22 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "app-helm.fullname" . }}
+  name: {{ template "myapp.fullname" . }}
   labels:
-    app: {{ template "app-helm.name" . }}
-    chart: {{ template "app-helm.chart" . }}
+    app: {{ template "myapp.name" . }}
+    chart: {{ template "myapp.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "app-helm.name" . }}
+      app: {{ template "myapp.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "app-helm.name" . }}
+        app: {{ template "myapp.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -25,7 +25,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 80
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -35,3 +35,17 @@ spec:
             httpGet:
               path: /
               port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
