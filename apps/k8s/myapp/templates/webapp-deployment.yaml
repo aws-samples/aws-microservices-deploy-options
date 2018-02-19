@@ -1,30 +1,39 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: webapp-deployment
+  name: {{ .Release.Name }}-webapp
+  labels:
+    name: {{ .Release.Name }}-webapp
+    {{- template "labels" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: webapp-pod
+        app: {{ .Release.Name }}-webapp
     spec:
       containers:
       - name: webapp
-        image: arungupta/webapp
-        imagePullPolicy: IfNotPresent
+        image: {{ .Values.webapp.image }}
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
-        - name: GREETING_SERVICE_HOST
-          value: "greeting-service"
-        - name: GREETING_SERVICE_PORT
-          value: "80"
-        - name: GREETING_SERVICE_PATH
-          value: "/resources/greeting"
         - name: NAME_SERVICE_HOST
-          value: "name-service"
+          value: {{ .Release.Name }}-name
         - name: NAME_SERVICE_PORT
-          value: "80"
+          value: "8082"
         - name: NAME_SERVICE_PATH
-          value: "/resources/names/1"
+          value: /resources/names/1
+        - name: GREETING_SERVICE_HOST
+          value: {{ .Release.Name }}-greeting
+        - name: GREETING_SERVICE_PORT
+          value: "8081"
+        - name: GREETING_SERVICE_PATH
+          value: /resources/greeting
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 5

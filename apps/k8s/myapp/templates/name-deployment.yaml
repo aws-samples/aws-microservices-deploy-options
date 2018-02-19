@@ -1,17 +1,26 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: name-deployment
+  name: {{ .Release.Name }}-name
+  labels:
+    name: {{ .Release.Name }}-name
+    {{- template "labels" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: name-pod
+        app: {{ .Release.Name }}-name
     spec:
       containers:
       - name: name
-        image: arungupta/name
-        imagePullPolicy: IfNotPresent
+        image: {{ .Values.name.image }}
+        imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 8082
+        readinessProbe:
+          httpGet:
+            path: /resources/names/1
+            port: 8082
+          initialDelaySeconds: 50
+          periodSeconds: 5
