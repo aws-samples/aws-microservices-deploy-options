@@ -56,19 +56,25 @@ docker push <repo>/webapp
 +
 This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
 
-== Deploy Application to Kubernetes
+== Deploy Application to Kubernetes with Helm
 
-This repo will use Helm charts to deploy the application to a Kubernetes cluster.
-
-Make sure `kubectl` CLI and is configured for the Kubernetes cluster. Also, make sure Helm is installed on that Kubernetes cluster.
+Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. Also, make sure Helm is installed on that Kubernetes cluster.
 
 . Install Helm CLI: `brew install kubernetes-helm`
 . Install Helm in Kubernetes cluster: `helm init`
-. Create Helm chart: `helm install --name myapp myapp`
+. Create Helm chart: `helm install --name myapp apps/k8s/myapp`
 . Access the application: `curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete Helm chart: `helm delete --purge myapp`
 
 Accessing the application will not work because of https://github.com/aws-samples/aws-compute-options/issues/6.
+
+== Deploy Application to Kubernetes with Standalone Manifests
+
+Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
+
+. Apply the manifests: `kubectl apply -f apps/k8s/standalone/manifest.yml`
+. Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
+. Delete the application: `kubectl delete -f apps/k8s/standalone/manifest.yml`
 
 == Deploy Application to Amazon ECS
 
