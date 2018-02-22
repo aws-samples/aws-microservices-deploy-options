@@ -1,13 +1,14 @@
-# Greeting serverless API
-The greeting project, created with [`aws-serverless-java-container`](https://github.com/awslabs/aws-serverless-java-container).
+# Serverless API
+This project uses [`aws-serverless-java-container`](https://github.com/awslabs/aws-serverless-java-container).
 
-The starter project defines a simple `/greeting` resource that can accept `GET` requests.
+The starter project defines a number of resources `/`, `/resources/greeting`, and `/resources/names` that can accept `GET` requests.
 
 The project folder also includes a `sam.yaml` file. You can use this [SAM](https://github.com/awslabs/serverless-application-model) file to deploy the project to AWS Lambda and Amazon API Gateway or test in local with [SAM Local](https://github.com/awslabs/aws-sam-local). 
 
 Using [Maven](https://maven.apache.org/), you can create an AWS Lambda-compatible jar file simply by running the maven package command from the projct folder.
 
 ```bash
+$ cd aws-compute-options/services
 $ mvn clean package
 ```
 
@@ -22,6 +23,7 @@ $ npm install -g aws-sam-local
 Next, from the project root folder - where the `sam.yaml` file is located - start the API with the SAM Local CLI.
 
 ```bash
+$ cd aws-compute-options/apps/lambda
 $ sam local start-api --template sam.yaml
 
 ...
@@ -32,7 +34,7 @@ Mounting com.sapessi.jersey.StreamLambdaHandler::handleRequest (java8) at http:/
 Using a new shell, you can send a test ping request to your API:
 
 ```bash
-$ curl -s http://127.0.0.1:3000/greeting
+$ curl -s http://127.0.0.1:3000/resources/greeting
 
 Hello
 ``` 
@@ -68,9 +70,9 @@ $ aws cloudformation describe-stacks --stack-name ServerlessJerseyApi
             "Outputs": [
                 {
                     "Description": "URL for application",
-                    "ExportName": "GreetingServiceApi",  
-                    "OutputKey": "GreetingServiceApi",
-                    "OutputValue": "https://xxxxxxx.execute-api.us-west-2.amazonaws.com/Prod/ping"
+                    "ExportName": "SampleServiceApi",  
+                    "OutputKey": "SampleServiceApi",
+                    "OutputValue": "https://xxxxxxx.execute-api.us-west-2.amazonaws.com/Prod/resources"
                 }
             ], 
             "CreationTime": "2016-12-13T22:59:31.552Z", 

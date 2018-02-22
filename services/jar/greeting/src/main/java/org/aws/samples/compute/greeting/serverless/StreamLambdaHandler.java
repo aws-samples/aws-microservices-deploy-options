@@ -16,6 +16,9 @@ public class StreamLambdaHandler implements RequestStreamHandler {
     private static final ResourceConfig jerseyApplication = new ResourceConfig().packages("org.aws.samples.compute.greeting");
     private static final JerseyLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler
             = JerseyLambdaContainerHandler.getAwsProxyHandler(jerseyApplication);
+    static {
+        handler.stripBasePath("/resources");
+    }
 
 
     public void handleRequest(java.io.InputStream inputStream, java.io.OutputStream outputStream, Context context)
