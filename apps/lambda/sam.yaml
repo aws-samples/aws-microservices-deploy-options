@@ -120,4 +120,4 @@ Outputs:
     Description: URL for application
     Value: !Sub 'https://${ResourcesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/resources/greeting'
     Export:
-Name: SampleServiceApi
+      Name: SampleServiceApi
