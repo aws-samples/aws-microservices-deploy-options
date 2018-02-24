@@ -8,7 +8,6 @@ This repo contains a simple application that consists of three microservices. Th
 
 Each application is deployed using the following AWS Compute options:
 
-. EC2
 . Containers
 .. Docker EE
 .. Kubernetes
@@ -24,9 +23,10 @@ Each application is deployed using the following AWS Compute options:
 Each deployment model will highlight:
 
 . Local dev, test and debug
-. How service discovery is used
 . Remote debugging
-. Monitoring using X-Ray
+. Service discovery
+. Monitoring (possibly using X-Ray)
+. Deployment pipeline
 
 == Build and Test Services
 
