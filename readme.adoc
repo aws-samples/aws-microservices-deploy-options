@@ -62,7 +62,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. 
 
 . Install Helm CLI: `brew install kubernetes-helm`
 . Install Helm in Kubernetes cluster: `helm init`
-. Create Helm chart: `helm install --name myapp apps/k8s/myapp`
+. Create Helm chart: `helm install --name myapp apps/k8s/helm/myapp`
 . Access the application: `curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete Helm chart: `helm delete --purge myapp`
 
