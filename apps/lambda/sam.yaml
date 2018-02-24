@@ -3,31 +3,15 @@ Transform: AWS::Serverless-2016-10-31
 Description: Greeting API written in jersey with the aws-serverless-java-container library
 Resources:
 
-  ResourcesApi:
+  NamesApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: prod
       DefinitionBody:
         swagger: "2.0"
         info:
-          title: "Sample API"
+          title: "Names API"
         paths:
-          "/":
-            get:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri:
-                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WebAppFunction.Arn}/invocations
-                responses: {}
-          "/resources/greeting":
-            get:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri:
-                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GreetingFunction.Arn}/invocations
-              responses: {}
           "/resources/names":
             get:
               x-amazon-apigateway-integration:
@@ -45,6 +29,42 @@ Resources:
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NameFunction.Arn}/invocations
               responses: {}
 
+  GreetingApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          title: "Greeting API"
+        paths:
+          "/resources/greeting":
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GreetingFunction.Arn}/invocations
+              responses: {}
+
+  WebappApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          title: "Webapp API"
+        paths:
+          "/":
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WebAppFunction.Arn}/invocations
+              responses: {}
+
   WebAppFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -53,21 +73,21 @@ Resources:
       CodeUri: ../../services/jar/webapp/target/webapp-jar-1.0-SNAPSHOT.jar
       MemorySize: 512
       Policies: AWSLambdaBasicExecutionRole
-      Timeout: 60
+      Timeout: 30
       Environment:
         Variables:
-          GREETING_SERVICE_HOST: !Sub "${ResourcesApi}.execute-api.${AWS::Region}.amazonaws.com"
+          GREETING_SERVICE_HOST: !Sub "${GreetingApi}.execute-api.${AWS::Region}.amazonaws.com"
           GREETING_SERVICE_PORT: "443"
-          GREETING_SERVICE_PATH: "/Prod/resources/greeting"
-          NAME_SERVICE_HOST: !Sub "${ResourcesApi}.execute-api.${AWS::Region}.amazonaws.com"
+          GREETING_SERVICE_PATH: "/prod/resources/greeting"
+          NAME_SERVICE_HOST: !Sub "${NamesApi}.execute-api.${AWS::Region}.amazonaws.com"
           NAME_SERVICE_PORT: "443"
-          NAME_SERVICE_PATH: "/Prod/resources/names"
+          NAME_SERVICE_PATH: "/prod/resources/names"
       Events:
-        GetResource:
+        GetRoot:
           Type: Api
           Properties:
             RestApiId:
-              Ref: ResourcesApi
+              Ref: WebappApi
             Path: /
             Method: get
 
@@ -81,11 +101,11 @@ Resources:
       Policies: AWSLambdaBasicExecutionRole
       Timeout: 60
       Events:
-        GetResource:
+        GetGreeting:
           Type: Api
           Properties:
             RestApiId:
-              Ref: ResourcesApi
+              Ref: GreetingApi
             Path: /resources/greeting
             Method: get
 
@@ -99,25 +119,35 @@ Resources:
       Policies: AWSLambdaBasicExecutionRole
       Timeout: 60
       Events:
-        GetResource:
+        GetNames:
           Type: Api
           Properties:
             RestApiId:
-              Ref: ResourcesApi
+              Ref: NamesApi
             Path: /resources/names
             Method: get
-        GetByIdResource:
+        GetNamesById:
           Type: Api
           Properties:
             RestApiId:
-              Ref: ResourcesApi
+              Ref: NamesApi
             Path: /resources/names/{id}
             Method: get
 
 
 Outputs:
-  SampleServiceApi:
+  WebappApiEndpoint:
     Description: URL for application
-    Value: !Sub 'https://${ResourcesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/resources/greeting'
+    Value: !Sub 'https://${WebappApi}.execute-api.${AWS::Region}.amazonaws.com/prod/'
     Export:
-      Name: SampleServiceApi
+      Name: WebappApiEndpoint
+  GreetingApiEndpoint:
+    Description: URL for application
+    Value: !Sub 'https://${GreetingApi}.execute-api.${AWS::Region}.amazonaws.com/prod/resources/greeting'
+    Export:
+      Name: GreetingApiEndpoint
+  NamesApiEndpoint:
+    Description: URL for application
+    Value: !Sub 'https://${NamesApi}.execute-api.${AWS::Region}.amazonaws.com/prod/resources/names'
+    Export:
+      Name: NamesApiEndpoint

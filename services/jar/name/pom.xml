@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-jaxb</artifactId>
-            <version>2.25.1</version>
+            <version>2.26</version>
         </dependency>
     </dependencies>
 
