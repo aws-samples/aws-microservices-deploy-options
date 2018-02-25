@@ -94,27 +94,27 @@
             </build>
         </profile>
         <profile>
-            <id>lambda</id>
-            <build>
-              <plugins>
-								<plugin>
-									<artifactId>maven-assembly-plugin</artifactId>
-									<configuration>
-										<descriptors>
-											<descriptor>src/assembly/lambda.xml</descriptor>
-										</descriptors>
-									</configuration>
-									<executions>
-										<execution>
-											<phase>package</phase>
-											<goals>
-												<goal>single</goal>
-											</goals>
-										</execution>
-									</executions>
-								</plugin>        
-              </plugins>
-            </build>
+          <id>lambda</id>
+          <build>
+            <plugins>
+              <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                  <descriptors>
+                    <descriptor>src/assembly/lambda.xml</descriptor>
+                  </descriptors>
+                </configuration>
+                <executions>
+                  <execution>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>single</goal>
+                    </goals>
+                  </execution>
+                </executions>
+              </plugin>        
+            </plugins>
+          </build>
         </profile>
     </profiles>
 
