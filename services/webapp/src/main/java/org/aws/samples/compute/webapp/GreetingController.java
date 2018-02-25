@@ -46,7 +46,14 @@ public class GreetingController {
             throw new RuntimeException(type + "_SERVICE_PATH environment variable not found");
         }
 
-        String endpoint = "http://" + host + ":" + port + path;
+        String protocol = System.getenv(type + "_SERVICE_HTTPS");
+        if (null == protocol) {
+          protocol = "http://";
+        }else{
+          protocol = "https://";
+        }
+
+        String endpoint = protocol + host + ":" + port + path;
 
         System.out.println(type + " endpoint: " + endpoint);
         return endpoint;
