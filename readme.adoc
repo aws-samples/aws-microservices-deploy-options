@@ -8,7 +8,6 @@ This repo contains a simple application that consists of three microservices. Th
 
 Each application is deployed using the following AWS Compute options:
 
-. EC2
 . Containers
 .. Docker EE
 .. Kubernetes
@@ -24,15 +23,16 @@ Each application is deployed using the following AWS Compute options:
 Each deployment model will highlight:
 
 . Local dev, test and debug
-. How service discovery is used
 . Remote debugging
-. Monitoring using X-Ray
+. Service discovery
+. Monitoring (possibly using X-Ray)
+. Deployment pipeline
 
 == Build and Test Services
 
 Change to the "`services`" directory: `cd services`
 
-. Greeting service in Terminal 1: `mvn -pl greeting wildfly-swarm:run`
+. Greeting service in Terminal 1: `mvn -pl greeting wildfly-swarm:run -DskipTests`
 .. Optionally test: `curl http://localhost:8081/resources/greeting`
 . Name service in Terminal 2: `mvn -pl name wildfly-swarm:run`
 .. Optionally test:
@@ -43,7 +43,7 @@ Change to the "`services`" directory: `cd services`
 
 == Build and Push Docker images
 
-. *Create Docker image*: `mvn -pl <service> package -Pdocker` where `<service>` is `greeting`, `name` or `webapp`
+. *Create Docker image*: `mvn -pl <service> package -Pdocker -DskipTests` where `<service>` is `greeting`, `name` or `webapp`
 . *Docker image name*: By default, the Docker image name is `arungupta/<service>`. Create the image in your repo as: `mvn -pl <service> package -Pdocker -Ddocker.repo=<repo>`
 . *Push Docker images to registry*:
 +
@@ -62,7 +62,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. 
 
 . Install Helm CLI: `brew install kubernetes-helm`
 . Install Helm in Kubernetes cluster: `helm init`
-. Create Helm chart: `helm install --name myapp apps/k8s/myapp`
+. Create Helm chart: `helm install --name myapp apps/k8s/helm/myapp`
 . Access the application: `curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete Helm chart: `helm delete --purge myapp`
 

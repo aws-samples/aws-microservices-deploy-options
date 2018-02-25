@@ -15,6 +15,7 @@
     <packaging>war</packaging>
 
     <dependencies>
+
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs</artifactId>
