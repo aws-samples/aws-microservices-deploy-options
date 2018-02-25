@@ -13,7 +13,7 @@ spec:
         app: {{ .Release.Name }}-webapp
     spec:
       containers:
-      - name: webapp
+      - name: webapp-war
         image: {{ .Values.webapp.image }}
         imagePullPolicy: Always
         ports:

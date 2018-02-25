@@ -18,7 +18,7 @@ Each application is deployed using the following AWS Compute options:
 ... EC2
 ... Fargate
 . Serverless
-.. AWS Lambda
+.. AWS Lambda & Amazon API Gateway
 .. SAM Local
 
 Each deployment model will highlight:
@@ -31,7 +31,10 @@ Each deployment model will highlight:
 == Build and Test Services
 
 Change to the "`services`" directory: `cd services`
+. Compile all projects. In Terminal 1: `mvn clean package`
 
+Testing war services in local
+. Change directory to the "`services/war`": `cd services/war`
 . Greeting service in Terminal 1: `mvn -pl greeting wildfly-swarm:run`
 .. Optionally test: `curl http://localhost:8081/resources/greeting`
 . Name service in Terminal 2: `mvn -pl name wildfly-swarm:run`
@@ -42,7 +45,7 @@ Change to the "`services`" directory: `cd services`
 . Invoke the application in Terminal 4: `curl http://localhost:8080/`
 
 == Build and Push Docker images
-
+. *From the "`services/war`" directory
 . *Create Docker image*: `mvn -pl <service> package -Pdocker` where `<service>` is `greeting`, `name` or `webapp`
 . *Docker image name*: By default, the Docker image name is `arungupta/<service>`. Create the image in your repo as: `mvn -pl <service> package -Pdocker -Ddocker.repo=<repo>`
 . *Push Docker images to registry*:
@@ -77,6 +80,8 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 == Deploy Application to Amazon ECS
 
 == Deploy Application to AWS Lambda
+
+For local testing and deploying to AWS Lambda and Amazon API Gateway refer to the README file in the `apps/lambda` folder.
 
 == Deploy Application to Docker Swarm
 

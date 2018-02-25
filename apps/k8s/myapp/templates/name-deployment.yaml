@@ -13,7 +13,7 @@ spec:
         app: {{ .Release.Name }}-name
     spec:
       containers:
-      - name: name
+      - name: name-war
         image: {{ .Values.name.image }}
         imagePullPolicy: Always
         ports:
