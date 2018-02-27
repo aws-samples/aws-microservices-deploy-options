@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.aws.samples.compute</groupId>
+        <artifactId>services</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.aws.samples.compute</groupId>
+    <artifactId>services-war</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.wildfly.swarm>2018.2.0</version.wildfly.swarm>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <version.mysql>5.1.44</version.mysql>
+        <version.h2>1.4.196</version.h2>
+        <docker.repo>arungupta</docker.repo>
+        <webapp.host>localhost</webapp.host>
+        <webapp.port>8080</webapp.port>
+        <greeting.host>localhost</greeting.host>
+        <greeting.port>8081</greeting.port>
+        <greeting.path>/resources/greeting</greeting.path>
+        <name.host>localhost</name.host>
+        <name.port>8082</name.port>
+        <name.path>/resources/names/1</name.path>
+        <version.fabric8.maven.plugin>3.5.30</version.fabric8.maven.plugin>
+        <docker.push.username>arungupta</docker.push.username>
+        <docker.push.password>password</docker.push.password>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>bom-all</artifactId>
+                <version>${version.wildfly.swarm}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.1.10.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>jaxrs</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Brought in via WildFly Swarm `bom` -->
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>arquillian</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Brought in via Arquillian BOM, see dependencyManagement section above -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>2.25.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>3.5.0.Final</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <version>${version.fabric8.maven.plugin}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <modules>
+        <module>name</module>
+        <module>greeting</module>
+        <module>webapp</module>
+    </modules>
+</project>

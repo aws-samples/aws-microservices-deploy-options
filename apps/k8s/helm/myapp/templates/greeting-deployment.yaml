@@ -13,7 +13,7 @@ spec:
         app: {{ .Release.Name }}-greeting
     spec:
       containers:
-      - name: greeting
+      - name: greeting-war
         image: {{ .Values.greeting.image }}
         imagePullPolicy: Always
         ports:

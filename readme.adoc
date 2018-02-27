@@ -17,7 +17,7 @@ Each application is deployed using the following AWS Compute options:
 ... EC2
 ... Fargate
 . Serverless
-.. AWS Lambda
+.. AWS Lambda & Amazon API Gateway
 .. SAM Local
 
 Each deployment model will highlight:
@@ -31,7 +31,10 @@ Each deployment model will highlight:
 == Build and Test Services
 
 Change to the "`services`" directory: `cd services`
+. Compile all projects. In Terminal 1: `mvn clean package`
 
+Testing war services in local
+. Change directory to the "`services/war`": `cd services/war`
 . Greeting service in Terminal 1: `mvn -pl greeting wildfly-swarm:run -DskipTests`
 .. Optionally test: `curl http://localhost:8081/resources/greeting`
 . Name service in Terminal 2: `mvn -pl name wildfly-swarm:run`
@@ -42,15 +45,15 @@ Change to the "`services`" directory: `cd services`
 . Invoke the application in Terminal 4: `curl http://localhost:8080/`
 
 == Build and Push Docker images
-
+. *From the "`services/war`" directory
 . *Create Docker image*: `mvn -pl <service> package -Pdocker -DskipTests` where `<service>` is `greeting`, `name` or `webapp`
 . *Docker image name*: By default, the Docker image name is `arungupta/<service>`. Create the image in your repo as: `mvn -pl <service> package -Pdocker -Ddocker.repo=<repo>`
 . *Push Docker images to registry*:
 +
 ```
-docker push <repo>/greeting
-docker push <repo>/name
-docker push <repo>/webapp
+docker push <repo>/greeting-war
+docker push <repo>/name-war
+docker push <repo>/webapp-war
 
 ```
 +
@@ -78,6 +81,8 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
 == Deploy Application to AWS Lambda
 
+For local testing and deploying to AWS Lambda and Amazon API Gateway refer to the README file in the link:apps/lambda[`apps/lambda` folder].
+
 == Deploy Application to Docker Swarm
 
 . `docker swarm init`
@@ -104,9 +109,9 @@ myapp               3
 ```
 $ docker stack services myapp
 ID                  NAME                     MODE                REPLICAS            IMAGE                       PORTS
-8hv33y3ry5la        myapp_greeting-service   replicated          1/1                 arungupta/greeting:latest   *:8081->8080/tcp
-kyup1v84cv7q        myapp_name-service       replicated          1/1                 arungupta/name:latest       *:8082->8080/tcp
-wcjhglfym28g        myapp_webapp-service     replicated          1/1                 arungupta/webapp:latest     *:80->8080/tcp
+8hv33y3ry5la        myapp_greeting-service   replicated          1/1                 arungupta/greeting-war:latest   *:8081->8080/tcp
+kyup1v84cv7q        myapp_name-service       replicated          1/1                 arungupta/name-war:latest       *:8082->8080/tcp
+wcjhglfym28g        myapp_webapp-service     replicated          1/1                 arungupta/webapp-war:latest     *:80->8080/tcp
 ```
 +
 . List containers:
@@ -114,9 +119,9 @@ wcjhglfym28g        myapp_webapp-service     replicated          1/1            
 ```
 $ docker container ls -f name=myapp*
 CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                          NAMES
-7cd2ec331b2a        arungupta/webapp:latest     "/deployments/run-ja…"   20 seconds ago      Up 20 seconds       8080/tcp, 8778/tcp, 9779/tcp   myapp_webapp-service.1.fvr9sae08ieu08lf8agfz2mwy
-8436c6cc3110        arungupta/greeting:latest   "/deployments/run-ja…"   20 seconds ago      Up 18 seconds       8080/tcp, 8778/tcp, 9779/tcp   myapp_greeting-service.1.64idmwjlcvacniix6ll1egeoa
-3a0a951f0a2d        arungupta/name:latest       "/deployments/run-ja…"   20 seconds ago      Up 20 seconds       8080/tcp, 8778/tcp, 9779/tcp   myapp_name-service.1.o7byxuzrc5vbfoyye8kuo19ws
+7cd2ec331b2a        arungupta/webapp-war:latest     "/deployments/run-ja…"   20 seconds ago      Up 20 seconds       8080/tcp, 8778/tcp, 9779/tcp   myapp_webapp-service.1.fvr9sae08ieu08lf8agfz2mwy
+8436c6cc3110        arungupta/greeting-war:latest   "/deployments/run-ja…"   20 seconds ago      Up 18 seconds       8080/tcp, 8778/tcp, 9779/tcp   myapp_greeting-service.1.64idmwjlcvacniix6ll1egeoa
+3a0a951f0a2d        arungupta/name-war:latest       "/deployments/run-ja…"   20 seconds ago      Up 20 seconds       8080/tcp, 8778/tcp, 9779/tcp   myapp_name-service.1.o7byxuzrc5vbfoyye8kuo19ws
 ```
 +
 . Get logs for all the containers in the `webapp` service:
