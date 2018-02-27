@@ -29,6 +29,7 @@
         <version.shade.maven.plugin>2.3</version.shade.maven.plugin>
         <version.lambda.java.core>1.2.0</version.lambda.java.core>
         <version.shade.maven.plugin>2.3</version.shade.maven.plugin>
+        <version.serverless.java.container.jersey>0.9.1</version.serverless.java.container.jersey>
         <docker.push.username>arungupta</docker.push.username>
         <docker.push.password>password</docker.push.password>
         <jersey.version>2.25.1</jersey.version>
