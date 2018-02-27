@@ -1,11 +1,11 @@
 greeting:
-  image: arungupta/greeting
+  image: arungupta/greeting-war
   replicaCount: 1
 
 name:
-  image: arungupta/name
+  image: arungupta/name-war
   replicaCount: 1
 
 webapp:
-  image: arungupta/webapp
+  image: arungupta/webapp-war
   replicaCount: 1

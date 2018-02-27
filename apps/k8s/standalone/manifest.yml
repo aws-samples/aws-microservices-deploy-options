@@ -57,7 +57,7 @@ spec:
     spec:
       containers:
       - name: greeting
-        image: arungupta/greeting
+        image: arungupta/greeting-war
         imagePullPolicy: Always
         ports:
         - containerPort: 8081
@@ -83,7 +83,7 @@ spec:
     spec:
       containers:
       - name: name
-        image: arungupta/name
+        image: arungupta/name-war
         imagePullPolicy: Always
         ports:
         - containerPort: 8082
@@ -109,7 +109,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: arungupta/webapp
+        image: arungupta/webapp-war
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
