@@ -81,7 +81,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
 == Deploy Application to AWS Lambda
 
-For local testing and deploying to AWS Lambda and Amazon API Gateway refer to the README file in the [`apps/lambda` folder](tree/master/apps/lambda).
+For local testing and deploying to AWS Lambda and Amazon API Gateway refer to the README file in the link:tree/master/apps/lambda[`apps/lambda` folder].
 
 == Deploy Application to Docker Swarm
 
