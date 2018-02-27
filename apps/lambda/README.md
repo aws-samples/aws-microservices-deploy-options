@@ -39,12 +39,12 @@ $ curl -s http://127.0.0.1:3000/resources/greeting
 Hello
 ``` 
 
-You can use the [AWS CLI](https://aws.amazon.com/cli/) to quickly deploy your application to AWS Lambda and Amazon API Gateway with your SAM template.
+You can use the [AWS SAM Local CLI](https://github.com/awslabs/aws-sam-local) to quickly deploy your application to AWS Lambda and Amazon API Gateway with your SAM template. To use the package command you will need to have the [AWS CLI](https://aws.amazon.com/cli/) installed.
 
 You will need an S3 bucket to store the artifacts for deployment. Once you have created the S3 bucket, run the following command from the project's root folder - where the `sam.yaml` file is located:
 
 ```
-$ aws cloudformation package --template-file sam.yaml --output-template-file output-sam.yaml --s3-bucket <YOUR S3 BUCKET NAME>
+$ sam package --template-file sam.yaml --output-template-file output-sam.yaml --s3-bucket <YOUR S3 BUCKET NAME>
 Uploading to xxxxxxxxxxxxxxxxxxxxxxxxxx  6464692 / 6464692.0  (100.00%)
 Successfully packaged artifacts and wrote output template to file output-sam.yaml.
 Execute the following command to deploy the packaged template
@@ -54,43 +54,32 @@ aws cloudformation deploy --template-file /your/path/output-sam.yaml --stack-nam
 As the command output suggests, you can now use the cli to deploy the application. Choose a stack name and run the `aws cloudformation deploy` command from the output of the package command.
  
 ```
-$ aws cloudformation deploy --template-file output-sam.yaml --stack-name ServerlessJerseyApi --capabilities CAPABILITY_IAM
+$ sam deploy --template-file output-sam.yaml --stack-name ServerlessJerseyApi --capabilities CAPABILITY_IAM
 ```
 
 Once the application is deployed, you can describe the stack to show the API endpoint that was created. The endpoint should be the `ServerlessJerseyApi` key of the `Outputs` property:
 
 ```
-$ aws cloudformation describe-stacks --stack-name ServerlessJerseyApi
-{
-    "Stacks": [
-        {
-            "StackId": "arn:aws:cloudformation:us-west-2:xxxxxxxx:stack/ServerlessJerseyApi/xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx", 
-            "Description": "AWS Serverless Jersey API - com.sapessi.jersey::jersey-sample", 
-            "Tags": [], 
-            "Outputs": [
-                {
-                    "Description": "URL for application",
-                    "ExportName": "SampleServiceApi",  
-                    "OutputKey": "SampleServiceApi",
-                    "OutputValue": "https://xxxxxxx.execute-api.us-west-2.amazonaws.com/Prod/resources"
-                }
-            ], 
-            "CreationTime": "2016-12-13T22:59:31.552Z", 
-            "Capabilities": [
-                "CAPABILITY_IAM"
-            ], 
-            "StackName": "ServerlessJerseyApi", 
-            "NotificationARNs": [], 
-            "StackStatus": "UPDATE_COMPLETE"
-        }
-    ]
-}
-
+$ aws cloudformation describe-stacks --stack-name ServerlessJerseyApi --query 'Stacks[0].Outputs[*].{Service:OutputKey,Endpoint:OutputValue}'
+[
+    {
+        "Endpoint": "https://xxxxxxx.execute-api.us-west-2.amazonaws.com/prod/", 
+        "Service": "WebappApiEndpoint"
+    }, 
+    {
+        "Endpoint": "https://xxxxxxx.execute-api.us-west-2.amazonaws.com/prod/resources/names", 
+        "Service": "NamesApiEndpoint"
+    }, 
+    {
+        "Endpoint": "https://xxxxxxx.execute-api.us-west-2.amazonaws.com/prod/resources/greeting", 
+        "Service": "GreetingApiEndpoint"
+    }
+]
 ```
 
-Copy the `OutputValue` into a browser or use curl to test your first request:
+Copy the `Endpoint` into a browser or use curl to test your first request:
 
 ```bash
-$ curl -s https://xxxxxxx.execute-api.us-west-2.amazonaws.com/Prod/greeting
+$ curl -s https://xxxxxxx.execute-api.us-west-2.amazonaws.com/prod/greeting
 Hello
 ```
