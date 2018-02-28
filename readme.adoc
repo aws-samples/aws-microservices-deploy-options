@@ -112,17 +112,18 @@ Make sure to change the bucket name.
 ==== In Mac
 
 . `sam local start-api --template sam.yaml --env-vars test/env-mac.json`
-. `curl http://127.0.0.1:3000/resources/greeting`
-. `curl http://127.0.0.1:3000/resources/names`
-. `curl http://127.0.0.1:3000/resources/names/1`
-. `curl http://127.0.0.1:3000/`
+. Greeting endpoint: `curl http://127.0.0.1:3000/resources/greeting`
+. Name endpoint:
+.. `curl http://127.0.0.1:3000/resources/names`
+.. `curl http://127.0.0.1:3000/resources/names/1`
+. Webapp endpoint: `curl http://127.0.0.1:3000/`
 
 ==== In Windows
 
 . `sam local start-api --template sam.yaml --env-vars test/env-win.json`
 . Test the urls above in browser
 
-=== Test SAM on AWS:
+=== Test SAM on AWS
 
 . Greeting endpoint:
 +
@@ -142,7 +143,7 @@ curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda
 curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" --output text`
 ```
 
-=== Remove the stack:
+=== Remove the stack
 
 . `aws cloudformation delete-stack --stack-name aws-compute-options-lambda`
 
