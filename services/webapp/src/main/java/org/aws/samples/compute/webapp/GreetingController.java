@@ -46,7 +46,15 @@ public class GreetingController {
             throw new RuntimeException(type + "_SERVICE_PATH environment variable not found");
         }
 
-        String endpoint = "http://" + host + ":" + port + path;
+        String use_https = System.getenv(type + "_SERVICE_HTTPS");
+        String protocal = "https://";
+        if(null == use_https){
+          protocal = "http://";
+        }else if("false".equals(use_https)) {
+          protocal = "http://";
+        }
+
+        String endpoint = protocal + host + ":" + port + path;
 
         System.out.println(type + " endpoint: " + endpoint);
         return endpoint;

@@ -78,6 +78,42 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
 == Deploy Application to AWS Lambda
 
+Package Lambda Functions
+
+. `cd services`
+. `mvm clean install -Plambda`
+
+Deploy SAM
+
+. `cd apps/lambda`
+. `sam package --template-file sam.yaml --s3-bucket YOUR-S3-BUCKET --output-template-file sam.transformed.yaml`
+. `sam deploy --template-file sam.transformed.yaml --stack-name aws-compute-options-lambda --capabilities CAPABILITY_IAM`
+
+Test SAM Local in Mac:
+
+. `cd apps/lambda`
+. `sam local start-api --template sam.yaml --env-vars test/env-mac.json`
+. `curl http://127.0.0.1:3000/resources/greeting`
+. `curl http://127.0.0.1:3000/resources/names`
+. `curl http://127.0.0.1:3000/resources/names/1`
+. `curl http://127.0.0.1:3000/`
+
+Test SAM Local in Windows:
+
+. `cd apps/lambda`
+. `sam local start-api --template sam.yaml --env-vars test/env-win.json`
+. Test the urls above in browser
+
+Test SAM on AWS:
+
+# TODO: provide command to get stack output of the link
+
+. `aws cloudformation describe-stack --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?\`\`"]`
+
+Remove the stack:
+
+. `aws cloudformation delete-stack --stack-name aws-compute-options-lambda`
+
 == Deploy Application to Docker Swarm
 
 . `docker swarm init`
