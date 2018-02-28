@@ -3,4 +3,5 @@
 **/target
 **/audit.log
 **/.DS_Store
+**/*.transformed.yaml
 
