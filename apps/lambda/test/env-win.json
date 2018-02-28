@@ -1,0 +1,12 @@
+{
+ "WebAppFunction": {
+   "GREETING_SERVICE_HOST": "docker.for.win.localhost",
+   "GREETING_SERVICE_PORT": "3000",
+   "GREETING_SERVICE_PATH": "/resources/greeting",
+   "GREETING_SERVICE_HTTPS": "false",
+   "NAME_SERVICE_HOST": "docker.for.win.localhost",
+   "NAME_SERVICE_PORT": "3000",
+   "NAME_SERVICE_PATH": "/resources/names/1",
+   "NAME_SERVICE_HTTPS": "false"
+ }
+}

@@ -41,9 +41,22 @@ sam local invoke -t sam.yaml -e test/greeting-event.json GreetingFunction
 
 Next, from the project root folder - where the `sam.yaml` file is located - start the API with the SAM Local CLI.
 
+For Mac users, please use the following command
+
 ```bash
 $ cd aws-compute-options/apps/lambda
-$ sam local start-api --template sam.yaml
+$ sam local start-api --template sam.yaml --env-vars test/env-mac.json
+
+...
+Mounting com.sapessi.jersey.StreamLambdaHandler::handleRequest (java8) at http://127.0.0.1:3000/{proxy+} [OPTIONS GET HEAD POST PUT DELETE PATCH]
+...
+```
+
+For Windows users, please use the following command
+
+```bash
+$ cd aws-compute-options/apps/lambda
+$ sam local start-api --template sam.yaml --env-vars test/env-win.json
 
 ...
 Mounting com.sapessi.jersey.StreamLambdaHandler::handleRequest (java8) at http://127.0.0.1:3000/{proxy+} [OPTIONS GET HEAD POST PUT DELETE PATCH]
@@ -54,6 +67,10 @@ Using a new shell, you can send a test ping request to your API:
 
 ```bash
 $ curl -s http://127.0.0.1:3000/resources/greeting
+
+Hello
+
+$ curl -s http://127.0.0.1:3000/
 
 Hello
 ``` 
