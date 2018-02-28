@@ -81,17 +81,27 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 Package Lambda Functions
 
 . `cd services`
-. `mvm clean install -Plambda`
+. `mvn clean install -Plambda`
 
 Deploy SAM
 
+. Create S3 bucket
++
+```
+aws s3api create-bucket \
+  --bucket aws-compute-options \
+  --region us-west-2 \
+  --create-bucket-configuration LocationConstraint=us-west-2`
+```
++
+Make sure to change the bucket name.
++
 . `cd apps/lambda`
 . `sam package --template-file sam.yaml --s3-bucket YOUR-S3-BUCKET --output-template-file sam.transformed.yaml`
 . `sam deploy --template-file sam.transformed.yaml --stack-name aws-compute-options-lambda --capabilities CAPABILITY_IAM`
 
 Test SAM Local in Mac:
 
-. `cd apps/lambda`
 . `sam local start-api --template sam.yaml --env-vars test/env-mac.json`
 . `curl http://127.0.0.1:3000/resources/greeting`
 . `curl http://127.0.0.1:3000/resources/names`
@@ -100,7 +110,6 @@ Test SAM Local in Mac:
 
 Test SAM Local in Windows:
 
-. `cd apps/lambda`
 . `sam local start-api --template sam.yaml --env-vars test/env-win.json`
 . Test the urls above in browser
 
