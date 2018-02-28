@@ -22,18 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GreetingHandler implements RequestStreamHandler {
-    private final ResourceConfig jerseyApplication = new ResourceConfig()
+    private static final ResourceConfig jerseyApplication = new ResourceConfig()
                                                              .packages("org.aws.samples.compute.webapp")
                                                              .register(JacksonFeature.class);
-    private final JerseyLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler
+    private static final JerseyLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler
             = JerseyLambdaContainerHandler.getAwsProxyHandler(jerseyApplication);
 
     private static final Logger logger = LoggerFactory.getLogger(GreetingHandler.class);
-
-    public GreetingHandler() {
-        // we enable the timer for debugging. This SHOULD NOT be enabled in production.
-        Timer.enable();
-    }
 
     @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)
@@ -44,8 +39,6 @@ public class GreetingHandler implements RequestStreamHandler {
         AwsProxyResponse resp = handler.proxy(request, context);
 
         LambdaContainerHandler.getObjectMapper().writeValue(outputStream, resp);
-
-        System.err.println(LambdaContainerHandler.getObjectMapper().writeValueAsString(Timer.getTimers()));
 
         // just in case it wasn't closed by the mapper
         outputStream.close();
