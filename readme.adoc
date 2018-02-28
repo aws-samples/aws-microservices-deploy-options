@@ -32,7 +32,7 @@ Each deployment model will highlight:
 
 Change to the "`services`" directory: `cd services`
 
-. Greeting service in Terminal 1: `mvn -pl greeting wildfly-swarm:run -DskipTests`
+. Greeting service in Terminal 1: `mvn -pl greeting wildfly-swarm:run`
 .. Optionally test: `curl http://localhost:8081/resources/greeting`
 . Name service in Terminal 2: `mvn -pl name wildfly-swarm:run`
 .. Optionally test:
@@ -43,7 +43,7 @@ Change to the "`services`" directory: `cd services`
 
 == Build and Push Docker images
 
-. *Create Docker image*: `mvn -pl <service> package -Pdocker -DskipTests` where `<service>` is `greeting`, `name` or `webapp`
+. *Create Docker image*: `mvn -pl <service> package -Pdocker` where `<service>` is `greeting`, `name` or `webapp`
 . *Docker image name*: By default, the Docker image name is `arungupta/<service>`. Create the image in your repo as: `mvn -pl <service> package -Pdocker -Ddocker.repo=<repo>`
 . *Push Docker images to registry*:
 +
