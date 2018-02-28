@@ -50,7 +50,7 @@ Resources:
           Properties:
             Path: /resources/names/{id}
             Method: GET
-            RestApiId: !Ref NameApi
+            RestApiId: !Ref NamesApi
         names:
           Type: Api
           Properties:
@@ -101,7 +101,7 @@ Resources:
 
   WebAppFunction:
     DependsOn:
-      - NameApi
+      - NamesApi
       - GreetingApi
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -118,7 +118,7 @@ Resources:
           GREETING_SERVICE_PORT: "443"
           GREETING_SERVICE_PATH: "/Prod/resources/greeting"
           GREETING_SERVICE_HTTPS: "true"
-          NAME_SERVICE_HOST: !Sub "${NameApi}.execute-api.${AWS::Region}.amazonaws.com"
+          NAME_SERVICE_HOST: !Sub "${NamesApi}.execute-api.${AWS::Region}.amazonaws.com"
           NAME_SERVICE_PORT: "443"
           NAME_SERVICE_PATH: "/Prod/resources/names/1"
           NAME_SERVICE_HTTPS: "true"
