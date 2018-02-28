@@ -1,4 +1,5 @@
 = AWS Compute Options
+:toc:
 
 This repo contains a simple application that consists of three microservices. The sample application uses three services:
 
@@ -28,7 +29,7 @@ Each deployment model will highlight:
 . Monitoring (possibly using X-Ray)
 . Deployment pipeline
 
-== Build and Test Services
+== Build and Test Services using Maven
 
 Change to the "`services`" directory: `cd services`
 
@@ -43,17 +44,23 @@ Change to the "`services`" directory: `cd services`
 
 == Build and Push Docker images
 
-. *Create Docker image*: `mvn -pl <service> package -Pdocker` where `<service>` is `greeting`, `name` or `webapp`
-. *Docker image name*: By default, the Docker image name is `arungupta/<service>`. Create the image in your repo as: `mvn -pl <service> package -Pdocker -Ddocker.repo=<repo>`
-. *Push Docker images to registry*:
-+
+=== Create Docker image
+
+`mvn -pl <service> package -Pdocker` where `<service>` is `greeting`, `name` or `webapp`
+
+=== Docker image name
+
+By default, the Docker image name is `arungupta/<service>`. Create the image in your repo as: `mvn -pl <service> package -Pdocker -Ddocker.repo=<repo>`
+
+=== Push Docker images to registry
+
 ```
 docker push <repo>/greeting
 docker push <repo>/name
 docker push <repo>/webapp
 
 ```
-+
+
 This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
 
 == Deploy Application to Kubernetes with Helm
@@ -62,7 +69,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. 
 
 . Install Helm CLI: `brew install kubernetes-helm`
 . Install Helm in Kubernetes cluster: `helm init`
-. Create Helm chart: `helm install --name myapp apps/k8s/helm/myapp`
+. Install Helm chart: `helm install --name myapp apps/k8s/helm/myapp`
 . Access the application: `curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete Helm chart: `helm delete --purge myapp`
 
@@ -78,12 +85,12 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
 == Deploy Application to AWS Lambda
 
-Package Lambda Functions
+=== Package Lambda Functions
 
 . `cd services`
 . `mvn clean install -Plambda`
 
-Deploy SAM
+=== Deploy SAM
 
 . Create S3 bucket
 +
@@ -100,7 +107,9 @@ Make sure to change the bucket name.
 . `sam package --template-file sam.yaml --s3-bucket YOUR-S3-BUCKET --output-template-file sam.transformed.yaml`
 . `sam deploy --template-file sam.transformed.yaml --stack-name aws-compute-options-lambda --capabilities CAPABILITY_IAM`
 
-Test SAM Local in Mac:
+=== Test SAM Local
+
+==== In Mac
 
 . `sam local start-api --template sam.yaml --env-vars test/env-mac.json`
 . `curl http://127.0.0.1:3000/resources/greeting`
@@ -108,18 +117,32 @@ Test SAM Local in Mac:
 . `curl http://127.0.0.1:3000/resources/names/1`
 . `curl http://127.0.0.1:3000/`
 
-Test SAM Local in Windows:
+==== In Windows
 
 . `sam local start-api --template sam.yaml --env-vars test/env-win.json`
 . Test the urls above in browser
 
-Test SAM on AWS:
+=== Test SAM on AWS:
 
-# TODO: provide command to get stack output of the link
+. Greeting endpoint:
++
+```
+curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='GreetingApiEndpoint'].[OutputValue]" --output text`
+```
++
+. Name endpoint:
++
+```
+curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='NamesApiEndpoint'].[OutputValue]" --output text`
+```
++
+. Webapp endpoint:
++
+```
+curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" --output text`
+```
 
-. `aws cloudformation describe-stack --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?\`\`"]`
-
-Remove the stack:
+=== Remove the stack:
 
 . `aws cloudformation delete-stack --stack-name aws-compute-options-lambda`
 
