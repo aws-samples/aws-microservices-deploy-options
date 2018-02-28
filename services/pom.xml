@@ -29,52 +29,52 @@
         <version.shade.maven.plugin>2.3</version.shade.maven.plugin>
         <version.lambda.java.core>1.2.0</version.lambda.java.core>
         <version.shade.maven.plugin>2.3</version.shade.maven.plugin>
-        <version.serverless.java.container.jersey>0.9.1</version.serverless.java.container.jersey>
+        <version.serverless.java.container.jersey>1.0</version.serverless.java.container.jersey>
         <docker.push.username>arungupta</docker.push.username>
         <docker.push.password>password</docker.push.password>
-        <jersey.version>2.25.1</jersey.version>
+        <jersey.version>2.26</jersey.version>
         <version.org.slf4j>1.7.5</version.org.slf4j>
         <version.org.json>20180130</version.org.json>
     </properties>
     <dependencyManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>bom-all</artifactId>
-            <version>${version.wildfly.swarm}</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian</groupId>
-            <artifactId>arquillian-bom</artifactId>
-            <version>1.1.10.Final</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
+        <dependencies>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>bom-all</artifactId>
+                <version>${version.wildfly.swarm}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.1.10.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
 
     </dependencyManagement>
     <build>
-      <finalName>${project.artifactId}</finalName>
-      <pluginManagement>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <version>2.5</version>
-            <configuration>
-              <failOnMissingWebXml>false</failOnMissingWebXml>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <version>3.0.2</version>
-          </plugin>
-        </plugins>
-      </pluginManagement>
+        <finalName>${project.artifactId}</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <dependencies>
@@ -93,26 +93,26 @@
     </dependencies>
 
     <profiles>
-      <profile>
-        <id>docker</id>
-        <build>
-          <plugins>
-            <plugin>
-              <groupId>io.fabric8</groupId>
-              <artifactId>fabric8-maven-plugin</artifactId>
-              <version>${version.fabric8.maven.plugin}</version>
-              <executions>
-                <execution>
-                  <phase>package</phase>
-                  <goals>
-                    <goal>build</goal>
-                  </goals>
-                </execution>
-              </executions>
-            </plugin>
-          </plugins>
-        </build>
-      </profile>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <version>${version.fabric8.maven.plugin}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <modules>

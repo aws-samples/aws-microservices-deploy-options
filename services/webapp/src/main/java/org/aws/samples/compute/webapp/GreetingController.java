@@ -5,16 +5,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
+
 
 @Path("/")
 public class GreetingController {
 
     @Produces("text/plain")
     @GET
-    public String greeting() {
-        String greetingEndpoint = getEndpoint("GREETING");
-        String nameEndpoint = getEndpoint("NAME");
+    public String greeting(@Context UriInfo uri) {
+        String greetingEndpoint = getEndpoint("GREETING", uri.getRequestUri().getScheme());
+        String nameEndpoint = getEndpoint("NAME", uri.getRequestUri().getScheme());
 
         Client client = ClientBuilder.newClient();
         String greeting = client
@@ -30,7 +33,7 @@ public class GreetingController {
         return greeting + " " + name;
     }
 
-    private String getEndpoint(String type) {
+    private String getEndpoint(String type, String scheme) {
         String host = System.getenv(type + "_SERVICE_HOST");
         if (null == host) {
             throw new RuntimeException(type + "_SERVICE_HOST environment variable not found");
@@ -46,15 +49,7 @@ public class GreetingController {
             throw new RuntimeException(type + "_SERVICE_PATH environment variable not found");
         }
 
-        String use_https = System.getenv(type + "_SERVICE_HTTPS");
-        String protocal = "https://";
-        if(null == use_https){
-          protocal = "http://";
-        }else if("false".equals(use_https)) {
-          protocal = "http://";
-        }
-
-        String endpoint = protocal + host + ":" + port + path;
+        String endpoint = scheme + "://" + host + ":" + port + path;
 
         System.out.println(type + " endpoint: " + endpoint);
         return endpoint;

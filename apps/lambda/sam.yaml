@@ -23,7 +23,7 @@ Resources:
   GreetingApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: Prod
+      StageName: prod
       DefinitionBody:
         swagger: "2.0"
         paths:
@@ -50,7 +50,7 @@ Resources:
           Properties:
             Path: /resources/names/{id}
             Method: GET
-            RestApiId: !Ref NameApi
+            RestApiId: !Ref NamesApi
         names:
           Type: Api
           Properties:
@@ -60,7 +60,7 @@ Resources:
   NamesApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: Prod
+      StageName: prod
       DefinitionBody:
         swagger: "2.0"
         definitions:
@@ -101,7 +101,7 @@ Resources:
 
   WebAppFunction:
     DependsOn:
-      - NameApi
+      - NamesApi
       - GreetingApi
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -116,12 +116,11 @@ Resources:
         Variables:
           GREETING_SERVICE_HOST: !Sub "${GreetingApi}.execute-api.${AWS::Region}.amazonaws.com"
           GREETING_SERVICE_PORT: "443"
-          GREETING_SERVICE_PATH: "/Prod/resources/greeting"
+          GREETING_SERVICE_PATH: "/prod/resources/greeting"
           GREETING_SERVICE_HTTPS: "true"
-          NAME_SERVICE_HOST: !Sub "${NameApi}.execute-api.${AWS::Region}.amazonaws.com"
+          NAME_SERVICE_HOST: !Sub "${NamesApi}.execute-api.${AWS::Region}.amazonaws.com"
           NAME_SERVICE_PORT: "443"
-          NAME_SERVICE_PATH: "/Prod/resources/names/1"
-          NAME_SERVICE_HTTPS: "true"
+          NAME_SERVICE_PATH: "/prod/resources/names/1"
       Events:
         WebApp:
           Type: Api
@@ -149,7 +148,7 @@ Resources:
 Outputs:
   WebappApiEndpoint:
     Description: WebApp URL for application
-    Value: !Sub "https://${WebAppApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value: !Sub "https://${WebAppApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
   GreetingApiEndpoint:
     Description: Greeting API URL for application
     Value: !Sub 'https://${GreetingApi}.execute-api.${AWS::Region}.amazonaws.com/prod/resources/greeting'
