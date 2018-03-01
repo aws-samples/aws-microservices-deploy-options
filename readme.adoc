@@ -128,19 +128,31 @@ Make sure to change the bucket name.
 . Greeting endpoint:
 +
 ```
-curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='GreetingApiEndpoint'].[OutputValue]" --output text`
+curl `aws cloudformation \
+  describe-stacks \
+  --stack-name aws-compute-options-lambda \
+  --query "Stacks[].Outputs[?OutputKey=='GreetingApiEndpoint'].[OutputValue]" \
+  --output text`
 ```
 +
 . Name endpoint:
 +
 ```
-curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='NamesApiEndpoint'].[OutputValue]" --output text`
+curl `aws cloudformation \
+  describe-stacks \
+  --stack-name aws-compute-options-lambda \
+  --query "Stacks[].Outputs[?OutputKey=='NamesApiEndpoint'].[OutputValue]" \
+  --output text`
 ```
 +
 . Webapp endpoint:
 +
 ```
-curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" --output text`
+curl `aws cloudformation \
+  describe-stacks \
+  --stack-name aws-compute-options-lambda \
+  --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" \
+  --output text`
 ```
 
 === Remove the stack
