@@ -113,7 +113,7 @@ Resources:
         Type: CODEPIPELINE
       Environment:
         Type: linuxContainer
-        ComputeType: BUILD_GENERAL1_SMALL
+        ComputeType: BUILD_GENERAL1_MEDIUM
         Image: aws/codebuild/java:openjdk-8
         EnvironmentVariables:
           - Name: S3Bucket
@@ -128,13 +128,16 @@ Resources:
                 - printenv
             build:
               commands:
+                - pushd `pwd`
                 - cd services/
                 - mvn clean install -Plambda
-                - cd ../apps/lambda
+                - popd
+                - cd apps/lambda
                 - aws cloudformation package --template-file sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
           artifacts:
-            files: **/*
-      TimeoutInMinutes: 10
+            files: 
+              - '**/*'
+      TimeoutInMinutes: 15
       Tags:
         - Key: Name
           Value: !Ref AWS::StackName
@@ -178,6 +181,8 @@ Resources:
               - iam:PutRolePolicy
               - iam:PassRole
               - iam:DeleteRolePolicy
+              - iam:DetachRolePolicy
+              - iam:AttachRolePolicy
               - cloudformation:*
               - apigateway:*
             Resource: "*"
@@ -191,6 +196,13 @@ Resources:
             Resource:
              - !Join ['',['arn:aws:s3:::',!Ref ArtifactBucket, '/*']]
              - !Join ['',['arn:aws:s3:::',!Ref ArtifactBucket]]
+          -
+            Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
       Roles:
         -
           !Ref CFDeployerRole
@@ -216,8 +228,10 @@ Resources:
           phases:
             build:
               commands:
-                - cd ../apps/lambda
+                - cd apps/lambda
                 - !Sub "aws cloudformation deploy --template-file sam.transformed.yaml --stack-name aws-compute-options-lambda --capabilities CAPABILITY_IAM"
+            post_build:
+              commands:
                 - curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='GreetingApiEndpoint'].[OutputValue]" --output text`
                 - curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='NamesApiEndpoint'].[OutputValue]" --output text`
                 - curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" --output text`
