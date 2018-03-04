@@ -116,31 +116,31 @@
             </dependencies>
             <build>
               <plugins>
-								<plugin>
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-dependency-plugin</artifactId>
-									<version>2.9</version>
-									<executions>
-										<execution>
-											<id>unpack</id>
-											<phase>package</phase>
-											<goals>
-												<goal>unpack</goal>
-											</goals>
-											<configuration>
-												<outputDirectory>${project.build.directory}/unwar/${project.artifactId}</outputDirectory>
-												<artifactItems>
-													<artifactItem>
-														<groupId>${project.groupId}</groupId>
-														<artifactId>${project.artifactId}</artifactId>
-														<version>${project.version}</version>
-														<type>war</type>
-													</artifactItem>
-												</artifactItems>
-											</configuration>
-										</execution>
-									</executions>
-								</plugin>
+                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-dependency-plugin</artifactId>
+                  <version>2.9</version>
+                  <executions>
+                    <execution>
+                      <id>unpack</id>
+                      <phase>package</phase>
+                      <goals>
+                        <goal>unpack</goal>
+                      </goals>
+                      <configuration>
+                        <outputDirectory>${project.build.directory}/unwar/${project.artifactId}</outputDirectory>
+                        <artifactItems>
+                          <artifactItem>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <version>${project.version}</version>
+                            <type>war</type>
+                          </artifactItem>
+                        </artifactItems>
+                      </configuration>
+                    </execution>
+                  </executions>
+                </plugin>
                 <plugin>
                   <artifactId>maven-assembly-plugin</artifactId>
                   <configuration>
