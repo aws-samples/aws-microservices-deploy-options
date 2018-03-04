@@ -7,21 +7,7 @@ This repo contains a simple application that consists of three microservices. Th
 . "`greeting`": A microservice that returns a greeting.
 . "`name`": A microservice that returns a person’s name based upon `{id}` in the URL.
 
-Each application is deployed using the following AWS Compute options:
-
-. Containers
-.. Docker EE
-.. Kubernetes
-... BYO K8s cluster
-... Amazon EKS
-.. Amazon ECS
-... EC2
-... Fargate
-. Serverless
-.. AWS Lambda
-.. SAM Local
-
-Each deployment model will highlight:
+Each application is deployed using different AWS Compute options. Each deployment model will highlight:
 
 . Local dev, test and debug
 . Remote debugging
@@ -128,19 +114,31 @@ Make sure to change the bucket name.
 . Greeting endpoint:
 +
 ```
-curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='GreetingApiEndpoint'].[OutputValue]" --output text`
+curl `aws cloudformation \
+  describe-stacks \
+  --stack-name aws-compute-options-lambda \
+  --query "Stacks[].Outputs[?OutputKey=='GreetingApiEndpoint'].[OutputValue]" \
+  --output text`
 ```
 +
 . Name endpoint:
 +
 ```
-curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='NamesApiEndpoint'].[OutputValue]" --output text`
+curl `aws cloudformation \
+  describe-stacks \
+  --stack-name aws-compute-options-lambda \
+  --query "Stacks[].Outputs[?OutputKey=='NamesApiEndpoint'].[OutputValue]" \
+  --output text`
 ```
 +
 . Webapp endpoint:
 +
 ```
-curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" --output text`
+curl `aws cloudformation \
+  describe-stacks \
+  --stack-name aws-compute-options-lambda \
+  --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" \
+  --output text`
 ```
 
 === Remove the stack
