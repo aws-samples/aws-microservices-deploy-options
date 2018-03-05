@@ -80,7 +80,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
 . `cd apps/lambda`
 . `aws cloudformation deploy --template-file pipeline.yaml --stack-name aws-compute-options-lambda-pipeline --capabilities CAPABILITY_IAM`
-. `git add remote codecommit $(aws cloudformation describe-stacks --stack-name aws-compute-options-lambda-pipeline --query "Stacks[].Outputs[?OutputKey==\`RepositoryHttpUrl\`].OutputValue" --output text)`
+. `git remote add codecommit $(aws cloudformation describe-stacks --stack-name aws-compute-options-lambda-pipeline --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" --output text)`
 . `git push codecommit master`
 
 Example of the screenshot in AWS console when the pipeline is created
