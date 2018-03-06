@@ -83,15 +83,14 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 . `cd apps/lambda`
 . `aws cloudformation deploy --template-file pipeline.yaml --stack-name aws-compute-options-lambda-pipeline --capabilities CAPABILITY_IAM`
 . `git remote add codecommit $(aws cloudformation describe-stacks --stack-name aws-compute-options-lambda-pipeline --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" --output text)`
-
-To push the code into the CodeCommit repo created in the CloudFormation stack. Please setup your Git credential by following the https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html[document].
-
-When the Git credential is setup, you can use the following command to push in the code and trigger the pieline to run.
-
-. `git push codecommit master`
-
-Your can access to the pipeline via AWS console using the following command to get its URL
-
+. Setup your Git credential by following the https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html[document]. This is required to push the code into the CodeCommit repo created in the CloudFormation stack. When the Git credential is setup, you can use the following command to push in the code and trigger the pieline to run.
++
+```
+git push codecommit master
+```
++
+. Get the URL to view the deployment pipeline:
++
 ```
 aws cloudformation \
       describe-stacks \
@@ -99,9 +98,9 @@ aws cloudformation \
       --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
       --output text
 ```
-
-Example of the screenshot in AWS console when the pipeline is created
-
++
+Deployment pipeline in AWS console looks like as shown:
++
 image::images/lambda-pipeline.png[Lambda Pipeline, 350]
 
 === Deploy SAM Manaully
