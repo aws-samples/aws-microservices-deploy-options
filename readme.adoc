@@ -68,7 +68,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 . Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete the application: `kubectl delete -f apps/k8s/standalone/manifest.yml`
 
-== Deploy Application to Amazon ECS
+== Deploy Application to Amazon Fargate
 
 == Deploy Application to AWS Lambda
 
