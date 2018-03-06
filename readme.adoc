@@ -70,6 +70,14 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
 == Deploy Application to Amazon Fargate
 
+|===
+|Region | Launch Template
+| *N. Virginia* (us-east-1)
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=Codesuite-Demo&templateURL=https://s3.amazonaws.com/compute-options-public/master.yaml]
+|===
+
+Check the output of the infrastructure stack in cloudformation console and look for the Public ALB CNAME, you can use that hostname to access the application.
+
 == Deploy Application to AWS Lambda
 
 === Package Lambda Functions
@@ -238,4 +246,3 @@ myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:
 == License
 
 This library is licensed under the Amazon Software License.
-
