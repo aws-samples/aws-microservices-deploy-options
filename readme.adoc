@@ -44,12 +44,13 @@ By default, the Docker image name is `arungupta/<service>`. Create the image in 
 docker push <repo>/greeting
 docker push <repo>/name
 docker push <repo>/webapp
-
 ```
 
 This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
 
-== Deploy Application to Kubernetes with Helm
+== Deploy Application to Kubernetes
+
+=== Helm
 
 Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. Also, make sure Helm is installed on that Kubernetes cluster.
 
@@ -59,7 +60,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. 
 . Access the application: `curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete Helm chart: `helm delete --purge myapp`
 
-== Deploy Application to Kubernetes with Standalone Manifests
+=== Standalone Manifests
 
 Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
