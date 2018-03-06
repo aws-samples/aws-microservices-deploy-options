@@ -128,11 +128,9 @@ Resources:
                 - printenv
             build:
               commands:
-                - pushd `pwd`
                 - cd services/
                 - mvn clean install -Plambda
-                - popd
-                - cd apps/lambda
+                - cd ../apps/lambda
                 - aws cloudformation package --template-file sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
           artifacts:
             files: 
