@@ -304,3 +304,6 @@ Outputs:
   RepositorySSHUrl:
     Description: CodeCommit Repository SSH URL to push Service Catalog Related Artifacts
     Value: !GetAtt Repo.CloneUrlSsh
+  CodePipelineUrl:
+    Description: CodePipeline AWS Console HTTP URL
+    Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/codepipeline/home?region=${AWS::Region}#/view/${AWS::StackName}"
