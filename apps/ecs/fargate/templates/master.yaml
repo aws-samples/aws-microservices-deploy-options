@@ -41,3 +41,7 @@ Resources:
         ECSCluster: !GetAtt Infrastructure.Outputs.ECSCluster
         VPC: !GetAtt Infrastructure.Outputs.VPC
         SecurityGroup: !GetAtt Infrastructure.Outputs.SecurityGroupWebapp
+
+Outputs:
+  PublicALBCNAME:
+    Value: !GetAtt Infrastructure.Outputs.ALBPublicCNAME

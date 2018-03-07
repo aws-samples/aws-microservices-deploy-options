@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Creating ECS service
+Description: Creating infrastructure Resources
 Resources:
   VPC:
     Type: 'AWS::EC2::VPC'
