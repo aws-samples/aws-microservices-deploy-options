@@ -73,7 +73,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 |===
 |Region | Launch Template
 | *N. Virginia* (us-east-1)
-a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=aws-compute-options-farate&templateURL=https://s3.amazonaws.com/compute-options-public/master.yaml]
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=aws-compute-options-fargate&templateURL=https://s3.amazonaws.com/compute-options-public/master.yaml]
 |===
 
 Retrieve the public endpoint to test your application deployment:

@@ -43,5 +43,5 @@ Resources:
         SecurityGroup: !GetAtt Infrastructure.Outputs.SecurityGroupWebapp
 
 Outputs:
-  Name: PublicALBCNAME
-  Value: !GetAtt Infrastructure.Outputs.ALBPublicCNAME
+  PublicALBCNAME:
+    Value: !GetAtt Infrastructure.Outputs.ALBPublicCNAME
