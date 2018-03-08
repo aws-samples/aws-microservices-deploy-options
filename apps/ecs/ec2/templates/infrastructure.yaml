@@ -369,7 +369,6 @@ Resources:
     Properties:
       ImageId: !FindInMap [ AWSRegionToAMI, !Ref "AWS::Region", AMI ]
       InstanceType: m4.xlarge
-      KeyName: 'Tapo-Personal'
       IamInstanceProfile: !Ref InstanceProfile
       SecurityGroups:
         - !Ref PublicECSHostSecurityGroup

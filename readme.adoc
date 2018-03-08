@@ -106,6 +106,25 @@ Retrieve the public endpoint to test your application deployment:
 
 == Deploy Application to Amazon ECS
 
+
+=== CloudFormation only
+
+|===
+|Region | Launch Template
+| *N. Virginia* (us-east-1)
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=aws-compute-options-ecs&templateURL=https://s3.amazonaws.com/aws-compute-options/master.yaml]
+|===
+
+Retrieve the public endpoint to test your application deployment:
+
+```
+    aws cloudformation \
+        describe-stacks \
+        --stack-name aws-compute-options-ecs \
+        --query "Stacks[].Outputs[?OutputKey=='PublicALBCNAME'.[OutputValue]]" \
+        --output text
+```
+
 === Console and ECS CLI
 
 === CloudFormation and ECS CLI
