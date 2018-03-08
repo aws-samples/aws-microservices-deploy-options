@@ -113,6 +113,17 @@ aws cloudformation \
 
 == Deploy Application to Amazon ECS
 
+=== Console and ECS CLI
+
+https://github.com/aws-samples/aws-compute-options/issues/51
+
+=== CloudFormation and ECS CLI
+
+https://github.com/aws-samples/aws-compute-options/issues/50
+
+=== CLI only
+
+https://github.com/aws-samples/aws-compute-options/issues/41
 
 === CloudFormation only
 
@@ -131,22 +142,6 @@ Retrieve the public endpoint to test your application deployment:
         --query "Stacks[].Outputs[?OutputKey=='PublicALBCNAME'.[OutputValue]]" \
         --output text
 ```
-
-=== Console and ECS CLI
-
-https://github.com/aws-samples/aws-compute-options/issues/51
-
-=== CloudFormation and ECS CLI
-
-https://github.com/aws-samples/aws-compute-options/issues/50
-
-=== CLI only
-
-https://github.com/aws-samples/aws-compute-options/issues/41
-
-=== CloudFormation only
-
-https://github.com/aws-samples/aws-compute-options/issues/49
 
 === CloudFormation and Docker Compose
 
