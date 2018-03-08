@@ -89,7 +89,7 @@ https://github.com/aws-samples/aws-compute-options/issues/48
 
 https://github.com/aws-samples/aws-compute-options/issues/40
 
-=== ECS CLI only
+=== CLI only
 
 https://github.com/aws-samples/aws-compute-options/issues/41
 
