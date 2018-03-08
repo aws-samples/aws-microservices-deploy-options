@@ -68,6 +68,18 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 . Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete the application: `kubectl delete -f apps/k8s/standalone/manifest.yml`
 
+== Deploy Application to Kubernetes with Ksonnet
+
+Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
+
+. Install `ksonnet` from `homebrew` tap: `brew install ksonnet/tap/ks`
+. Change into the ksonnet sub directory: `cd apps/k8s/ksonnet/myapp`
+. Add the environment: `ks env add default`
+. Deploy the manifests: `ks apply default`
+. Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
+. Delete the application: `ks delete default`
+
+
 == Deploy Application to Amazon Fargate
 
 |===
@@ -85,6 +97,8 @@ Retrieve the public endpoint to test your application deployment:
         --query "Stacks[].Outputs[?OutputKey=='PublicALBCNAME'.[OutputValue]]" \
         --output text
 ```
+
+== Deploy Application to Amazon ECS
 
 == Deploy Application to AWS Lambda
 
