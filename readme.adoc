@@ -90,52 +90,53 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
 2. Run the following script  to setup a ECS Cluster, VPC, Subnets(Public/Private), Security Group, ALB(Public/Private), Target Groups
 
-    `./infrastructure.sh`
+    ./infrastructure.sh
 
 3. Once the stack completes, inpect the contents of this file `ecs-cluster.prop`
 
 4. Configure ecs-cli
 
-    `ecs-cli configure --cluster $ECSCluster --region us-east-1 --default-launch-type FARGATE`
+    ecs-cli configure --cluster $ECSCluster --region us-east-1 --default-launch-type FARGATE
 
 5. Generate the ecs-params.yml for greeting service
-    `./ecs-params-create.sh greeting`
+    ./ecs-params-create.sh greeting
 
 6. Bring the greeting service up. Note you should be in `greeting` directory now and should have greeting-docker-compose.yaml file in the same directory. Inspect the contents of the file
 
-    `ecs-cli compose --verbose --file greeting-docker-compose.yaml --task-role-arn $ECSRole \
+    ecs-cli compose --verbose --file greeting-docker-compose.yaml --task-role-arn $ECSRole \
     --ecs-params ecs-params_greeting.yml  service up --target-group-arn $GreetingTargetGroupArn 
-    --container-name  greeting --container-port 8081`
+    --container-name  greeting --container-port 8081
 
 7. Generate the ecs-params.yml for name service
 
-`cd .. && ./ecs-params-create.sh name`
+    cd .. && ./ecs-params-create.sh name
 
 8. Bring the name service up
 
-    `ecs-cli compose --verbose --file name-docker-compose.yaml --task-role-arn $ECSRole \
+    ecs-cli compose --verbose --file name-docker-compose.yaml --task-role-arn $ECSRole \
     --ecs-params ecs-params_name.yml  service up --target-group-arn $NameTargetGroupArn 
-    --container-name  name-service --container-port 8082`
+    --container-name  name-service --container-port 8082
 
 Go to the console and check the Target Group associated with Greeting service to make sure its healthy
 
 9. Generate the ecs-params.yml for name service
 
-    `cd .. && ./ecs-params-create.sh webapp`
+    cd .. && ./ecs-params-create.sh webapp
 
 10. Change the GREETING_SERVICE_HOST and NAME_SERVICE_HOST to the PrivateALBCName property (Get it from the ecs-cluster.prop a directory up or in CloudFormation Outputs tab)
 
 11. Bring the webapp service up
-    `ecs-cli compose --verbose --file webapp-docker-compose.yaml --task-role-arn $ECSRole 
+
+    ecs-cli compose --verbose --file webapp-docker-compose.yaml --task-role-arn $ECSRole 
     --ecs-params ecs-params_webapp.yml  service up --target-group-arn $WebappTargetGroupArn 
-    --container-name  webapp-service --container-port 8080`
+    --container-name  webapp-service --container-port 8080
 
 Go to the console and check the Target Group associated with Greeting service to make sure its healthy
 
 If all of the above are executed successfully, curl the  PublicALBCNAME to see if you get a response
 
-  `curl http://aws-c-ALBPu-XXXXXXXXX-00000000.us-east-1.elb.amazonaws.com`
-  `Hello Sheldon`
+  curl http://aws-c-ALBPu-XXXXXXXXX-00000000.us-east-1.elb.amazonaws.com
+  Hello Sheldon
 
 
 === CloudFormation only
