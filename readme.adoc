@@ -87,7 +87,6 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/62
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/63
 
-
 === Monitoring using X-Ray
 
 . `arungupta/xray:us-west-2` Docker image is already available on Docker Hub. Optionally, you may build the image:
@@ -130,6 +129,7 @@ Retrieve the public endpoint to test your application deployment:
 ```
 aws cloudformation \
     describe-stacks \
+    --region us-east-1 \
     --stack-name aws-compute-options-fargate \
     --query "Stacks[].Outputs[?OutputKey=='PublicALBCNAME'.[OutputValue]]" \
     --output text
@@ -160,11 +160,12 @@ a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudfo
 Retrieve the public endpoint to test your application deployment:
 
 ```
-    aws cloudformation \
-        describe-stacks \
-        --stack-name aws-compute-options-ecs \
-        --query "Stacks[].Outputs[?OutputKey=='PublicALBCNAME'.[OutputValue]]" \
-        --output text
+aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name aws-compute-options-ecs \
+    --query "Stacks[].Outputs[?OutputKey=='PublicALBCNAME'.[OutputValue]]" \
+    --output text
 ```
 
 === CloudFormation and Docker Compose
