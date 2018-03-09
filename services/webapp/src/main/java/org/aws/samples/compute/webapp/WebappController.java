@@ -11,7 +11,7 @@ import javax.ws.rs.core.UriInfo;
 
 
 @Path("/")
-public class GreetingController {
+public class WebappController {
 
     @Produces("text/plain")
     @GET
