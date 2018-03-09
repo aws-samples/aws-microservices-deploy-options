@@ -30,9 +30,28 @@
           <artifactId>arquillian-junit-container</artifactId>
           <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>3.1.4.Final</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <includes>
+                        <include>org/aws/samples/compute/greeting/GreetingEndpoint.java</include>
+                        <include>org/aws/samples/compute/greeting/MyApplication.java</include>
+                        <include>org/aws/samples/compute/greeting/StartupBean.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-plugin</artifactId>

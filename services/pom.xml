@@ -75,6 +75,19 @@
         <finalName>${project.artifactId}</finalName>
         <pluginManagement>
           <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.7.0</version>
+              <configuration>
+                  <includes>
+                      <include>org/aws/samples/compute/name/NameEndpoint.java</include>
+                      <include>org/aws/samples/compute/name/MyApplication.java</include>
+                      <include>org/aws/samples/compute/name/Name.java</include>
+                      <include>org/aws/samples/compute/name/Names.java</include>
+                  </includes>
+              </configuration>
+          </plugin>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-war-plugin</artifactId>
@@ -111,8 +124,8 @@
     </profiles>
 
     <modules>
-        <module>name</module>
         <module>greeting</module>
+        <module>name</module>
         <module>webapp</module>
     </modules>
 </project>
