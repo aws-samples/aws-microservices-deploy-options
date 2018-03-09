@@ -1,0 +1,7 @@
+awscli - Setup Default Profile.  Must have administrator rights - https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
+
+ecscli - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI.html
+
+jq - https://github.com/stedolan/jq/wiki/Installation
+
+perl - https://www.perl.org/get.html 
