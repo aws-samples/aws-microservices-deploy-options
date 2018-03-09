@@ -92,7 +92,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
     ./infrastructure.sh
 
-3. Once the stack completes, inpect the contents of this file `ecs-cluster.prop`
+3. Once the stack completes, inspect the contents of this file `ecs-cluster.prop`
 
 4. Configure ecs-cli
 
