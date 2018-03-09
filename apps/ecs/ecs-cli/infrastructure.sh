@@ -51,28 +51,10 @@ cloudformation_tail() {
 
 cloudformation_tail ecs-demo us-east-1
 
-if [-f "$OUTPUT_FILE"]; then
+if [ -f "$OUTPUT_FILE" ]; then
 	perl -i.bak -lpe 's/\s+/=/g' "$OUTPUT_FILE"
 	echo "Created Output property file. \n"
 	echo "Run this command on your terminal:  source $OUTPUT_FILE"
 	cat $OUTPUT_FILE
 fi
 
-
-
-
-
-
-ecs-cli configure --cluster $ECSCluster --region us-east-1 --default-launch-type FARGATE
-
-
-
-
-ecs-cli compose --verbose --file greeting-docker-compose.yaml --task-role-arn $ECSRole --ecs-params ecs-params_greeting.yml  service up --target-group-arn $GreetingTargetGroupArn --container-name  greeting --container-port 8081
-
-
-ecs-cli compose --verbose --file name-docker-compose.yaml --task-role-arn $ECSRole --ecs-params ecs-params_name.yml  service up --target-group-arn $NameTargetGroupArn --container-name  name-service --container-port 8082
-
-
-
-ecs-cli compose --verbose --file webapp-docker-compose.yaml --task-role-arn $ECSRole --ecs-params ecs-params_webapp.yml  service up --target-group-arn $WebappTargetGroupArn --container-name  webapp-service --container-port 8080
