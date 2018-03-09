@@ -39,7 +39,7 @@
                 <version>3.7.0</version>
                 <configuration>
                     <includes>
-                        <include>org/aws/samples/compute/webapp/GreetingController.java</include>
+                        <include>org/aws/samples/compute/webapp/WebappController.java</include>
                     </includes>
                 </configuration>
             </plugin>

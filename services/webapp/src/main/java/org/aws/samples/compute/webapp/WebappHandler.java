@@ -21,14 +21,14 @@ import java.util.regex.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GreetingHandler implements RequestStreamHandler {
+public class WebappHandler implements RequestStreamHandler {
     private static final ResourceConfig jerseyApplication = new ResourceConfig()
                                                              .packages("org.aws.samples.compute.webapp")
                                                              .register(JacksonFeature.class);
     private static final JerseyLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler
             = JerseyLambdaContainerHandler.getAwsProxyHandler(jerseyApplication);
 
-    private static final Logger logger = LoggerFactory.getLogger(GreetingHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebappHandler.class);
 
     @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)
