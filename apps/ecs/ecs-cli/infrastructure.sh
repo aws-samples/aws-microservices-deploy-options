@@ -53,8 +53,8 @@ cloudformation_tail ecs-demo us-east-1
 
 if [ -f "$OUTPUT_FILE" ]; then
 	perl -i.bak -lpe 's/\s+/=/g' "$OUTPUT_FILE"
-	echo "Created Output property file. \n"
-	echo "Run this command on your terminal:  source $OUTPUT_FILE"
+	echo -e "Created Output property file"
+	echo -e "Run this command on your terminal now:  source $OUTPUT_FILE \n "
 	cat $OUTPUT_FILE
 fi
 
