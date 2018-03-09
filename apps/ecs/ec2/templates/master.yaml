@@ -37,7 +37,7 @@ Resources:
         PublicSubnet1: !GetAtt Infrastructure.Outputs.PublicSubnet1
         PublicSubnet2: !GetAtt Infrastructure.Outputs.PublicSubnet2
         PublicALB: !GetAtt Infrastructure.Outputs.ALBPublic
-        ALBPublicCNAME: !GetAtt Infrastructure.Outputs.ALBPublicCNAME
+        ALBPrivateCNAME: !GetAtt Infrastructure.Outputs.ALBPrivateCNAME
         ECSCluster: !GetAtt Infrastructure.Outputs.ECSCluster
         SecurityGroup: !GetAtt Infrastructure.Outputs.SecurityGroupWebapp
         VPC: !GetAtt Infrastructure.Outputs.VPC
