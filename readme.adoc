@@ -79,6 +79,15 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 . Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete the application: `ks delete default`
 
+=== Docker Compose
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/62
+
+=== Kubepack
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/63
+
+
 === Monitoring using X-Ray
 
 . `arungupta/xray:us-west-2` Docker image is already available on Docker Hub. Optionally, you may build the image:
