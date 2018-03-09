@@ -53,7 +53,7 @@ spec:
       hostNetwork: true
       containers:
       - name: xray-daemon
-        image: arungupta/xray:latest
+        image: arungupta/xray:us-west-2
         imagePullPolicy: Always
         command: [ "/usr/bin/xray", "-c", "/aws/xray/config.yaml" ]
         resources:
