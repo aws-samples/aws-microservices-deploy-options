@@ -98,7 +98,6 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/65
 ==== Jenkins
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/67
-<<<<<<< HEAD
 
 ==== Deployment pipeline using Spinnaker
 
@@ -133,35 +132,7 @@ https://github.com/aws-samples/aws-compute-options/issues/48
 
 https://github.com/aws-samples/aws-compute-options/issues/40
 
-=======
 
-==== Deployment pipeline using Spinnaker
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
-
-=== Monitoring
-
-==== AWS X-Ray
-
-. `arungupta/xray:us-west-2` Docker image is already available on Docker Hub. Optionally, you may build the image:
-+
-```
-cd config/xray
-docker build -t arungupta/xray:latest .
-docker image push arungupta/xray:us-west-2
-```
-+
-. Deploy the DaemonSet: `kubectl apply -f xray-daemonset.yaml`
-. Deploy the application using Helm charts
-. Access the application
-. Open the https://us-west-2.console.aws.amazon.com/xray/home?region=us-west-2#/service-map[X-Ray console] and watch the service map and traces. This is tracked as https://github.com/aws-samples/aws-microservices-deploy-options/issues/60[#60].
-
-== Amazon Fargate
->>>>>>> a97cdebde9bf0113279ce78f4bd26c8704da6621
-
-=== Deployment
-
-<<<<<<< HEAD
 1. See `requirements.txt` under `apps/ecs/ecs-cli/requirements.txt`
 
 2. Run the following script  to setup a ECS Cluster, VPC, Subnets(Public/Private), Security Group, ALB(Public/Private), Target Groups
@@ -215,15 +186,6 @@ If all of the above are executed successfully, curl the  PublicALBCNAME to see i
   Hello Sheldon
 
 
-=======
-==== Console and ECS CLI
-
-https://github.com/aws-samples/aws-compute-options/issues/48
-
-==== CloudFormation and ECS CLI
-
-https://github.com/aws-samples/aws-compute-options/issues/40
->>>>>>> a97cdebde9bf0113279ce78f4bd26c8704da6621
 
 ==== CLI only
 
@@ -251,7 +213,6 @@ aws cloudformation \
 == ECS
 
 === Deployment
-<<<<<<< HEAD
 
 ==== Console and ECS CLI
 
@@ -259,15 +220,6 @@ https://github.com/aws-samples/aws-compute-options/issues/51
 
 ==== CloudFormation and ECS CLI
 
-=======
-
-==== Console and ECS CLI
-
-https://github.com/aws-samples/aws-compute-options/issues/51
-
-==== CloudFormation and ECS CLI
-
->>>>>>> a97cdebde9bf0113279ce78f4bd26c8704da6621
 https://github.com/aws-samples/aws-compute-options/issues/50
 
 ==== CLI only
@@ -296,19 +248,11 @@ aws cloudformation \
 ==== CloudFormation and Docker Compose
 
 https://github.com/aws-samples/aws-compute-options/issues/42
-<<<<<<< HEAD
 
 == AWS Lambda
 
 === Deployment
 
-=======
-
-== AWS Lambda
-
-=== Deployment
-
->>>>>>> a97cdebde9bf0113279ce78f4bd26c8704da6621
 ==== Package Lambda Functions
 
 . `cd services`
