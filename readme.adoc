@@ -245,6 +245,12 @@ aws cloudformation \
     --output text
 ```
 
+Use the command to test:
+
+```
+curl http://<public_endpoint>
+```
+
 ==== CloudFormation and Docker Compose
 
 https://github.com/aws-samples/aws-compute-options/issues/42
