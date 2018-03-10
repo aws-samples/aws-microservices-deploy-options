@@ -124,7 +124,7 @@ docker image push arungupta/xray:us-west-2
 
 === Deployment
 
-==== Console and ECS CLI
+==== Console and AWS CLI
 
 https://github.com/aws-samples/aws-compute-options/issues/48
 
@@ -185,12 +185,6 @@ If all of the above are executed successfully, curl the  PublicALBCNAME to see i
   curl http://aws-c-ALBPu-XXXXXXXXX-00000000.us-east-1.elb.amazonaws.com
   Hello Sheldon
 
-
-
-==== CLI only
-
-https://github.com/aws-samples/aws-compute-options/issues/41
-
 ==== CloudFormation only
 
 |===
@@ -210,21 +204,18 @@ aws cloudformation \
     --output text
 ```
 
+
 == ECS
 
 === Deployment
 
-==== Console and ECS CLI
+==== Console and AWS CLI
 
 https://github.com/aws-samples/aws-compute-options/issues/51
 
 ==== CloudFormation and ECS CLI
 
 https://github.com/aws-samples/aws-compute-options/issues/50
-
-==== CLI only
-
-https://github.com/aws-samples/aws-compute-options/issues/41
 
 ==== CloudFormation only
 
@@ -250,10 +241,6 @@ Use the command to test:
 ```
 curl http://<public_endpoint>
 ```
-
-==== CloudFormation and Docker Compose
-
-https://github.com/aws-samples/aws-compute-options/issues/42
 
 == AWS Lambda
 
