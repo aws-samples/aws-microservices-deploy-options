@@ -128,76 +128,94 @@ The idea here is to first create  the underlying infrastructure: ECS Cluster, VP
 
 1. See `requirements.txt` under `apps/ecs/ecs-cli/requirements.txt`
 
-2. Run the following script  to setup the underlying infrastructure:
+2. Run the following script to setup the underlying infrastructure:
 
     ./infrastructure.sh 
-
-You can also setup the Cluster using CloudFormation from Console. If you prefer that:
-
++
+Alternatively, you can also setup the cluster using CloudFormation from the Console by clicking on the button below:
++
 |===
 |Region | Launch Template
 | *N. Virginia* (us-east-1)
 a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=aws-compute-options-ecscli&templateURL=https://s3.amazonaws.com/compute-options-public/ecscli/infra.yaml]
 |===
-
++
 Once the stack is launched, run this:
-
++
       ./infrastructure.sh <STACK_NAME>
-
-3. Once the stack completes, inspect the contents of this file `ecs-cluster.prop`. Then source this property file
++
+Either way, this will generate the file `ecs-cluster.prop`. This file consists of some key/value pairs that will be used to setup environment variables which will be used subseqently.
++
+3. Inspect the contents of `ecs-cluster.prop` and source this property file:
 
     source ecs-cluster.prop
-
++
+This will setup the environment variables.
++
 4. Configure ecs-cli
 
     ecs-cli configure --cluster $ECSCluster --region us-east-1 --default-launch-type FARGATE
 
-5. Generate the ecs-params.yml for greeting service
+5. Generate the `ecs-params.yml` for the `greeting` service:
     
-    ./ecs-params-create.sh greeting
+    ecs-params-create.sh greeting
 
-6. Bring the greeting service up. Note you should be in `greeting` directory now and should have greeting-docker-compose.yaml file in the same directory. Inspect the contents of the file
+6. Bring the `greeting` service up:
 
-    ecs-cli compose --verbose --file greeting-docker-compose.yaml --task-role-arn $ECSRole \
-    --ecs-params ecs-params_greeting.yml  service up --target-group-arn $GreetingTargetGroupArn 
-    --container-name  greeting --container-port 8081
+    ecs-cli compose --verbose \
+      --file greeting/greeting-docker-compose.yaml \
+      --task-role-arn $ECSRole \
+      --ecs-params greeting/ecs-params_greeting.yml \
+      service up \
+      --target-group-arn $GreetingTargetGroupArn \
+      --container-name greeting \
+      --container-port 8081
 
-7. Run this command to check the health of the GreetingTargetGroupArn
+7. Run this command to check the health of the `GreetingTargetGroupArn`:
     
     aws elbv2 describe-target-health --target-group-arn $GreetingTargetGroupArn 
 
-8. Generate the ecs-params.yml for name service
+8. Generate the `ecs-params.yml` for the `name` service:
 
-    cd .. && ./ecs-params-create.sh name
+    ecs-params-create.sh name
 
-9. Bring the name service up
+9. Bring the `name` service up:
 
-    ecs-cli compose --verbose --file name-docker-compose.yaml --task-role-arn $ECSRole \
-    --ecs-params ecs-params_name.yml  service up --target-group-arn $NameTargetGroupArn 
-    --container-name  name-service --container-port 8082
+    ecs-cli compose --verbose \
+      --file name-docker-compose.yaml \
+      --task-role-arn $ECSRole \
+      --ecs-params ecs-params_name.yml  \
+      service up \
+      --target-group-arn $NameTargetGroupArn \
+      --container-name  name-service \
+      --container-port 8082
 
-10. Run this command to check the health of the NameTargetGroupArn
+10. Run this command to check the health of the `NameTargetGroupArn`:
 
     aws elbv2 describe-target-health --target-group-arn $NameTargetGroupArn
 
+11. Generate the `ecs-params.yml` for the `webapp` service:
 
-11. Generate the ecs-params.yml for webapp service
+    ecs-params-create.sh webapp
 
-    cd .. && ./ecs-params-create.sh webapp
-
-12. Change the GREETING_SERVICE_HOST and NAME_SERVICE_HOST to the PrivateALBCName property (Get it from the ecs-cluster.prop a directory up or in CloudFormation Outputs tab)
+12. Change the `GREETING_SERVICE_HOST` and `NAME_SERVICE_HOST` to the `PrivateALBCName` property (Get it from the ecs-cluster.prop a directory up or in CloudFormation Outputs tab)
 
 13. Bring the webapp service up
 
-    ecs-cli compose --verbose --file webapp-docker-compose.yaml --task-role-arn $ECSRole 
-    --ecs-params ecs-params_webapp.yml  service up --target-group-arn $WebappTargetGroupArn 
-    --container-name  webapp-service --container-port 8080
+    ecs-cli compose --verbose \
+      --file webapp-docker-compose.yaml \
+      --task-role-arn $ECSRole \
+      --ecs-params ecs-params_webapp.yml \
+      service up \
+      --target-group-arn $WebappTargetGroupArn \
+      --container-name webapp-service \
+      --container-port 8080
 
-14. Run this command to check the health of the WebappTargetGroupArn
+14. Run this command to check the health of the `WebappTargetGroupArn`:
 
     aws elbv2 describe-target-health --target-group-arn $WebappTargetGroupArn
 
-If all of the above are executed successfully, curl the  PublicALBCNAME to see if you get a response
+If all of the above are executed successfully, curl the `PublicALBCNAME` to see if you get a response
 
   curl http://aws-c-ALBPu-XXXXXXXXX-00000000.us-east-1.elb.amazonaws.com
   Hello Sheldon
