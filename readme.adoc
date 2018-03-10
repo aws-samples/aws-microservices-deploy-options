@@ -158,7 +158,7 @@ This will setup the environment variables.
 
 5. Generate the `ecs-params.yml` for the `greeting` service:
     
-    ecs-params-create.sh greeting
+    . ecs-params-create.sh greeting
 
 6. Bring the `greeting` service up:
 
@@ -168,7 +168,7 @@ This will setup the environment variables.
       --ecs-params greeting/ecs-params_greeting.yml \
       service up \
       --target-group-arn $GreetingTargetGroupArn \
-      --container-name greeting \
+      --container-name greeting-service \
       --container-port 8081
 
 7. Run this command to check the health of the `GreetingTargetGroupArn`:
@@ -177,7 +177,7 @@ This will setup the environment variables.
 
 8. Generate the `ecs-params.yml` for the `name` service:
 
-    ecs-params-create.sh name
+    . ecs-params-create.sh name
 
 9. Bring the `name` service up:
 
@@ -194,9 +194,9 @@ This will setup the environment variables.
 
     aws elbv2 describe-target-health --target-group-arn $NameTargetGroupArn
 
-11. Generate the `ecs-params.yml` for the `webapp` service:
+11. Generate the `ecs-params.yml` for the `webapp` service
 
-    ecs-params-create.sh webapp
+    . ecs-params-create.sh webapp
 
 12. Change the `GREETING_SERVICE_HOST` and `NAME_SERVICE_HOST` to the `PrivateALBCName` property (Get it from the ecs-cluster.prop a directory up or in CloudFormation Outputs tab)
 
