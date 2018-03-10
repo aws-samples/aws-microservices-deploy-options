@@ -128,19 +128,14 @@ https://github.com/aws-samples/aws-compute-options/issues/40
 
 The idea here is to first create  the underlying infrastructure: ECS Cluster, VPC, Subnets(Public/Private), Security Group, ALB(Public/Private), Target Groups AND then deploy tasks using ecs-cli (compose)
 
-*Pre-requisites*
+==== Pre-requisites
 
 . Install https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI.html[ECS CLI].
-. Install https://github.com/stedolan/jq/wiki/Installation[jq].
 . Install - https://www.perl.org/get.html[Perl].
 
-Let's deploy the application.
+==== Deploy the application
 
-. Run the following script to setup the underlying infrastructure:
-+
-    ./infrastructure.sh 
-+
-Alternatively, you can also setup the cluster using CloudFormation from the Console by clicking on the button below:
+. Run the CloudFormation template to create the AWS resources:
 +
 |===
 |Region | Launch Template
@@ -148,18 +143,19 @@ Alternatively, you can also setup the cluster using CloudFormation from the Cons
 a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=aws-microservices-deploy-options-ecscli&templateURL=https://s3.amazonaws.com/aws-microservices-deploy-options/infra.yaml]
 |===
 +
-Once the stack is launched, run this:
-+
-      ./infrastructure.sh <STACK_NAME>
-+
-Either way, this will generate the file `ecs-cluster.prop`. This file consists of some key/value pairs that will be used to setup environment variables which will be used subseqently.
-+
-. Inspect the contents of `ecs-cluster.prop` and source this property file:
-+
-    source ecs-cluster.prop
-+
-This will setup the environment variables.
-+
+. Run the command to capture the output from the CloudFormation template. This command will generate the file `ecs-cluster.props`. It consists of the key/value pairs from the Output of the CloudFormation template. These will be used to setup environment variables which are used subseqently.
+
+    aws cloudformation describe-stacks \
+      --stack-name aws-microservices-deploy-options-ecscli \
+      --query 'Stacks[0].Outputs' \
+      --output=text | \
+      perl -lpe 's/\s+/=/g' | \
+      tee ecs-cluster.props
+
+. Setup the environment variables using this file:
+
+    source ecs-cluster.props
+
 . Configure ECS CLI:
 
     ecs-cli configure --cluster $ECSCluster --region us-east-1 --default-launch-type FARGATE
@@ -171,15 +167,16 @@ This will setup the environment variables.
 . Bring the `greeting` service up:
 
     ecs-cli compose --verbose \
-      --file greeting/greeting-docker-compose.yaml \
+      --file greeting-docker-compose.yaml \
       --task-role-arn $ECSRole \
-      --ecs-params greeting/ecs-params_greeting.yml \
-      service down \
+      --ecs-params ecs-params_greeting.yaml \
+      --project-name greeting \
+      service up \
       --target-group-arn $GreetingTargetGroupArn \
       --container-name greeting-service \
       --container-port 8081
 
-. Run this command to check the health of the `GreetingTargetGroupArn`:
+. Run this command to check the `healthy` status of the `greeting` service:
 +   
     aws elbv2 describe-target-health \
       --target-group-arn $GreetingTargetGroupArn \
@@ -195,15 +192,16 @@ The output should show a `healthy` status.
 . Bring the `name` service up:
 
     ecs-cli compose --verbose \
-      --file name/name-docker-compose.yaml \
+      --file name-docker-compose.yaml \
       --task-role-arn $ECSRole \
-      --ecs-params name/ecs-params_name.yml  \
+      --ecs-params ecs-params_name.yaml  \
+      --project-name name \
       service up \
       --target-group-arn $NameTargetGroupArn \
       --container-name name-service \
       --container-port 8082
 
-. Run this command to check the health of the `NameTargetGroupArn`:
+. Run this command to check `healthy` status of the `name` service:
 
     aws elbv2 describe-target-health \
       --target-group-arn $NameTargetGroupArn \
@@ -214,32 +212,50 @@ The output should show a `healthy` status.
 
     ecs-params-create.sh webapp
 
-. Copy the value of `ALBPrivateCNAME` from `ecs-cluster.prop`. Use that value to replace the value of `GREETING_SERVICE_HOST` and `NAME_SERVICE_HOST` environment variables in `webapp-docker-compose.yml`.
-. Bring the webapp service up
+. Bring the webapp service up:
 
     ecs-cli compose --verbose \
-      --file webapp/webapp-docker-compose.yaml \
+      --file webapp-docker-compose.yaml \
       --task-role-arn $ECSRole \
-      --ecs-params webapp/ecs-params_webapp.yml \
+      --ecs-params ecs-params_webapp.yaml \
+      --project-name webapp \
       service up \
       --target-group-arn $WebappTargetGroupArn \
       --container-name webapp-service \
       --container-port 8080
 
-. Run this command to check the health of the `WebappTargetGroupArn`:
-+
+. Run this command to check `healthy` status of the `webapp` service:
+
     aws elbv2 describe-target-health \
       --target-group-arn $WebappTargetGroupArn \
       --query 'TargetHealthDescriptions[0].TargetHealth.State' \
       --output text
-+
-Wait for the status to change to `healthy`.
-+
-. If all of the above are executed successfully, curl the `PublicALBCNAME` to see if you get a response
 
-  curl http://aws-c-ALBPu-XXXXXXXXX-00000000.us-east-1.elb.amazonaws.com
+. Once all services are in `healthy` state, get response from the service:
+
+  curl http://"$ALBPublicCNAME"
   Hello Sheldon
 
+==== Tear down the resources
+
+```
+ecs-cli compose --verbose \
+      --file greeting-docker-compose.yaml \
+      --task-role-arn $ECSRole \
+      --ecs-params ecs-params_greeting.yaml \
+      service down
+ecs-cli compose --verbose \
+      --file name-docker-compose.yaml \
+      --task-role-arn $ECSRole \
+      --ecs-params ecs-params_name.yaml \
+      service down
+ecs-cli compose --verbose \
+      --file webapp-docker-compose.yaml \
+      --task-role-arn $ECSRole \
+      --ecs-params ecs-params_webapp.yaml \
+      service down
+aws cloudformation delete-stack --stack-name aws-microservices-deploy-options-ecscli
+```
 
 === Deployment: CloudFormation only
 
@@ -259,7 +275,6 @@ aws cloudformation \
     --query "Stacks[].Outputs[?OutputKey=='PublicALBCNAME'.[OutputValue]]" \
     --output text
 ```
-
 
 == ECS
 
