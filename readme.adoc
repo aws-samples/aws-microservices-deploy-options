@@ -241,7 +241,7 @@ aws cloudformation \
     describe-stacks \
     --region us-east-1 \
     --stack-name aws-compute-options-ecs \
-    --query "Stacks[].Outputs[?OutputKey=='PublicALBCNAME'.[OutputValue]]" \
+    --query 'Stacks[].Outputs[?OutputKey==`PublicALBCNAME`].[OutputValue]' \
     --output text
 ```
 
