@@ -50,9 +50,7 @@ This is a workaround until https://github.com/aws-samples/aws-compute-options/is
 
 == Kubernetes
 
-=== Deployment
-
-==== Standalone Manifests
+=== Deployment: Standalone Manifests
 
 Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
@@ -60,7 +58,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 . Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete the application: `kubectl delete -f apps/k8s/standalone/manifest.yml`
 
-==== Helm
+=== Deployment: Helm
 
 Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. Also, make sure Helm is installed on that Kubernetes cluster.
 
@@ -70,7 +68,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. 
 . Access the application: `curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete Helm chart: `helm delete --purge myapp`
 
-==== Ksonnet
+=== Deployment: Ksonnet
 
 Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
@@ -81,31 +79,27 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 . Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete the application: `ks delete default`
 
-==== Docker Compose
+=== Deployment: Docker Compose
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/62
 
-==== Kubepack
+=== Deployment: Kubepack
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/63
 
-=== Deployment Pipeline
-
-==== AWS Codepipeline
+=== Deployment Pipeline: AWS Codepipeline
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/65
 
-==== Jenkins
+=== Deployment Pipeline: Jenkins
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/67
 
-==== Deployment pipeline using Spinnaker
+=== Deployment Pipeline: Spinnaker
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
 
-=== Monitoring
-
-==== AWS X-Ray
+=== Monitoring: AWS X-Ray
 
 . `arungupta/xray:us-west-2` Docker image is already available on Docker Hub. Optionally, you may build the image:
 +
@@ -122,13 +116,11 @@ docker image push arungupta/xray:us-west-2
 
 == Amazon Fargate
 
-=== Deployment
-
-==== Console and AWS CLI
+=== Deployment: Console and AWS CLI
 
 https://github.com/aws-samples/aws-compute-options/issues/48
 
-==== CloudFormation and ECS CLI
+=== Deployment: CloudFormation and ECS CLI
 
 https://github.com/aws-samples/aws-compute-options/issues/40
 
@@ -185,7 +177,7 @@ If all of the above are executed successfully, curl the  PublicALBCNAME to see i
   curl http://aws-c-ALBPu-XXXXXXXXX-00000000.us-east-1.elb.amazonaws.com
   Hello Sheldon
 
-==== CloudFormation only
+=== Deployment: CloudFormation only
 
 |===
 |Region | Launch Template
@@ -207,17 +199,15 @@ aws cloudformation \
 
 == ECS
 
-=== Deployment
-
-==== Console and AWS CLI
+=== Deployment: Console and AWS CLI
 
 https://github.com/aws-samples/aws-compute-options/issues/51
 
-==== CloudFormation and ECS CLI
+=== Deployment: CloudFormation and ECS CLI
 
 https://github.com/aws-samples/aws-compute-options/issues/50
 
-==== CloudFormation only
+=== Deployment: CloudFormation only
 
 |===
 |Region | Launch Template
@@ -244,15 +234,12 @@ curl http://<public_endpoint>
 
 == AWS Lambda
 
-=== Deployment
-
-==== Package Lambda Functions
+=== Package Lambda Functions
 
 . `cd services`
 . `mvn clean package -Plambda`
 
-==== Deploy Lambda + API Gateway via CodePipeline
-
+=== Deploy Lambda + API Gateway via CodePipeline
 
 . `cd apps/lambda`
 . `aws cloudformation deploy --template-file pipeline.yaml --stack-name aws-compute-options-lambda-pipeline --capabilities CAPABILITY_IAM`
@@ -277,7 +264,7 @@ Deployment pipeline in AWS console looks like as shown:
 +
 image::images/lambda-pipeline.png[Lambda Pipeline, 350]
 
-==== Deploy SAM Manaully
+=== Deploy SAM Manaully
 
 . Create S3 bucket
 +
@@ -294,9 +281,9 @@ Make sure to change the bucket name.
 . `sam package --template-file sam.yaml --s3-bucket YOUR-S3-BUCKET --output-template-file sam.transformed.yaml`
 . `sam deploy --template-file sam.transformed.yaml --stack-name aws-compute-options-lambda --capabilities CAPABILITY_IAM`
 
-==== Test SAM Local
+=== Test SAM Local
 
-===== In Mac
+==== In Mac
 
 . `sam local start-api --template sam.yaml --env-vars test/env-mac.json`
 . Greeting endpoint: `curl http://127.0.0.1:3000/resources/greeting`
@@ -305,12 +292,12 @@ Make sure to change the bucket name.
 .. `curl http://127.0.0.1:3000/resources/names/1`
 . Webapp endpoint: `curl http://127.0.0.1:3000/`
 
-===== In Windows
+==== In Windows
 
 . `sam local start-api --template sam.yaml --env-vars test/env-win.json`
 . Test the urls above in browser
 
-==== Test SAM on AWS
+=== Test SAM on AWS
 
 . Greeting endpoint:
 +
@@ -342,7 +329,7 @@ curl `aws cloudformation \
   --output text`
 ```
 
-==== Remove the stack
+=== Remove the stack
 
 . `aws cloudformation delete-stack --stack-name aws-compute-options-lambda`
 
