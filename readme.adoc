@@ -122,9 +122,6 @@ https://github.com/aws-samples/aws-compute-options/issues/48
 
 === Deployment: CloudFormation and ECS CLI
 
-https://github.com/aws-samples/aws-compute-options/issues/40
-
-
 1. See `requirements.txt` under `apps/ecs/ecs-cli/requirements.txt`
 
 2. Run the following script  to setup a ECS Cluster, VPC, Subnets(Public/Private), Security Group, ALB(Public/Private), Target Groups
