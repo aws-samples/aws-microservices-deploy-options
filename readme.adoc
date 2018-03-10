@@ -116,6 +116,8 @@ docker image push arungupta/xray:us-west-2
 
 == Amazon Fargate
 
+NOTE: Amazon Fargate is only supported in `us-east-1` region at this time. The instructions will only work in that region.
+
 === Deployment: Console and AWS CLI
 
 https://github.com/aws-samples/aws-compute-options/issues/48
@@ -126,7 +128,14 @@ https://github.com/aws-samples/aws-compute-options/issues/40
 
 The idea here is to first create  the underlying infrastructure: ECS Cluster, VPC, Subnets(Public/Private), Security Group, ALB(Public/Private), Target Groups AND then deploy tasks using ecs-cli (compose)
 
-. See `requirements.txt` under `apps/ecs/ecs-cli/requirements.txt`
+*Pre-requisites*
+
+. Install https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI.html[ECS CLI].
+. Install https://github.com/stedolan/jq/wiki/Installation[jq].
+. Install - https://www.perl.org/get.html[Perl].
+
+Let's deploy the application.
+
 . Run the following script to setup the underlying infrastructure:
 +
     ./infrastructure.sh 
