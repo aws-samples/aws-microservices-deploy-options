@@ -12,10 +12,10 @@ services:
         awslogs-region: us-east-1
         awslogs-stream-prefix: webapp
     environment:
-      - GREETING_SERVICE_HOST=internal-ecs-d-ALBPr-1C85L0NDH1U36-775699491.us-east-1.elb.amazonaws.com
+      - GREETING_SERVICE_HOST=$ALBPrivateCNAME
       - GREETING_SERVICE_PORT=8081
       - GREETING_SERVICE_PATH=/resources/greeting
-      - NAME_SERVICE_HOST=internal-ecs-d-ALBPr-1C85L0NDH1U36-775699491.us-east-1.elb.amazonaws.com
+      - NAME_SERVICE_HOST=$ALBPrivateCNAME
       - NAME_SERVICE_PORT=8082
       - NAME_SERVICE_PATH=/resources/names/1
     

@@ -12,10 +12,9 @@ if ! [[ "$SERVICENAME" =~ ^(name|webapp|greeting)$ ]]; then usage ; fi
 
 mkdir -p $SERVICENAME
 
-source ecs-cluster.prop
+source ecs-cluster.props
 
-cp ecs-params.template  ecs-params.yml
-PARAM_FILE=ecs-params_"$SERVICENAME".yml
+PARAM_FILE=ecs-params_"$SERVICENAME".yaml
 cp ecs-params.template $PARAM_FILE  
 
 perl -i -pe 's/ECSRole/'${ECSRole}'/g' $PARAM_FILE
@@ -29,6 +28,4 @@ else
 fi
 perl -i -pe 's/sg-replaceme/'${SecurityGroupWebapp}'/g' $PARAM_FILE
 
-mv $PARAM_FILE $SERVICENAME/
-echo -e "Now change directory to $SERVICENAME \n"
 
