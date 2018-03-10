@@ -30,6 +30,5 @@ fi
 perl -i -pe 's/sg-replaceme/'${SecurityGroupWebapp}'/g' $PARAM_FILE
 
 mv $PARAM_FILE $SERVICENAME/
-#echo "Changing directory to $SERVICENAME \n"
-cd ./greeting
+echo -e "Now change directory to $SERVICENAME \n"
 
