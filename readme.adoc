@@ -143,7 +143,7 @@ The idea here is to first create  the underlying infrastructure: ECS Cluster, VP
 a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=aws-microservices-deploy-options-ecscli&templateURL=https://s3.amazonaws.com/aws-microservices-deploy-options/infra.yaml]
 |===
 +
-. Run the command to capture the output from the CloudFormation template. This command will generate the file `ecs-cluster.props`. It consists of the key/value pairs from the Output of the CloudFormation template. These will be used to setup environment variables which are used subseqently.
+. Run the follow command to capture the output from the CloudFormation template as key/value pairs in the file `ecs-cluster.props`. These will be used to setup environment variables which are used subseqently.
 
     aws cloudformation describe-stacks \
       --stack-name aws-microservices-deploy-options-ecscli \
