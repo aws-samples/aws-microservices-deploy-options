@@ -278,12 +278,14 @@ curl http://<public_endpoint>
 
 == AWS Lambda
 
-=== Package Lambda Functions
+=== Deployment: Package Lambda Functions
 
 . `cd services`
 . `mvn clean package -Plambda`
 
-=== Deploy Lambda + API Gateway via CodePipeline
+=== Deployment Pipeline: AWS CodePipeline
+
+This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
 . `cd apps/lambda`
 . `aws cloudformation deploy --template-file pipeline.yaml --stack-name aws-compute-options-lambda-pipeline --capabilities CAPABILITY_IAM`
@@ -308,7 +310,7 @@ Deployment pipeline in AWS console looks like as shown:
 +
 image::images/lambda-pipeline.png[Lambda Pipeline, 350]
 
-=== Deploy SAM Manaully
+=== Deployment: Deploy SAM Manaully
 
 . Create S3 bucket
 +
@@ -325,7 +327,7 @@ Make sure to change the bucket name.
 . `sam package --template-file sam.yaml --s3-bucket YOUR-S3-BUCKET --output-template-file sam.transformed.yaml`
 . `sam deploy --template-file sam.transformed.yaml --stack-name aws-compute-options-lambda --capabilities CAPABILITY_IAM`
 
-=== Test SAM Local
+=== Deployment: Test SAM Local
 
 ==== In Mac
 
@@ -341,7 +343,7 @@ Make sure to change the bucket name.
 . `sam local start-api --template sam.yaml --env-vars test/env-win.json`
 . Test the urls above in browser
 
-=== Test SAM on AWS
+=== Deployment: Test SAM on AWS
 
 . Greeting endpoint:
 +
