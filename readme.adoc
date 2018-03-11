@@ -10,10 +10,10 @@ This repo contains a simple application that consists of three microservices. Th
 Each application is deployed using different AWS Compute options. Each deployment model will highlight:
 
 . Local dev, test and debug
-. Remote debugging
-. Service discovery
-. Monitoring (possibly using X-Ray)
+. Deployment options
 . Deployment pipeline
+. Logging
+. Monitoring
 
 == Build and Test Services using Maven
 
@@ -47,72 +47,6 @@ docker push <repo>/webapp
 ```
 
 This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
-
-== Kubernetes
-
-=== Deployment: Standalone Manifests
-
-Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
-
-. Apply the manifests: `kubectl apply -f apps/k8s/standalone/manifest.yml`
-. Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
-. Delete the application: `kubectl delete -f apps/k8s/standalone/manifest.yml`
-
-=== Deployment: Helm
-
-Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. Also, make sure Helm is installed on that Kubernetes cluster.
-
-. Install Helm CLI: `brew install kubernetes-helm`
-. Install Helm in Kubernetes cluster: `helm init`
-. Install Helm chart: `helm install --name myapp apps/k8s/helm/myapp`
-. Access the application: `curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
-. Delete Helm chart: `helm delete --purge myapp`
-
-=== Deployment: Ksonnet
-
-Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
-
-. Install `ksonnet` from `homebrew` tap: `brew install ksonnet/tap/ks`
-. Change into the ksonnet sub directory: `cd apps/k8s/ksonnet/myapp`
-. Add the environment: `ks env add default`
-. Deploy the manifests: `ks apply default`
-. Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
-. Delete the application: `ks delete default`
-
-=== Deployment: Docker Compose
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/62
-
-=== Deployment: Kubepack
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/63
-
-=== Deployment Pipeline: AWS Codepipeline
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/65
-
-=== Deployment Pipeline: Jenkins
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/67
-
-=== Deployment Pipeline: Spinnaker
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
-
-=== Monitoring: AWS X-Ray
-
-. `arungupta/xray:us-west-2` Docker image is already available on Docker Hub. Optionally, you may build the image:
-+
-```
-cd config/xray
-docker build -t arungupta/xray:latest .
-docker image push arungupta/xray:us-west-2
-```
-+
-. Deploy the DaemonSet: `kubectl apply -f xray-daemonset.yaml`
-. Deploy the application using Helm charts
-. Access the application
-. Open the https://us-west-2.console.aws.amazon.com/xray/home?region=us-west-2#/service-map[X-Ray console] and watch the service map and traces. This is tracked as https://github.com/aws-samples/aws-microservices-deploy-options/issues/60[#60].
 
 == Amazon Fargate
 
@@ -267,7 +201,13 @@ aws cloudformation \
     --output text
 ```
 
-== ECS
+=== Deployment Pipeline: AWS CodePipeline
+
+=== Monitoring: AWS X-Ray
+
+=== Monitoring: Prometheus and Grafana
+
+== Amazon ECS
 
 === Deployment: Console and AWS CLI
 
@@ -301,6 +241,76 @@ Use the command to test:
 ```
 curl http://<public_endpoint>
 ```
+
+== Kubernetes
+
+=== Deployment: Standalone Manifests
+
+Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
+
+. Apply the manifests: `kubectl apply -f apps/k8s/standalone/manifest.yml`
+. Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
+. Delete the application: `kubectl delete -f apps/k8s/standalone/manifest.yml`
+
+=== Deployment: Helm
+
+Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. Also, make sure Helm is installed on that Kubernetes cluster.
+
+. Install Helm CLI: `brew install kubernetes-helm`
+. Install Helm in Kubernetes cluster: `helm init`
+. Install Helm chart: `helm install --name myapp apps/k8s/helm/myapp`
+. Access the application: `curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
+. Delete Helm chart: `helm delete --purge myapp`
+
+=== Deployment: Ksonnet
+
+Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
+
+. Install `ksonnet` from `homebrew` tap: `brew install ksonnet/tap/ks`
+. Change into the ksonnet sub directory: `cd apps/k8s/ksonnet/myapp`
+. Add the environment: `ks env add default`
+. Deploy the manifests: `ks apply default`
+. Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
+. Delete the application: `ks delete default`
+
+=== Deployment: Docker Compose
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/62
+
+=== Deployment: Kubepack
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/63
+
+=== Deployment Pipeline: AWS Codepipeline
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/65
+
+=== Deployment Pipeline: Jenkins
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/67
+
+=== Deployment Pipeline: Spinnaker
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
+
+=== Monitoring: AWS X-Ray
+
+. `arungupta/xray:us-west-2` Docker image is already available on Docker Hub. Optionally, you may build the image:
++
+```
+cd config/xray
+docker build -t arungupta/xray:latest .
+docker image push arungupta/xray:us-west-2
+```
++
+. Deploy the DaemonSet: `kubectl apply -f xray-daemonset.yaml`
+. Deploy the application using Helm charts
+. Access the application
+. Open the https://us-west-2.console.aws.amazon.com/xray/home?region=us-west-2#/service-map[X-Ray console] and watch the service map and traces. This is tracked as https://github.com/aws-samples/aws-microservices-deploy-options/issues/60[#60].
+
+=== Monitoring: Prometheus and Grafana
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/79
 
 == AWS Lambda
 
