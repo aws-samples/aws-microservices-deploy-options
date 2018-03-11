@@ -413,7 +413,7 @@ curl `aws cloudformation \
   --output text`
 ```
 
-=== Remove the stack
+=== Deployment: Remove the stack
 
 . `aws cloudformation delete-stack --stack-name aws-compute-options-lambda`
 
