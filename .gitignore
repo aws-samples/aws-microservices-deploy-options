@@ -6,7 +6,5 @@
 **/*.transformed.yaml
 apps/k8s/ksonnet/myapp/environments/**/
 apps/ecs/ecs-cli/ecs-cluster.*
-apps/ecs/ecs-cli/ecs-params_webapp.yml
-apps/ecs/ecs-cli/ecs-params_greeting.yml
-apps/ecs/ecs-cli/ecs-params_name.yml
+apps/ecs/ecs-cli/ecs-params_*.yaml
 readme.html
