@@ -413,6 +413,14 @@ curl `aws cloudformation \
   --output text`
 ```
 
+=== Deployment: Composition using AWS Step Functions
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/76
+
+=== Monitoring: AWS X-Ray
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/80
+
 === Deployment: Remove the stack
 
 . `aws cloudformation delete-stack --stack-name aws-compute-options-lambda`
