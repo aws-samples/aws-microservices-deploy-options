@@ -207,6 +207,8 @@ aws cloudformation \
 
 === Monitoring: Prometheus and Grafana
 
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/78
+
 == Amazon ECS
 
 === Deployment: Console and AWS CLI
