@@ -166,7 +166,7 @@ a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudfo
     ecs-params-create.sh name
     ecs-params-create.sh webapp
 
-. Bring the `greeting` service up:
+. Start the `greeting` service up:
 
     ecs-cli compose --verbose \
       --file greeting-docker-compose.yaml \
@@ -177,13 +177,6 @@ a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudfo
       --target-group-arn $GreetingTargetGroupArn \
       --container-name greeting-service \
       --container-port 8081
-
-. Run this command to check the `healthy` status of the `greeting` service:
-
-    aws elbv2 describe-target-health \
-      --target-group-arn $GreetingTargetGroupArn \
-      --query 'TargetHealthDescriptions[0].TargetHealth.State' \
-      --output text
 
 . Bring the `name` service up:
 
@@ -196,13 +189,6 @@ a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudfo
       --target-group-arn $NameTargetGroupArn \
       --container-name name-service \
       --container-port 8082
-
-. Run this command to check the `healthy` status of the `name` service:
-
-    aws elbv2 describe-target-health \
-      --target-group-arn $NameTargetGroupArn \
-      --query 'TargetHealthDescriptions[0].TargetHealth.State' \
-      --output text
 
 . Bring the webapp service up:
 +
@@ -218,8 +204,16 @@ a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudfo
 +
 Docker Compose supports environment variable substitution. The `webapp-docker-compose.yaml` uses `$PrivateALBCName`  to refer to the private Application Load Balancer for `greeting` and `name` service.
 +
-. Run this command to check the `healthy` status of the `webapp` service:
+. Check the `healthy` status of different services:
 
+    aws elbv2 describe-target-health \
+      --target-group-arn $GreetingTargetGroupArn \
+      --query 'TargetHealthDescriptions[0].TargetHealth.State' \
+      --output text
+    aws elbv2 describe-target-health \
+      --target-group-arn $NameTargetGroupArn \
+      --query 'TargetHealthDescriptions[0].TargetHealth.State' \
+      --output text
     aws elbv2 describe-target-health \
       --target-group-arn $WebappTargetGroupArn \
       --query 'TargetHealthDescriptions[0].TargetHealth.State' \
@@ -251,7 +245,7 @@ ecs-cli compose --verbose \
       --ecs-params ecs-params_webapp.yaml \
       --project-name webapp \
       service down
-aws cloudformation delete-stack --stack-name aws-microservices-deploy-options-ecscli
+aws cloudformation delete-stack --region us-east-1 --stack-name aws-microservices-deploy-options-ecscli
 ```
 
 === Deployment: CloudFormation only
