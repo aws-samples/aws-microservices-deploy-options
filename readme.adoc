@@ -160,9 +160,11 @@ a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudfo
 
     ecs-cli configure --cluster $ECSCluster --region us-east-1 --default-launch-type FARGATE
 
-. Generate the `ecs-params.yml` for the `greeting` service:
+. Create the task definition parameters for each of the service:
     
     ecs-params-create.sh greeting
+    ecs-params-create.sh name
+    ecs-params-create.sh webapp
 
 . Bring the `greeting` service up:
 
@@ -177,17 +179,11 @@ a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudfo
       --container-port 8081
 
 . Run this command to check the `healthy` status of the `greeting` service:
-+   
+
     aws elbv2 describe-target-health \
       --target-group-arn $GreetingTargetGroupArn \
       --query 'TargetHealthDescriptions[0].TargetHealth.State' \
       --output text
-+
-The output should show a `healthy` status.
-+
-. Generate the `ecs-params.yml` for the `name` service:
-
-    ecs-params-create.sh name
 
 . Bring the `name` service up:
 
@@ -201,16 +197,12 @@ The output should show a `healthy` status.
       --container-name name-service \
       --container-port 8082
 
-. Run this command to check `healthy` status of the `name` service:
+. Run this command to check the `healthy` status of the `name` service:
 
     aws elbv2 describe-target-health \
       --target-group-arn $NameTargetGroupArn \
       --query 'TargetHealthDescriptions[0].TargetHealth.State' \
       --output text
-
-. Generate the `ecs-params.yml` for the `webapp` service
-
-    ecs-params-create.sh webapp
 
 . Bring the webapp service up:
 +
@@ -226,7 +218,7 @@ The output should show a `healthy` status.
 +
 Docker Compose supports environment variable substitution. The `webapp-docker-compose.yaml` uses `$PrivateALBCName`  to refer to the private Application Load Balancer for `greeting` and `name` service.
 +
-. Run this command to check `healthy` status of the `webapp` service:
+. Run this command to check the `healthy` status of the `webapp` service:
 
     aws elbv2 describe-target-health \
       --target-group-arn $WebappTargetGroupArn \
