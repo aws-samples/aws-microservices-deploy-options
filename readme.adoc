@@ -152,7 +152,9 @@ a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudfo
 
 . Setup the environment variables using this file:
 
+    set -o allexport
     source ecs-cluster.props
+    set +o allexport
 
 . Configure ECS CLI:
 
@@ -211,7 +213,7 @@ The output should show a `healthy` status.
     ecs-params-create.sh webapp
 
 . Bring the webapp service up:
-
++
     ecs-cli compose --verbose \
       --file webapp-docker-compose.yaml \
       --task-role-arn $ECSRole \
@@ -221,7 +223,9 @@ The output should show a `healthy` status.
       --target-group-arn $WebappTargetGroupArn \
       --container-name webapp-service \
       --container-port 8080
-
++
+Docker Compose supports environment variable substitution. The `webapp-docker-compose.yaml` uses `$PrivateALBCName`  to refer to the private Application Load Balancer for `greeting` and `name` service.
++
 . Run this command to check `healthy` status of the `webapp` service:
 
     aws elbv2 describe-target-health \
@@ -229,7 +233,7 @@ The output should show a `healthy` status.
       --query 'TargetHealthDescriptions[0].TargetHealth.State' \
       --output text
 
-. Once all services are in `healthy` state, get response from the service:
+. Once all the services are in `healthy` state, get a response from the `webapp` service:
 
   curl http://"$ALBPublicCNAME"
   Hello Sheldon
