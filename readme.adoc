@@ -241,16 +241,19 @@ ecs-cli compose --verbose \
       --file greeting-docker-compose.yaml \
       --task-role-arn $ECSRole \
       --ecs-params ecs-params_greeting.yaml \
+      --project-name greeting \
       service down
 ecs-cli compose --verbose \
       --file name-docker-compose.yaml \
       --task-role-arn $ECSRole \
       --ecs-params ecs-params_name.yaml \
+      --project-name name \
       service down
 ecs-cli compose --verbose \
       --file webapp-docker-compose.yaml \
       --task-role-arn $ECSRole \
       --ecs-params ecs-params_webapp.yaml \
+      --project-name webapp \
       service down
 aws cloudformation delete-stack --stack-name aws-microservices-deploy-options-ecscli
 ```
