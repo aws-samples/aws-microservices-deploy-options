@@ -205,6 +205,8 @@ aws cloudformation \
 
 === Monitoring: AWS X-Ray
 
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/55
+
 === Monitoring: Prometheus and Grafana
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/78
