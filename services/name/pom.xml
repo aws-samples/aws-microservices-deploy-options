@@ -46,8 +46,10 @@
                 <configuration>
                     <includes>
                         <include>org/aws/samples/compute/name/NameEndpoint.java</include>
+                        <include>org/aws/samples/compute/name/NameHandler.java</include>
                         <include>org/aws/samples/compute/name/MyApplication.java</include>
                         <include>org/aws/samples/compute/name/Name.java</include>
+                        <include>org/aws/samples/compute/name/NameMessageBodyWriter.java</include>
                         <include>org/aws/samples/compute/name/Names.java</include>
                     </includes>
                 </configuration>

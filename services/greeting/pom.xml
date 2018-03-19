@@ -42,12 +42,12 @@
             <version>1</version>
         </dependency>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
             <version>3.1.4.Final</version>
             <scope>test</scope>
-        </dependency>
+        </dependency> -->
     </dependencies>
     <build>
         <plugins>
@@ -57,6 +57,7 @@
                 <version>3.7.0</version>
                 <configuration>
                     <includes>
+                        <include>org/aws/samples/compute/greeting/GreetingHandler.java</include>
                         <include>org/aws/samples/compute/greeting/GreetingEndpoint.java</include>
                         <include>org/aws/samples/compute/greeting/MyApplication.java</include>
                         <include>org/aws/samples/compute/greeting/StartupBean.java</include>
