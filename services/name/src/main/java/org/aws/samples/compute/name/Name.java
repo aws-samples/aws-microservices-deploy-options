@@ -44,8 +44,4 @@ public class Name implements Serializable {
     public String toString() {
         return name;
     }
-
-    public String toText() {
-      return this.toString();
-    }
 }
