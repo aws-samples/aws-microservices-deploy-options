@@ -29,6 +29,16 @@
           <artifactId>arquillian-junit-container</artifactId>
           <scope>test</scope>
         </dependency>
+        <dependency>
+          <groupId>com.mashape.unirest</groupId>
+          <artifactId>unirest-java</artifactId>
+          <version>1.4.9</version>
+        </dependency>
+        <dependency>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+          <version>1.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -40,6 +50,7 @@
                 <configuration>
                     <includes>
                         <include>org/aws/samples/compute/webapp/WebappController.java</include>
+                        <include>org/aws/samples/compute/webapp/WebappHandler.java</include>
                     </includes>
                 </configuration>
             </plugin>
