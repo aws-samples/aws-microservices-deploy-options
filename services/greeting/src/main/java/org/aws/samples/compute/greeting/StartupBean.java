@@ -7,20 +7,26 @@ import com.amazonaws.xray.plugins.ECSPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
-
 public class StartupBean {
 
     private static final Logger logger = LoggerFactory.getLogger(StartupBean.class);
+    private static StartupBean thisInstance;
 
-    public StartupBean() {
-        logger.info("StartupBean.setup.entry");
+    private StartupBean() {
+        logger.info("entry");
         AWSXRayRecorderBuilder builder = AWSXRayRecorderBuilder
                 .standard()
                 .withPlugin(new EC2Plugin()).withPlugin(new ECSPlugin());
 
         AWSXRay.setGlobalRecorder(builder.build());
-        logger.info("StartupBean.setup.exit");
+        logger.info("exit");
+    }
+
+    public static final StartupBean getInstance() {
+        if (null == thisInstance) {
+            thisInstance = new StartupBean();
+        }
+
+        return thisInstance;
     }
 }

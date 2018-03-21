@@ -19,7 +19,8 @@ public class NameEndpoint {
             MediaType.APPLICATION_JSON + "; qs=0.75"})
     public Name[] get() {
         Subsegment subsegment = AWSXRay.beginSubsegment("get");
-        AWSXRay.endSubsegment();
+        subsegment.end();
+//        AWSXRay.endSubsegment();
         return Names.findAll();
     }
     
@@ -30,7 +31,8 @@ public class NameEndpoint {
             MediaType.TEXT_PLAIN + "; qs=1.0"})
     public Name get(@PathParam("id") int id) {
         Subsegment subsegment = AWSXRay.beginSubsegment("get");
-        AWSXRay.endSubsegment();
+        subsegment.end();
+//        AWSXRay.endSubsegment();
         return Names.findById(id);
     }
 }

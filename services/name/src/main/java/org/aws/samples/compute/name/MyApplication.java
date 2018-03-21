@@ -3,6 +3,8 @@ package org.aws.samples.compute.name;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import java.util.Set;
+
 import static org.aws.samples.compute.name.MyApplication.APP_ROOT;
 
 /**
@@ -11,6 +13,12 @@ import static org.aws.samples.compute.name.MyApplication.APP_ROOT;
 @ApplicationPath(APP_ROOT)
 public class MyApplication extends Application {
 
-  public static final String APP_ROOT = "/resources";
-    
+    public static final String APP_ROOT = "/resources";
+
+    @Override
+    public Set<Object> getSingletons() {
+        Set<Object> resources = new java.util.HashSet<>();
+        resources.add(StartupBean.getInstance());
+        return resources;
+    }
 }
