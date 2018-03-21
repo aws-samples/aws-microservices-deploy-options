@@ -12,12 +12,12 @@ public class StartupBean {
     private static final Logger logger = LoggerFactory.getLogger(StartupBean.class);
 
     public StartupBean() {
-        logger.info("StartupBean.setup.entry");
+        logger.info("entry");
         AWSXRayRecorderBuilder builder = AWSXRayRecorderBuilder
                 .standard()
                 .withPlugin(new EC2Plugin()).withPlugin(new ECSPlugin());
 
         AWSXRay.setGlobalRecorder(builder.build());
-        logger.info("StartupBean.setup.exit");
+        logger.info("exit");
     }
 }
