@@ -19,41 +19,45 @@
             <artifactId>jaxrs</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>arquillian</artifactId>
-          <scope>test</scope>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>arquillian</artifactId>
+            <scope>test</scope>
         </dependency>
         <!-- Brought in via Arquillian BOM, see dependencyManagement section above -->
         <dependency>
-          <groupId>org.jboss.arquillian.junit</groupId>
-          <artifactId>arquillian-junit-container</artifactId>
-          <scope>test</scope>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-          <groupId>com.mashape.unirest</groupId>
-          <artifactId>unirest-java</artifactId>
-          <version>1.4.9</version>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-xray-recorder-sdk-core</artifactId>
+            <version>1.2.1</version>
         </dependency>
         <dependency>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-          <version>1.2</version>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${version.org.slf4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${version.org.slf4j}</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-                <configuration>
-                    <includes>
-                        <include>org/aws/samples/compute/webapp/WebappController.java</include>
-                        <include>org/aws/samples/compute/webapp/WebappHandler.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-plugin</artifactId>
@@ -90,88 +94,106 @@
     </build>
     <profiles>
         <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.7.0</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*Handler.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <version>${version.fabric8.maven.plugin}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>lambda</id>
             <dependencies>
-              <dependency>
-                <groupId>com.amazonaws</groupId>
-                <artifactId>aws-lambda-java-core</artifactId>
-                <version>${version.lambda.java.core}</version>
-              </dependency>
+                <dependency>
+                    <groupId>com.amazonaws</groupId>
+                    <artifactId>aws-lambda-java-core</artifactId>
+                    <version>${version.lambda.java.core}</version>
+                </dependency>
 
-              <dependency>
-                <groupId>com.amazonaws.serverless</groupId>
-                <artifactId>aws-serverless-java-container-jersey</artifactId>
-                <version>${version.serverless.java.container.jersey}</version>
-              </dependency>
+                <dependency>
+                    <groupId>com.amazonaws.serverless</groupId>
+                    <artifactId>aws-serverless-java-container-jersey</artifactId>
+                    <version>${version.serverless.java.container.jersey}</version>
+                </dependency>
 
-              <dependency>
-                <groupId>org.glassfish.jersey.inject</groupId>
-                <artifactId>jersey-hk2</artifactId>
-                <version>${jersey.version}</version>
-              </dependency>
+                <dependency>
+                    <groupId>org.glassfish.jersey.inject</groupId>
+                    <artifactId>jersey-hk2</artifactId>
+                    <version>${jersey.version}</version>
+                </dependency>
 
-              <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-json-jackson</artifactId>
-                <version>${jersey.version}</version>
-              </dependency>
-
-              <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${version.org.slf4j}</version>
-              </dependency>
-
-              <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-jdk14</artifactId>
-                <version>${version.org.slf4j}</version>
-              </dependency>
+                <dependency>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-json-jackson</artifactId>
+                    <version>${jersey.version}</version>
+                </dependency>
             </dependencies>
             <build>
-              <plugins>
-                <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-dependency-plugin</artifactId>
-                  <version>2.9</version>
-                  <executions>
-                    <execution>
-                      <id>unpack</id>
-                      <phase>package</phase>
-                      <goals>
-                        <goal>unpack</goal>
-                      </goals>
-                      <configuration>
-                        <outputDirectory>${project.build.directory}/unwar/${project.artifactId}</outputDirectory>
-                        <artifactItems>
-                          <artifactItem>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>${project.artifactId}</artifactId>
-                            <version>${project.version}</version>
-                            <type>war</type>
-                          </artifactItem>
-                        </artifactItems>
-                      </configuration>
-                    </execution>
-                  </executions>
-                </plugin>
-                <plugin>
-                  <artifactId>maven-assembly-plugin</artifactId>
-                  <configuration>
-                    <descriptors>
-                      <descriptor>src/assembly/lambda.xml</descriptor>
-                    </descriptors>
-                  </configuration>
-                  <executions>
-                    <execution>
-                      <phase>package</phase> <!-- bind to the packaging phase -->
-                      <goals>
-                        <goal>single</goal>
-                      </goals>
-                    </execution>
-                  </executions>
-                </plugin>
-              </plugins>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.9</version>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/unwar/${project.artifactId}</outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>${project.groupId}</groupId>
+                                            <artifactId>${project.artifactId}</artifactId>
+                                            <version>${project.version}</version>
+                                            <type>war</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assembly/lambda.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase> <!-- bind to the packaging phase -->
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
     </profiles>
