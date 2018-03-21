@@ -19,7 +19,8 @@ public class GreetingEndpoint {
     public String get() {
         Subsegment subsegment = AWSXRay.beginSubsegment("get");
         String response = "Hello";
-        AWSXRay.endSubsegment();
+        subsegment.end();
+//        AWSXRay.endSubsegment();
 
         return response;
     }
