@@ -10,13 +10,11 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 
-@Singleton
 public class StartupBean {
 
     private static final Logger logger = LoggerFactory.getLogger(StartupBean.class);
 
-    @PostConstruct
-    public void setup() {
+    public StartupBean() {
         logger.info("StartupBean.setup.entry");
         AWSXRayRecorderBuilder builder = AWSXRayRecorderBuilder
                 .standard()
