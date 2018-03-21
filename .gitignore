@@ -8,3 +8,4 @@ apps/k8s/ksonnet/myapp/environments/**/
 apps/ecs/ecs-cli/ecs-cluster.*
 apps/ecs/ecs-cli/ecs-params_*.yaml
 readme.html
+**/~$slides.pptx

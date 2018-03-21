@@ -1,4 +1,4 @@
-package org.aws.samples.compute.greeting;
+package org.aws.samples.compute.name;
 
 import com.amazonaws.xray.AWSXRay;
 import com.amazonaws.xray.AWSXRayRecorderBuilder;
