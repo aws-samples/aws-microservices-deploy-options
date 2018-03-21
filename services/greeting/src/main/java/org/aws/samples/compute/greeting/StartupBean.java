@@ -10,8 +10,9 @@ import org.slf4j.LoggerFactory;
 public class StartupBean {
 
     private static final Logger logger = LoggerFactory.getLogger(StartupBean.class);
+    private static StartupBean thisInstance;
 
-    public StartupBean() {
+    private StartupBean() {
         logger.info("entry");
         AWSXRayRecorderBuilder builder = AWSXRayRecorderBuilder
                 .standard()
@@ -19,5 +20,13 @@ public class StartupBean {
 
         AWSXRay.setGlobalRecorder(builder.build());
         logger.info("exit");
+    }
+
+    public static final StartupBean getInstance() {
+        if (null == thisInstance) {
+            thisInstance = new StartupBean();
+        }
+
+        return thisInstance;
     }
 }
