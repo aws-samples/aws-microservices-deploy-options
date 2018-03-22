@@ -12,7 +12,14 @@ import static org.aws.samples.compute.webapp.MyApplication.APP_ROOT;
 @ApplicationPath(APP_ROOT)
 public class MyApplication extends Application {
 
-    public static final String APP_ROOT = "/resources";
+    public static final String APP_ROOT = "/";
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> resources = new java.util.HashSet<>();
+        resources.add(WebappController.class);
+        return resources;
+    }
 
     @Override
     public Set<Object> getSingletons() {
