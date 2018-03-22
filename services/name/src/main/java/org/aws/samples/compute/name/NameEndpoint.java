@@ -17,7 +17,7 @@ public class NameEndpoint {
     @Produces({MediaType.APPLICATION_XML + "; qs=0.50",
             MediaType.APPLICATION_JSON + "; qs=0.75"})
     public Name[] get() {
-        AWSXRay.beginSubsegment("name").end();
+//        AWSXRay.beginSubsegment("name").end();
         return Names.findAll();
     }
     
@@ -27,7 +27,7 @@ public class NameEndpoint {
             MediaType.APPLICATION_JSON + "; qs=0.75",
             MediaType.TEXT_PLAIN + "; qs=1.0"})
     public Name get(@PathParam("id") int id) {
-        AWSXRay.beginSubsegment("name").end();
+//        AWSXRay.beginSubsegment("name").end();
         return Names.findById(id);
     }
 }

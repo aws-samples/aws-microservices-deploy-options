@@ -22,7 +22,7 @@ public class WebappController {
     @Produces(MediaType.TEXT_PLAIN)
     @GET
     public String getMessage(@Context UriInfo uri, @PathParam("id") String id) {
-        Subsegment subsegment = AWSXRay.beginSubsegment("get");
+//        Subsegment subsegment = AWSXRay.beginSubsegment("get");
 
         String greetingEndpoint = getEndpoint("GREETING", uri.getRequestUri().getScheme(), null);
         logger.info("ID Query is: " + id);
@@ -53,7 +53,7 @@ public class WebappController {
             logger.error("Failed connecting Name API: " + e);
         }
 
-        subsegment.end();
+//        subsegment.end();
         return greetingMessage + " " + nameMessage;
     }
 
