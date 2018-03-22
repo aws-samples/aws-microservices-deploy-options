@@ -16,6 +16,13 @@ public class MyApplication extends Application {
     public static final String APP_ROOT = "/resources";
 
     @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> classes = new java.util.HashSet<>();
+        classes.add(GreetingEndpoint.class);
+        return classes;
+    }
+
+    @Override
     public Set<Object> getSingletons() {
         Set<Object> resources = new java.util.HashSet<>();
         resources.add(StartupBean.getInstance());
