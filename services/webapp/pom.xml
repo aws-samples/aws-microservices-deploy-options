@@ -19,17 +19,6 @@
             <artifactId>jaxrs</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>arquillian</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- Brought in via Arquillian BOM, see dependencyManagement section above -->
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-xray-recorder-sdk-core</artifactId>
             <version>1.2.1</version>

@@ -18,9 +18,9 @@ public class GreetingEndpoint {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String get() {
-        Subsegment segment = AWSXRay.beginSubsegment("greeting");
+//        Subsegment segment = AWSXRay.beginSubsegment("greeting");
         String response = "Hello";
-        segment.end();
+//        segment.end();
 
         return response;
     }
