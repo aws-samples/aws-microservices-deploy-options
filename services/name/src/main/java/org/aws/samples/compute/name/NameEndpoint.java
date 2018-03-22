@@ -1,6 +1,7 @@
 package org.aws.samples.compute.name;
 
 import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.entities.Segment;
 import com.amazonaws.xray.entities.Subsegment;
 
 import javax.ws.rs.GET;
@@ -18,9 +19,8 @@ public class NameEndpoint {
     @Produces({MediaType.APPLICATION_XML + "; qs=0.50",
             MediaType.APPLICATION_JSON + "; qs=0.75"})
     public Name[] get() {
-        Subsegment subsegment = AWSXRay.beginSubsegment("get");
-        subsegment.end();
-//        AWSXRay.endSubsegment();
+        Subsegment segment = AWSXRay.beginSubsegment("get");
+        segment.end();
         return Names.findAll();
     }
     
@@ -32,7 +32,6 @@ public class NameEndpoint {
     public Name get(@PathParam("id") int id) {
         Subsegment subsegment = AWSXRay.beginSubsegment("get");
         subsegment.end();
-//        AWSXRay.endSubsegment();
         return Names.findById(id);
     }
 }
