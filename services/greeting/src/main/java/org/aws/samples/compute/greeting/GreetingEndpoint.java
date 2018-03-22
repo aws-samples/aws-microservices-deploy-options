@@ -1,6 +1,7 @@
 package org.aws.samples.compute.greeting;
 
 import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.entities.Segment;
 import com.amazonaws.xray.entities.Subsegment;
 
 import javax.ws.rs.GET;
@@ -17,10 +18,9 @@ public class GreetingEndpoint {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String get() {
-        Subsegment subsegment = AWSXRay.beginSubsegment("get");
+        Subsegment segment = AWSXRay.beginSubsegment("greeting");
         String response = "Hello";
-        subsegment.end();
-//        AWSXRay.endSubsegment();
+        segment.end();
 
         return response;
     }

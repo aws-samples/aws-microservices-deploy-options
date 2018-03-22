@@ -68,8 +68,8 @@ spec:
           initialDelaySeconds: 50
           periodSeconds: 5
         env:
-          - name: AWS_XRAY_DAEMON_ADDRESS
-            value: xray-service.default
+        - name: AWS_XRAY_DAEMON_ADDRESS
+          value: xray-service.default
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -96,6 +96,9 @@ spec:
             port: 8082
           initialDelaySeconds: 50
           periodSeconds: 5
+        env:
+        - name: AWS_XRAY_DAEMON_ADDRESS
+          value: xray-service.default
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -129,6 +132,8 @@ spec:
           value: "8081"
         - name: GREETING_SERVICE_PATH
           value: /resources/greeting
+        - name: AWS_XRAY_DAEMON_ADDRESS
+          value: xray-service.default
         readinessProbe:
           httpGet:
             path: /
