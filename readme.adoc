@@ -62,11 +62,21 @@ https://github.com/aws-samples/aws-compute-options/issues/48
 
 === Deployment: Create Cluster using AWS CLI
 
+This section will explain how to create an ECS cluster using AWS CLI.
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/101
+
 === Deployment: Create Cluster using CloudFormation
+
+This section will explain how to create an ECS cluster using CloudFormation.
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/102
 
 === Deployment: Deploy Tasks and Service using AWS CLI
 
 This section will explain how to deploy tasks and services in Fargate and EC2 mode using AWS CLI. Difference between the two deployment modes will be clearly highlighted.
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/103
 
 === Deployment: Deploy Tasks and Service using ECS CLI
 
@@ -241,6 +251,8 @@ curl http://<public_endpoint>
 ```
 
 === Deployment Pipeline: AWS CodePipeline
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/104
 
 === Monitoring: AWS X-Ray
 
