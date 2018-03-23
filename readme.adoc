@@ -48,17 +48,39 @@ docker push <repo>/webapp
 
 This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
 
-== AWS Fargate
+== Amazon ECS and AWS Fargate
+
+This section will explain how to create Amazon ECS cluster. The three microservices will be deployed on this cluster using `Fargate` and `EC2` mode.
 
 NOTE: AWS Fargate is only supported in `us-east-1` region at this time. The instructions will only work in that region.
 
-=== Deployment: Console and AWS CLI
+=== Deployment: Create Cluster using AWS Console
+
+This section will explain how to create an ECS cluster using AWS Console.
 
 https://github.com/aws-samples/aws-compute-options/issues/48
 
-=== Deployment: CloudFormation and ECS CLI
+=== Deployment: Create Cluster using AWS CLI
 
-This section will explain how to create an ECS cluster using a CloudFormation template. The tasks are then deployed using ECS CLI and Dokcer Compose definitions.
+This section will explain how to create an ECS cluster using AWS CLI.
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/101
+
+=== Deployment: Create Cluster using CloudFormation
+
+This section will explain how to create an ECS cluster using CloudFormation.
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/102
+
+=== Deployment: Deploy Tasks and Service using AWS CLI
+
+This section will explain how to deploy tasks and services in Fargate and EC2 mode using AWS CLI. Difference between the two deployment modes will be clearly highlighted.
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/103
+
+=== Deployment: Deploy Tasks and Service using ECS CLI
+
+This section will explain how to create an ECS cluster using a CloudFormation template. The tasks are then deployed using ECS CLI and Docker Compose definitions.
 
 ==== Pre-requisites
 
@@ -182,7 +204,9 @@ ecs-cli compose --verbose \
 aws cloudformation delete-stack --region us-east-1 --stack-name aws-microservices-deploy-options-ecscli
 ```
 
-=== Deployment: CloudFormation only
+=== Deployment: Create Cluster and Deploy Tasks using CloudFormation
+
+==== Fargate
 
 |===
 |Region | Launch Template
@@ -201,27 +225,7 @@ aws cloudformation \
     --output text
 ```
 
-=== Deployment Pipeline: AWS CodePipeline
-
-=== Monitoring: AWS X-Ray
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/55
-
-=== Monitoring: Prometheus and Grafana
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/78
-
-== Amazon ECS
-
-=== Deployment: Console and AWS CLI
-
-https://github.com/aws-samples/aws-compute-options/issues/51
-
-=== Deployment: CloudFormation and ECS CLI
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/42
-
-=== Deployment: CloudFormation only
+==== EC2 mode
 
 |===
 |Region | Launch Template
@@ -245,6 +249,18 @@ Use the command to test:
 ```
 curl http://<public_endpoint>
 ```
+
+=== Deployment Pipeline: AWS CodePipeline
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/104
+
+=== Monitoring: AWS X-Ray
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/55
+
+=== Monitoring: Prometheus and Grafana
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/78
 
 == Kubernetes
 
