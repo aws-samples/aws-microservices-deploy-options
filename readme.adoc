@@ -1,4 +1,4 @@
-= Options for Deploying Microservices on AWS Compute
+= Deploying Microservices on AWS Cloud
 :toc:
 
 This repo contains a simple application that consists of three microservices. The sample application uses three services:
@@ -48,9 +48,9 @@ docker push <repo>/webapp
 
 This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
 
-== Amazon Fargate
+== AWS Fargate
 
-NOTE: Amazon Fargate is only supported in `us-east-1` region at this time. The instructions will only work in that region.
+NOTE: AWS Fargate is only supported in `us-east-1` region at this time. The instructions will only work in that region.
 
 === Deployment: Console and AWS CLI
 
