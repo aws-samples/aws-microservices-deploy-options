@@ -291,7 +291,40 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/65
 
 === Deployment Pipeline: Jenkins
 
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/67
+Create a deployment pipeline using http://jenkins-x.io/[Jenkins X].
+
+. Install Jenkins X CLI:
++
+```
+brew tap jenkins-x/jx
+brew install jx
+```
++
+. Create the Kubernetes cluster:
++
+```
+jx create cluster aws
+```
++
+This will create a Kubernetes cluster on AWS using kops. This cluster will have RBAC enabled. It will also have insecure registries enabled. These are needed by the pipeline to store Docker images.
++
+. Clone the repo:
++
+```
+git clone https://github.com/arun-gupta/docker-kubernetes-hello-world
+```
++
+. Import the project in Jenkins X:
++
+```
+jx import 
+```
++
+This will generate `Dockerfile` and Helm charts, if they don't already exist. It also creates a `Jenkinsfile` with different build stages identified. Finally, it triggers a Jenkins build and deploy the application in a staging environment by default.
++
+. View Jenkins console using `jx console`. Select the user, project and branch to see the deployment pipeline.
+. Get the staging URL using `jx get apps` and view the output from the application in a browser window.
+. Now change the message in displayed from `HelloHandler` and push to the GitHub repo. Make sure to change the corresponding test as well otherwise the pipeline will fail. Wait for the deployment to complete and then refresh the browser page to see the updated output.
 
 === Deployment Pipeline: Spinnaker
 
