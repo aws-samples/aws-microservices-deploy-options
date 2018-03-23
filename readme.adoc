@@ -293,6 +293,57 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/65
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/67
 
+. Kubernetes cluster must have been created with RBAC enabled. If it is, then skip this step. Otherwise, create the Kubernetes cluster:
++
+```
+kops create cluster \
+  --name example.cluster.k8s.local \
+  --authorization RBAC \
+  --zones us-west-2a,us-west-2b,us-west-2c \
+  --yes
+```
++
+. Pipelines need to use a docker registry running inside the kubernetes cluster. Configure the Kubernetes cluster with insecure registries:
++
+```
+kops edit cluster
+```
++
+Add the fragment:
++
+```
+spec:
+  docker:
+    insecureRegistry: 100.64.0.0/10
+    logDriver: ""
+```
++
+Update the cluster:
++
+```
+kops update cluster --yes
+kops rolling-update cluster --yes
+```
++
+. Install Jenkins X CLI:
++
+```
+brew tap jenkins-x/jx
+brew install jx
+```
++
+. Install Jenkins X on the Kubernetes cluster:
++
+```
+jx install --provider=aws
+```
++
+Follow the prompts until you see the message:
++
+```
+Jenkins X installation completed successfully
+```
+
 === Deployment Pipeline: Spinnaker
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
