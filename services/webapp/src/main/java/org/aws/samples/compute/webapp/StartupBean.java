@@ -1,6 +1,7 @@
 package org.aws.samples.compute.webapp;
 
 import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.AWSXRayRecorder;
 import com.amazonaws.xray.AWSXRayRecorderBuilder;
 import com.amazonaws.xray.plugins.EC2Plugin;
 import com.amazonaws.xray.plugins.ECSPlugin;
@@ -19,6 +20,7 @@ public class StartupBean {
                 .withPlugin(new EC2Plugin()).withPlugin(new ECSPlugin());
 
         AWSXRay.setGlobalRecorder(builder.build());
+
         logger.info("exit");
     }
 

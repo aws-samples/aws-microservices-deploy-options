@@ -1,6 +1,8 @@
 package org.aws.samples.compute.webapp;
 
 import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.AWSXRayRecorder;
+import com.amazonaws.xray.entities.Segment;
 import com.amazonaws.xray.entities.Subsegment;
 import com.mashape.unirest.http.Unirest;
 import org.slf4j.Logger;
@@ -22,7 +24,9 @@ public class WebappController {
     @Produces(MediaType.TEXT_PLAIN)
     @GET
     public String getMessage(@Context UriInfo uri, @PathParam("id") String id) {
-//        Subsegment subsegment = AWSXRay.beginSubsegment("get");
+//        AWSXRayRecorder xrayRecorder = AWSXRay.getGlobalRecorder();
+//        Segment segment = xrayRecorder.beginSegment("webapp");
+//        segment.putAnnotation("parentId", xrayRecorder.getTraceEntity().getId());
 
         String greetingEndpoint = getEndpoint("GREETING", uri.getRequestUri().getScheme(), null);
         logger.info("ID Query is: " + id);
@@ -53,7 +57,7 @@ public class WebappController {
             logger.error("Failed connecting Name API: " + e);
         }
 
-//        subsegment.end();
+//        xrayRecorder.endSegment();
         return greetingMessage + " " + nameMessage;
     }
 

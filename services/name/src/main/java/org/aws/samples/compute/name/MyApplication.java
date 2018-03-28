@@ -25,7 +25,7 @@ public class MyApplication extends Application {
     @Override
     public Set<Object> getSingletons() {
         Set<Object> resources = new java.util.HashSet<>();
-        resources.add(StartupBean.getInstance());
+//        resources.add(StartupBean.getInstance());
         return resources;
     }
 }
