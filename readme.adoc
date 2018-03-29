@@ -64,6 +64,8 @@ https://github.com/aws-samples/aws-compute-options/issues/48
 
 This section will explain how to create an ECS cluster using AWS CLI.
 
+Make sure your AWS CLI is configured for `us-east-1`. This can be done using the `aws configure` command.
+
 . Create an ECS cluster:
 +
 ```
@@ -142,13 +144,15 @@ The container instance will be launched with these IAM permissions. This allows 
 +
 ```
 aws ec2 run-instances \
-  --image-id ami-05b5277d \
+  --image-id ami-cb17d8b6 \
   --count 3 \
   --instance-type c4.large \
   --security-group-ids sg-0184fa45c2fbbed2f \
-  --key-name arun-us-west2 \
+  --key-name arun-us-east1 \
   --iam-instance-profile ecsInstanceRole
 ```
++
+The AMI id is for `us-east-1` as that is the only region where Fargate is currently supported. The complete list of AMI ids is listed at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html.
 +
 This is causing https://github.com/aws-samples/aws-microservices-deploy-options/issues/121.
 +
@@ -165,6 +169,16 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/101
 === Deployment: Create Cluster using CloudFormation
 
 This section will explain how to create an ECS cluster using CloudFormation.
+
+|===
+|Region | Launch Template
+| *N. Virginia* (us-east-1)
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=my-ecs-cluster&templateURL=https://s3.amazonaws.com/aws-microservices-deploy-options/ecs-cluster.yaml]
+|===
+
+You would need to specify the VPC, the subnet and the security group. Everything else has a default value.
+
+The CloudFormation template used for this is also stored at `config/ecs/ecs-cluster.yaml`.
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/102
 
