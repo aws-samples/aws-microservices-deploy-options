@@ -66,9 +66,7 @@ NOTE: AWS Fargate is only supported in `us-east-1` region at this time. The inst
 
 This section will explain how to create an ECS cluster using AWS Console.
 
-TODO: Link to the existing instructions.
-
-https://github.com/aws-samples/aws-compute-options/issues/48
+Complete instructions are available at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create_cluster.html.
 
 === Deployment: Create Cluster using AWS CLI
 
