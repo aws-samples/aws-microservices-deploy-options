@@ -312,9 +312,7 @@ ecs-cli compose --verbose \
 aws cloudformation delete-stack --region us-east-1 --stack-name aws-microservices-deploy-options-ecscli
 ```
 
-=== Deployment: Create Cluster and Deploy Tasks using CloudFormation
-
-==== Fargate
+=== Deployment: Create Cluster and Deploy Fargate Tasks using CloudFormation
 
 This section creates an ECS cluster and deploys Fargate tasks to the cluster:
 
@@ -335,9 +333,15 @@ aws cloudformation \
     --output text
 ```
 
-`curl <endpoint>` shows the output from the service.
+Use the command to test:
 
-==== EC2 mode
+```
+curl http://<public_endpoint>
+```
+
+=== Deployment: Create Cluster and Deploy EC2 Tasks using CloudFormation
+
+This section creates an ECS cluster and deploys EC2 tasks to the cluster:
 
 |===
 |Region | Launch Template
