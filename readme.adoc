@@ -119,11 +119,11 @@ If the output is empty, this means the role does not exist and needs to be creat
 ```
 aws iam create-role \
   --role-name ecsInstanceRole \
-  --assume-role-policy ecs-assume-role-policy.yaml
+  --assume-role-policy ecs-assume-role-policy.json
 aws iam put-role-policy \
   --role-name ecsInstanceRole \
   --policy-name MyPolicy \
-  --policy-document ecs-instance-role-policy.yaml
+  --policy-document ecs-instance-role-policy.json
 ```
 +
 . Launch an instance (work in progress):
