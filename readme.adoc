@@ -58,6 +58,8 @@ NOTE: AWS Fargate is only supported in `us-east-1` region at this time. The inst
 
 This section will explain how to create an ECS cluster using AWS Console.
 
+TODO: Link to the existing instructions.
+
 https://github.com/aws-samples/aws-compute-options/issues/48
 
 === Deployment: Create Cluster using AWS CLI
@@ -72,20 +74,14 @@ Make sure your AWS CLI is configured for `us-east-1`. This can be done using the
 aws ecs create-cluster --cluster-name MyCluster
 ```
 +
-. Create AWS resources
-.. Get the default VPC:
-+
-```
-aws ec2 describe-vpcs --query 'Vpcs[?IsDefault==`true`].VpcId'
-```
-+
-This will be used during cluster creation.
-+
+. Create and/or identify AWS resources needed for the cluster
 .. Get the list of key pairs:
 +
 ```
 aws ec2 describe-key-pairs
 ```
++
+TODO: List the key pair for `us-east-1`.
 +
 .. Create a security group:
 +
@@ -114,13 +110,15 @@ aws ec2 authorize-security-group-ingress \
   --cidr 0.0.0.0/0
 ```
 +
-.. Check if the `ecsInstanceRole` already exists:
+.. Container instances that run the agent require an IAM policy and role for the service to know that the agent belongs to you. Before you can launch container instances and register them into a cluster, you must create an IAM role for those container instances to use when they are launched.
++
+If you've created an ECS using the console then `ecsInstanceRole` is already created for you. Check if the role exists:
 +
 ```
 aws iam list-roles --query 'Roles[?RoleName==`ecsInstanceRole`]'
 ```
 +
-If the output is empty, this means that the role does not exist and needs to be created. Create the role:
+If the output is empty, this means that the role does not exist and needs to be created. Create the role and attach the appropriate policies:
 +
 ```
 aws iam create-role \
@@ -153,6 +151,8 @@ aws ec2 run-instances \
 ```
 +
 The AMI id is for `us-east-1` as that is the only region where Fargate is currently supported. The complete list of AMI ids is listed at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html.
++
+By default, this instance is launched using a default subnet from the default VPC. Alternatively, you can use `--subnet-id` to specify the subnet from a different VPC.
 +
 This is causing https://github.com/aws-samples/aws-microservices-deploy-options/issues/121.
 +
