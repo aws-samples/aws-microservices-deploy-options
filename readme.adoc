@@ -114,22 +114,22 @@ aws ec2 authorize-security-group-ingress \
 aws iam list-roles --query 'Roles[?RoleName==`ecsInstanceRole`]'
 ```
 +
-If the output is empty, this means the role does not exist and needs to be created. Create the role:
+If the output is empty, this means that the role does not exist and needs to be created. Create the role:
 +
 ```
 aws iam create-role \
   --role-name ecsInstanceRole \
-  --assume-role-policy ecs-assume-role-policy.yaml
+  --assume-role-policy-document file://ecs-assume-role-policy.json
 aws iam put-role-policy \
   --role-name ecsInstanceRole \
   --policy-name MyPolicy \
-  --policy-document ecs-instance-role-policy.yaml
+  --policy-document file://ecs-instance-role-policy.json
 ```
 +
 . Launch an instance (work in progress):
 +
 ```
-aws ec2 launch-instance \
+aws ec2 run-instances \
   --image-id ami-05b5277d \
   --count 3 \
   --instance-type c4.large \
