@@ -180,22 +180,6 @@ This concludes the creation of an ECS cluster using AWS CLI.
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/101
 
-=== Deployment: Create Cluster using CloudFormation
-
-This section will explain how to create an ECS cluster using CloudFormation.
-
-|===
-|Region | Launch Template
-| *N. Virginia* (us-east-1)
-a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=my-ecs-cluster&templateURL=https://s3.amazonaws.com/aws-microservices-deploy-options/ecs-cluster.yaml]
-|===
-
-You would need to specify the VPC, the subnet and the security group. Everything else has a default value.
-
-The CloudFormation template used for this is at https://github.com/aws-samples/ecs-refarch-cloudformation/blob/master/master.yaml.
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/102
-
 === Deployment: Deploy Tasks and Service using AWS CLI
 
 This section will explain how to deploy tasks and services in Fargate and EC2 mode using AWS CLI. Difference between the two deployment modes will be clearly highlighted.
