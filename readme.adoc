@@ -64,6 +64,81 @@ https://github.com/aws-samples/aws-compute-options/issues/48
 
 This section will explain how to create an ECS cluster using AWS CLI.
 
+. Create an ECS cluster:
++
+```
+aws ecs create-cluster --cluster-name MyCluster
+```
++
+. Create AWS resources
+.. Get default VPC:
++
+```
+aws ec2 describe-vpcs --query 'Vpcs[?IsDefault==`true`].VpcId'
+```
++
+.. Get the list of key pairs:
++
+```
+aws ec2 describe-key-pairs
+```
++
+.. Create a security group:
++
+```
+aws ec2 create-security-group \
+  --group-name MySecurityGroup \
+  --vpc-id <default-vpc-id> \
+  --description "ECS cluster security group
+
+```
++
+.. Enable SSH and an ingress at port `80`:
++
+```
+aws ec2 authorize-security-group-ingress \
+  --group-id sg-0184fa45c2fbbed2f \
+  --protocol tcp \
+  --port 22 \
+  --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress \
+  --group-id sg-0184fa45c2fbbed2f \
+  --protocol tcp \
+  --port 80 \
+  --cidr 0.0.0.0/0
+```
++
+.. Check if `ecsInstanceRole` already exists:
++
+```
+aws iam list-roles --query 'Roles[?RoleName==`ecsInstanceRole`]'
+```
++
+If the output is empty, this means the role does not exist and needs to be created. Create the role:
++
+```
+aws iam create-role \
+  --role-name ecsInstanceRole \
+  --assume-role-policy ecs-assume-role-policy.yaml
+aws iam put-role-policy \
+  --role-name ecsInstanceRole \
+  --policy-name MyPolicy \
+  --policy-document ecs-instance-role-policy.yaml
+```
++
+. Launch an instance (work in progress):
++
+```
+aws ec2 launch-instance \
+  --image-id ami-05b5277d \
+  --count 3 \
+  --instance-type c4.large \
+  --security-group-ids sg-0184fa45c2fbbed2f \
+  --key-name arun-us-west2 
+```
++
+. 
+
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/101
 
 === Deployment: Create Cluster using CloudFormation
