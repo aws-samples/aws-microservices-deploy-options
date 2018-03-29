@@ -71,11 +71,13 @@ aws ecs create-cluster --cluster-name MyCluster
 ```
 +
 . Create AWS resources
-.. Get default VPC:
+.. Get the default VPC:
 +
 ```
 aws ec2 describe-vpcs --query 'Vpcs[?IsDefault==`true`].VpcId'
 ```
++
+This will be used during cluster creation.
 +
 .. Get the list of key pairs:
 +
@@ -93,7 +95,9 @@ aws ec2 create-security-group \
 
 ```
 +
-.. Enable SSH and an ingress at port `80`:
+Note the security group id, it'll be used later.
++
+Enable SSH and an ingress at port `80`:
 +
 ```
 aws ec2 authorize-security-group-ingress \
@@ -108,7 +112,7 @@ aws ec2 authorize-security-group-ingress \
   --cidr 0.0.0.0/0
 ```
 +
-.. Check if `ecsInstanceRole` already exists:
+.. Check if the `ecsInstanceRole` already exists:
 +
 ```
 aws iam list-roles --query 'Roles[?RoleName==`ecsInstanceRole`]'
@@ -124,6 +128,9 @@ aws iam put-role-policy \
   --role-name ecsInstanceRole \
   --policy-name MyPolicy \
   --policy-document file://ecs-instance-role-policy.json
+aws iam attach-role-policy \
+  --role-name ecsInstanceRole2 \
+  --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
 ```
 +
 . Launch an instance (work in progress):
@@ -134,10 +141,19 @@ aws ec2 run-instances \
   --count 3 \
   --instance-type c4.large \
   --security-group-ids sg-0184fa45c2fbbed2f \
-  --key-name arun-us-west2 
+  --key-name arun-us-west2 \
+  --iam-instance-profile ecsInstanceRole
 ```
 +
-. 
+This is causing https://github.com/aws-samples/aws-microservices-deploy-options/issues/121.
++
+. List the container instances in the cluster:
++
+```
+aws ecs list-container-instances --cluster MyCluster
+```
+
+This concludes the creation of an ECS cluster using AWS CLI.
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/101
 
