@@ -316,6 +316,8 @@ aws cloudformation delete-stack --region us-east-1 --stack-name aws-microservice
 
 ==== Fargate
 
+This section creates an ECS cluster and deploys Fargate tasks to the cluster:
+
 |===
 |Region | Launch Template
 | *N. Virginia* (us-east-1)
@@ -329,9 +331,11 @@ aws cloudformation \
     describe-stacks \
     --region us-east-1 \
     --stack-name aws-compute-options-fargate \
-    --query "Stacks[].Outputs[?OutputKey=='PublicALBCNAME'.[OutputValue]]" \
+    --query 'Stacks[].Outputs[?OutputKey==`PublicALBCNAME`].[OutputValue]' \
     --output text
 ```
+
+`curl <endpoint>` shows the output from the service.
 
 ==== EC2 mode
 
