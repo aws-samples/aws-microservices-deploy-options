@@ -10,7 +10,7 @@
     <artifactId>webapp</artifactId>
     <packaging>war</packaging>
     <properties>
-        <fabric8.generator.name>${docker.repo}/${project.build.finalName}</fabric8.generator.name>
+        <fabric8.generator.name>${docker.repo}/${project.build.finalName}:${docker.tag}</fabric8.generator.name>
     </properties>
 
     <dependencies>

@@ -34,16 +34,24 @@ Change to the "`services`" directory: `cd services`
 
 `mvn -pl <service> package -Pdocker` where `<service>` is `greeting`, `name` or `webapp`
 
-=== Docker image name
+Docker images for all the services can be created from the `services` directory:
 
-By default, the Docker image name is `arungupta/<service>`. Create the image in your repo as: `mvn -pl <service> package -Pdocker -Ddocker.repo=<repo>`
+  mvn package -Pdocker
+
+By default, the Docker image name is `arungupta/<service>`. The image can be created in your repo:
+
+  mvn package -Pdocker -Ddocker.repo=<repo>
+
+By default, the `latest` tag is used for the image. A different tag may be specified as:
+
+  mvn package -Pdocker -Ddocker.tag=<tag>
 
 === Push Docker images to registry
 
 ```
-docker push <repo>/greeting
-docker push <repo>/name
-docker push <repo>/webapp
+docker push <repo>/greeting:<tag>
+docker push <repo>/name:<tag>
+docker push <repo>/webapp:<tag>
 ```
 
 This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
@@ -58,11 +66,15 @@ NOTE: AWS Fargate is only supported in `us-east-1` region at this time. The inst
 
 This section will explain how to create an ECS cluster using AWS Console.
 
+TODO: Link to the existing instructions.
+
 https://github.com/aws-samples/aws-compute-options/issues/48
 
 === Deployment: Create Cluster using AWS CLI
 
 This section will explain how to create an ECS cluster using AWS CLI.
+
+Make sure your AWS CLI is configured for `us-east-1`. This can be done using the `aws configure` command.
 
 . Create an ECS cluster:
 +
@@ -70,22 +82,23 @@ This section will explain how to create an ECS cluster using AWS CLI.
 aws ecs create-cluster --cluster-name MyCluster
 ```
 +
-. Create AWS resources
-.. Get the default VPC:
-+
-```
-aws ec2 describe-vpcs --query 'Vpcs[?IsDefault==`true`].VpcId'
-```
-+
-This will be used during cluster creation.
-+
+. Create and/or identify AWS resources needed for the cluster
 .. Get the list of key pairs:
 +
 ```
 aws ec2 describe-key-pairs
 ```
 +
-.. Create a security group:
+TODO: List the key pair for `us-east-1`.
++
+.. Create a security group. We'll use the default VPC id:
++
+```
+aws ec2 describe-vpcs \
+  --query 'Vpcs[?IsDefault=`true`].VpcId'
+```
++
+Now, create the security group:
 +
 ```
 aws ec2 create-security-group \
@@ -112,13 +125,16 @@ aws ec2 authorize-security-group-ingress \
   --cidr 0.0.0.0/0
 ```
 +
-.. Check if the `ecsInstanceRole` already exists:
+.. Container instances that run the agent require an IAM policy and role for the service to know that the agent belongs to you. Before you can launch container instances and register them into a cluster, you must create an IAM role for those container instances to use when they are launched.
++
+If you've created an ECS using the console then `ecsInstanceRole` is already created for you. Check if the role exists:
 +
 ```
-aws iam list-roles --query 'Roles[?RoleName==`ecsInstanceRole`]'
+aws iam list-roles \
+  --query 'Roles[?RoleName==`ecsInstanceRole`]'
 ```
 +
-If the output is empty, this means that the role does not exist and needs to be created. Create the role:
+If the output is empty, this means that the role does not exist and needs to be created. Create the role and attach the appropriate policies:
 +
 ```
 aws iam create-role \
@@ -129,21 +145,30 @@ aws iam put-role-policy \
   --policy-name MyPolicy \
   --policy-document file://ecs-instance-role-policy.json
 aws iam attach-role-policy \
-  --role-name ecsInstanceRole2 \
+  --role-name ecsInstanceRole \
+  --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerServiceforEC2Role
+aws iam attach-role-policy \
+  --role-name ecsInstanceRole \
   --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
 ```
++
+The container instance will be launched with these IAM permissions. This allows the ECS Agent in the EC2 instance to connect to the ECS cluster.
 +
 . Launch an instance (work in progress):
 +
 ```
 aws ec2 run-instances \
-  --image-id ami-05b5277d \
+  --image-id ami-cb17d8b6 \
   --count 3 \
   --instance-type c4.large \
+  --key-name arun-us-east1 \
   --security-group-ids sg-0184fa45c2fbbed2f \
-  --key-name arun-us-west2 \
   --iam-instance-profile ecsInstanceRole
 ```
++
+The AMI id is for `us-east-1` as that is the only region where Fargate is currently supported. The complete list of AMI ids is listed at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html.
++
+By default, this instance is launched using a default subnet from the default VPC. Alternatively, you can use `--subnet-id` to specify the subnet from a different VPC.
 +
 This is causing https://github.com/aws-samples/aws-microservices-deploy-options/issues/121.
 +
@@ -160,6 +185,16 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/101
 === Deployment: Create Cluster using CloudFormation
 
 This section will explain how to create an ECS cluster using CloudFormation.
+
+|===
+|Region | Launch Template
+| *N. Virginia* (us-east-1)
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=my-ecs-cluster&templateURL=https://s3.amazonaws.com/aws-microservices-deploy-options/ecs-cluster.yaml]
+|===
+
+You would need to specify the VPC, the subnet and the security group. Everything else has a default value.
+
+The CloudFormation template used for this is at https://github.com/aws-samples/ecs-refarch-cloudformation/blob/master/master.yaml.
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/102
 
@@ -367,11 +402,22 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
 Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. Also, make sure Helm is installed on that Kubernetes cluster.
 
-. Install Helm CLI: `brew install kubernetes-helm`
+. Install the Helm CLI: `brew install kubernetes-helm`
 . Install Helm in Kubernetes cluster: `helm init`
-. Install Helm chart: `helm install --name myapp apps/k8s/helm/myapp`
-. Access the application: `curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
-. Delete Helm chart: `helm delete --purge myapp`
+. Install the Helm chart: `helm install --name myapp apps/k8s/helm/myapp`
+.. By default, the `latest` tag for an image is used. Alternatively, you can use a different tag for the image:
++
+```
+helm install --name myapp apps/k8s/helm/myapp --set "repo.tag=<tag>"
+```
++
+. Access the application:
++
+```
+curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+```
++
+. Delete the Helm chart: `helm delete --purge myapp`
 
 === Deployment: Ksonnet
 
