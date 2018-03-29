@@ -72,7 +72,7 @@ Complete instructions are available at https://docs.aws.amazon.com/AmazonECS/lat
 
 This section will explain how to create an ECS cluster using AWS CLI.
 
-Make sure your AWS CLI is configured for `us-east-1`. This can be done using the `aws configure` command.
+This section will use `us-east-1` region.
 
 . Create an ECS cluster:
 +
@@ -82,18 +82,14 @@ aws ecs create-cluster --cluster-name MyCluster
 +
 . Create and/or identify AWS resources needed for the cluster
 .. Get the list of key pairs:
-+
-```
-aws ec2 describe-key-pairs
-```
-+
-TODO: List the key pair for `us-east-1`.
-+
+
+  aws ec2 describe-key-pairs
+
 .. Create a security group. We'll use the default VPC id:
 +
 ```
 aws ec2 describe-vpcs \
-  --query 'Vpcs[?IsDefault=`true`].VpcId'
+  --query 'Vpcs[?IsDefault==`true`].VpcId'
 ```
 +
 Now, create the security group:
