@@ -9,3 +9,6 @@ name:
 webapp:
   image: arungupta/webapp
   replicaCount: 1
+
+repo:
+  tag: latest

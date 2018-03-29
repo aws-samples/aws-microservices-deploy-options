@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: {{ .Values.webapp.image }}
+        image: {{ .Values.webapp.image }}:{{ .Values.repo.tag }}
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
