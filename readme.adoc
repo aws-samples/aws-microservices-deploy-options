@@ -129,9 +129,14 @@ aws iam put-role-policy \
   --policy-name MyPolicy \
   --policy-document file://ecs-instance-role-policy.json
 aws iam attach-role-policy \
-  --role-name ecsInstanceRole2 \
+  --role-name ecsInstanceRole \
+  --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerServiceforEC2Role
+aws iam attach-role-policy \
+  --role-name ecsInstanceRole \
   --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
 ```
++
+The container instance will be launched with these IAM permissions. This allows the ECS Agent in the EC2 instance to connect to the ECS cluster.
 +
 . Launch an instance (work in progress):
 +
