@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: greeting
-        image: {{ .Values.greeting.image }}:{{ .Values.repo.tag }}
+        image: {{ .Values.greeting.image }}:{{ .Values.docker.tag }}
         imagePullPolicy: Always
         ports:
         - containerPort: 8081
