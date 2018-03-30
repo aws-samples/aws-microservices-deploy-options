@@ -21,8 +21,9 @@ public class GreetingEndpoint {
     @Produces(MediaType.TEXT_PLAIN)
     public String get() {
         logger.info("get");
-        AWSXRay.getCurrentSegment().putAnnotation("parentId",
-                AWSXRay.getGlobalRecorder().getTraceEntity().getId());
+        if (AWSXRay.getGlobalRecorder().getTraceEntity() != null)
+            AWSXRay.getCurrentSegment().putAnnotation("parentId",
+                    AWSXRay.getGlobalRecorder().getTraceEntity().getId());
         String response = "Hello";
 
         return response;
