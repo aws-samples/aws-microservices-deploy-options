@@ -424,7 +424,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. 
 .. By default, the `latest` tag for an image is used. Alternatively, you can use a different tag for the image:
 +
 ```
-helm install --name myapp apps/k8s/helm/myapp --set "repo.tag=<tag>"
+helm install --name myapp apps/k8s/helm/myapp --set "docker.tag=<tag>"
 ```
 +
 . Access the application:
