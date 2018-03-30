@@ -7,7 +7,7 @@
         <filter-class>com.amazonaws.xray.javax.servlet.AWSXRayServletFilter</filter-class>
         <init-param>
             <param-name>fixedName</param-name>
-            <param-value>greeting</param-value>
+            <param-value>webapp</param-value>
         </init-param>
     </filter>
     <filter-mapping>
