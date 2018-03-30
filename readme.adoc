@@ -522,8 +522,52 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/79
 
 === Deployment: Package Lambda Functions
 
-. `cd services`
-. `mvn clean package -Plambda`
+```
+cd services; mvn clean package -Plambda
+```
+
+=== Deployment: Deploy using Serverless Application Model
+
+https://github.com/awslabs/serverless-application-model[Serverless Application Model] (SAM) defines a standard application model for serverless applications. It extends AWS CloudFormation to provide a simplified way of defining the Amazon API Gateway APIs, AWS Lambda functions, and Amazon DynamoDB tables needed by your serverless application.
+
+`sam` is the AWS CLI tool for managing Serverless applications written with SAM. Install SAM CLI as:
+
+```
+npm install -g aws-sam-local
+```
+
+The complete installation steps for SAM CLI are at https://github.com/awslabs/aws-sam-local#installation.
+
+. Serverless applications are stored as a deployment packages in a S3 bucket. Create a S3 bucket:
++
+```
+aws s3api create-bucket \
+  --bucket aws-microservices-deploy-options \
+  --region us-west-2 \
+  --create-bucket-configuration LocationConstraint=us-west-2`
+```
++
+Make sure to use a bucket name that is unique.
++
+. Package the SAM application. This uploads the deployment package to the specified S3 bucket and generates a new file with the code location:
++
+```
+cd apps/lambda
+sam package \
+  --template-file sam.yaml \
+  --s3-bucket <s3-bucket> \
+  --output-template-file \
+  sam.transformed.yaml
+```
++
+. Create the resources:
++
+```
+sam deploy \
+  --template-file sam.transformed.yaml \
+  --stack-name aws-microservices-deploy-options-lambda \
+  --capabilities CAPABILITY_IAM
+```
 
 === Deployment Pipeline: AWS CodePipeline
 
@@ -551,23 +595,6 @@ aws cloudformation \
 Deployment pipeline in AWS console looks like as shown:
 +
 image::images/lambda-pipeline.png[Lambda Pipeline, 350]
-
-=== Deployment: Deploy SAM Manaully
-
-. Create S3 bucket
-+
-```
-aws s3api create-bucket \
-  --bucket aws-compute-options \
-  --region us-west-2 \
-  --create-bucket-configuration LocationConstraint=us-west-2`
-```
-+
-Make sure to change the bucket name.
-+
-. `cd apps/lambda`
-. `sam package --template-file sam.yaml --s3-bucket YOUR-S3-BUCKET --output-template-file sam.transformed.yaml`
-. `sam deploy --template-file sam.transformed.yaml --stack-name aws-compute-options-lambda --capabilities CAPABILITY_IAM`
 
 === Deployment: Test SAM Local
 
