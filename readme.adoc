@@ -28,9 +28,9 @@ Change to the "`services`" directory: `cd services`
 . Webapp service in Terminal 3: `mvn -pl webapp wildfly-swarm:run`
 . Invoke the application in Terminal 4: `curl http://localhost:8080/`
 
-== Build and Push Docker images
+== Docker
 
-=== Create Docker image
+=== Create Docker Images
 
 `mvn -pl <service> package -Pdocker` where `<service>` is `greeting`, `name` or `webapp`
 
@@ -46,7 +46,7 @@ By default, the `latest` tag is used for the image. A different tag may be speci
 
   mvn package -Pdocker -Ddocker.tag=<tag>
 
-=== Push Docker images to registry
+=== Push Docker Images to Registry
 
 ```
 docker push <repo>/greeting:<tag>
@@ -55,6 +55,36 @@ docker push <repo>/webapp:<tag>
 ```
 
 This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
+
+=== Deployment to Docker Swarm
+
+. `docker swarm init`
+. `cd apps/docker`
+. `docker stack deploy --compose-file docker-compose.yaml myapp`
+. Access the application: `curl http://localhost:80`
+.. Optionally test the endpoints:
+... Greeting endpoint: `curl http://localhost:8081/resources/greeting`
+... Name endpoint: `curl http://localhost:8082/resources/names/1`
+. Remove the stack: `docker stack rm myapp`
+
+=== Debug
+
+. List stack:
+
+  docker stack ls
+
+. List services in the stack:
+
+  docker stack services myapp
+
+. List containers:
+
+  docker container ls -f name=myapp*
+
+. Get logs for all the containers in the `webapp` service:
+
+  docker service logs myapp_webapp-service
+
 
 == Amazon ECS and AWS Fargate
 
@@ -598,71 +628,6 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/80
 === Deployment: Remove the stack
 
 . `aws cloudformation delete-stack --stack-name aws-compute-options-lambda`
-
-== Docker Swarm
-
-=== Deployment
-
-. `docker swarm init`
-. `cd apps/docker`
-. `docker stack deploy --compose-file docker-compose.yaml myapp`
-. Access the application: `curl http://localhost:80`
-.. Optionally test the endpoints:
-... Greeting endpoint: `curl http://localhost:8081/resources/greeting`
-... Name endpoint: `curl http://localhost:8082/resources/names/1`
-. Remove the stack: `docker stack rm myapp`
-
-=== Debug
-
-. List stack:
-+
-```
-$ docker stack ls
-NAME                SERVICES
-myapp               3
-```
-+
-. List services in the stack:
-+
-```
-$ docker stack services myapp
-ID                  NAME                     MODE                REPLICAS            IMAGE                       PORTS
-8hv33y3ry5la        myapp_greeting-service   replicated          1/1                 arungupta/greeting:latest   *:8081->8080/tcp
-kyup1v84cv7q        myapp_name-service       replicated          1/1                 arungupta/name:latest       *:8082->8080/tcp
-wcjhglfym28g        myapp_webapp-service     replicated          1/1                 arungupta/webapp:latest     *:80->8080/tcp
-```
-+
-. List containers:
-+
-```
-$ docker container ls -f name=myapp*
-CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                          NAMES
-7cd2ec331b2a        arungupta/webapp:latest     "/deployments/run-ja…"   20 seconds ago      Up 20 seconds       8080/tcp, 8778/tcp, 9779/tcp   myapp_webapp-service.1.fvr9sae08ieu08lf8agfz2mwy
-8436c6cc3110        arungupta/greeting:latest   "/deployments/run-ja…"   20 seconds ago      Up 18 seconds       8080/tcp, 8778/tcp, 9779/tcp   myapp_greeting-service.1.64idmwjlcvacniix6ll1egeoa
-3a0a951f0a2d        arungupta/name:latest       "/deployments/run-ja…"   20 seconds ago      Up 20 seconds       8080/tcp, 8778/tcp, 9779/tcp   myapp_name-service.1.o7byxuzrc5vbfoyye8kuo19ws
-```
-+
-. Get logs for all the containers in the `webapp` service:
-+
-```
-$ docker service logs myapp_webapp-service
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | exec java -cp . -jar /deployments/webapp-swarm.jar
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:00,460 INFO  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction:                  Logging - STABLE          org.wildfly.swarm:logging:2018.2.0
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:00,514 INFO  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction:                  Elytron - STABLE          org.wildfly.swarm:elytron:2018.2.0
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:00,515 INFO  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction:                   JAX-RS - STABLE          org.wildfly.swarm:jaxrs:2018.2.0
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:00,516 INFO  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction:                 Undertow - STABLE          org.wildfly.swarm:undertow:2018.2.0
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:05,777 INFO  [org.jboss.msc] (main) JBoss MSC version 1.2.7.SP1
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:06,078 INFO  [org.jboss.as] (MSC service thread 1-8) WFLYSRV0049: WildFly Swarm 2018.2.0 (WildFly Core 3.0.8.Final) starting
-
-. . .
-
-org.jboss.as.server.deployment] (MSC service thread 1-5) WFLYSRV0027: Starting deployment of "webapp.war" (runtime-name: "webapp.war")
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:11,384 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-5) WFLYUT0018: Host default-host starting
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:11,878 INFO  [org.jboss.resteasy.resteasy_jaxrs.i18n] (ServerService Thread Pool -- 10) RESTEASY002225: Deploying javax.ws.rs.core.Application: class org.wildfly.swarm.generated.WildFlySwarmDefaultJAXRSApplication
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:11,909 INFO  [org.wildfly.extension.undertow] (ServerService Thread Pool -- 10) WFLYUT0021: Registered web context: '/' for server 'default-server'
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:11,984 INFO  [org.jboss.as.server] (main) WFLYSRV0010: Deployed "webapp.war" (runtime-name : "webapp.war")
-myapp_webapp-service.1.gb56vv5mw6u7@linuxkit-025000000001    | 2018-02-16 03:07:12,004 INFO  [org.wildfly.swarm] (main) WFSWARM99999: WildFly Swarm is Ready
-```
 
 == License
 
