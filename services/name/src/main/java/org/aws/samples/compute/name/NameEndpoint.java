@@ -1,8 +1,6 @@
 package org.aws.samples.compute.name;
 
 import com.amazonaws.xray.AWSXRay;
-import com.amazonaws.xray.AWSXRayRecorder;
-import com.amazonaws.xray.entities.Segment;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -19,10 +17,9 @@ public class NameEndpoint {
     @Produces({MediaType.APPLICATION_XML + "; qs=0.50",
             MediaType.APPLICATION_JSON + "; qs=0.75"})
     public Name[] get() {
-//        AWSXRayRecorder xrayRecorder = AWSXRay.getGlobalRecorder();
-//        Segment segment = xrayRecorder.beginSegment("name");
-//        segment.putAnnotation("parentId", xrayRecorder.getTraceEntity().getId());
-//        xrayRecorder.endSegment();
+        AWSXRay.getCurrentSegment().putAnnotation("parentId",
+            AWSXRay.getGlobalRecorder().getTraceEntity().getId());
+
         return Names.findAll();
     }
     
@@ -32,10 +29,9 @@ public class NameEndpoint {
             MediaType.APPLICATION_JSON + "; qs=0.75",
             MediaType.TEXT_PLAIN + "; qs=1.0"})
     public Name get(@PathParam("id") int id) {
-//        AWSXRayRecorder xrayRecorder = AWSXRay.getGlobalRecorder();
-//        Segment segment = xrayRecorder.beginSegment("name1");
-//        segment.putAnnotation("parentId", xrayRecorder.getTraceEntity().getId());
-//        xrayRecorder.endSegment();
+        AWSXRay.getCurrentSegment().putAnnotation("parentId",
+            AWSXRay.getGlobalRecorder().getTraceEntity().getId());
+
         return Names.findById(id);
     }
 }
