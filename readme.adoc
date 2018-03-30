@@ -89,7 +89,8 @@ aws ecs create-cluster --cluster-name MyCluster
 +
 ```
 aws ec2 describe-vpcs \
-  --query 'Vpcs[?IsDefault==`true`].VpcId'
+  --query 'Vpcs[?IsDefault==`true`].VpcId' \
+  --output text
 ```
 +
 Now, create the security group:
@@ -98,8 +99,7 @@ Now, create the security group:
 aws ec2 create-security-group \
   --group-name MySecurityGroup \
   --vpc-id <default-vpc-id> \
-  --description "ECS cluster security group
-
+  --description "ECS cluster security group"
 ```
 +
 Note the security group id, it'll be used later.
@@ -108,12 +108,12 @@ Enable SSH and an ingress at port `80`:
 +
 ```
 aws ec2 authorize-security-group-ingress \
-  --group-id sg-0184fa45c2fbbed2f \
+  --group-id <security-group> \
   --protocol tcp \
   --port 22 \
   --cidr 0.0.0.0/0
 aws ec2 authorize-security-group-ingress \
-  --group-id sg-0184fa45c2fbbed2f \
+  --group-id <security-group> \
   --protocol tcp \
   --port 80 \
   --cidr 0.0.0.0/0
