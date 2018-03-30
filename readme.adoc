@@ -67,7 +67,7 @@ This is a workaround until https://github.com/aws-samples/aws-compute-options/is
 ... Name endpoint: `curl http://localhost:8082/resources/names/1`
 . Remove the stack: `docker stack rm myapp`
 
-=== Debug
+==== Debug
 
 . List stack:
 
