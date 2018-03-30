@@ -6,7 +6,7 @@
    "GREETING_SERVICE_SCHEME": "http",
    "NAME_SERVICE_HOST": "docker.for.win.localhost",
    "NAME_SERVICE_PORT": "3000",
-   "NAME_SERVICE_PATH": "/resources/names",
+   "NAME_SERVICE_PATH": "/resources/names/1",
    "NAME_SERVICE_SCHEME": "http"
  }
 }

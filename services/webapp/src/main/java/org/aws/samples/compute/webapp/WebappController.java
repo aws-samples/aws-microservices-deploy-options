@@ -33,7 +33,8 @@ public class WebappController {
 
         Segment segment = AWSXRay.getCurrentSegment();
         AWSXRayRecorder xrayRecorder = AWSXRay.getGlobalRecorder();
-        segment.putAnnotation("parentId", xrayRecorder.getTraceEntity().getId());
+        if (AWSXRay.getGlobalRecorder().getTraceEntity() != null)
+            segment.putAnnotation("parentId", xrayRecorder.getTraceEntity().getId());
         Subsegment subsegment = xrayRecorder.beginSubsegment("greeting");
         subsegment.setNamespace(Namespace.REMOTE.toString());
 
