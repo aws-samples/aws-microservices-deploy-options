@@ -452,6 +452,16 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/63
 
 === Deployment Pipeline: AWS Codepipeline
 
+This section explains how to setup a deployment pipeline using AWS CodePipeline.
+
+CloudFormation templates for different regions are listed at https://github.com/aws-samples/aws-kube-codesuite. `us-west-2` is listed below.
+
+|===
+|Region | Launch Template
+| *Oregon* (us-west-2)
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=Codesuite-Demo&templateURL=https://s3.amazonaws.com/codesuite-demo-public/aws-refarch-codesuite-kubernetes.yaml]
+|===
+
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/65
 
 === Deployment Pipeline: Jenkins
