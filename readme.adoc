@@ -421,7 +421,7 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. 
 . Install the Helm CLI: `brew install kubernetes-helm`
 . Install Helm in Kubernetes cluster: `helm init`
 . Install the Helm chart: `helm install --name myapp apps/k8s/helm/myapp`
-.. By default, the `latest` tag for an image is used. Alternatively, you can use a different tag for the image:
+.. By default, the `latest` tag for an image is used. Alternatively, a different tag for the image can be used:
 +
 ```
 helm install --name myapp apps/k8s/helm/myapp --set "docker.tag=<tag>"
@@ -445,10 +445,6 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 . Deploy the manifests: `ks apply default`
 . Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete the application: `ks delete default`
-
-=== Deployment: Docker Compose
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/62
 
 === Deployment: Kubepack
 
@@ -615,7 +611,6 @@ curl `aws cloudformation \
 
 . `sam local start-api --template sam.yaml --env-vars test/env-win.json`
 . Test the urls above in browser
-
 
 === Deployment Pipeline: AWS CodePipeline
 
