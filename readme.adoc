@@ -628,7 +628,7 @@ curl `aws cloudformation \
   describe-stacks \
   --stack-name aws-microservices-deploy-options-lambda \
   --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" \
-  --output text`
+  --output text`/1
 ```
 
 === Deployment: Test SAM Local
