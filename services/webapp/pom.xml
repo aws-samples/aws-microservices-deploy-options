@@ -63,16 +63,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*Handler.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-plugin</artifactId>
                 <version>${version.wildfly.swarm}</version>
@@ -198,25 +188,18 @@
                 <dependency>
                     <groupId>com.amazonaws</groupId>
                     <artifactId>aws-lambda-java-core</artifactId>
-                    <version>${version.lambda.java.core}</version>
                 </dependency>
-
                 <dependency>
                     <groupId>com.amazonaws.serverless</groupId>
                     <artifactId>aws-serverless-java-container-jersey</artifactId>
-                    <version>${version.serverless.java.container.jersey}</version>
                 </dependency>
-
                 <dependency>
                     <groupId>org.glassfish.jersey.inject</groupId>
                     <artifactId>jersey-hk2</artifactId>
-                    <version>${jersey.version}</version>
                 </dependency>
-
                 <dependency>
                     <groupId>org.glassfish.jersey.media</groupId>
                     <artifactId>jersey-media-json-jackson</artifactId>
-                    <version>${jersey.version}</version>
                 </dependency>
             </dependencies>
             <build>
@@ -268,4 +251,3 @@
     </profiles>
 
 </project>
-

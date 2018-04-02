@@ -1,8 +1,8 @@
 package org.aws.samples.compute.greeting;
 
 import com.amazonaws.xray.AWSXRay;
-import com.amazonaws.xray.AWSXRayRecorder;
-import com.amazonaws.xray.entities.Segment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -15,14 +15,16 @@ import javax.ws.rs.core.MediaType;
 @Path("greeting")
 public class GreetingEndpoint {
 
+    private static final Logger logger = LoggerFactory.getLogger(GreetingEndpoint.class);
+
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String get() {
-//        AWSXRayRecorder xrayRecorder = AWSXRay.getGlobalRecorder();
-//        Segment segment = xrayRecorder.beginSegment("greeting");
-//        segment.putAnnotation("parentId", xrayRecorder.getTraceEntity().getId());
+        logger.info("get");
+        if (AWSXRay.getGlobalRecorder().getTraceEntity() != null)
+            AWSXRay.getCurrentSegment().putAnnotation("parentId",
+                    AWSXRay.getGlobalRecorder().getTraceEntity().getId());
         String response = "Hello";
-//        xrayRecorder.endSegment();
 
         return response;
     }

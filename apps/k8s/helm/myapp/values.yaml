@@ -10,5 +10,5 @@ webapp:
   image: arungupta/webapp
   replicaCount: 1
 
-repo:
+docker:
   tag: latest

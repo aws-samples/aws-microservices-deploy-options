@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 public class NameHandler implements RequestStreamHandler {
     private static final ResourceConfig jerseyApplication = new ResourceConfig()
-                                                             .packages("org.aws.samples.compute.name")
+                                                             .packages(NameHandler.class.getPackage().getName())
                                                              .register(JacksonFeature.class);
     private static final JerseyLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler
             = JerseyLambdaContainerHandler.getAwsProxyHandler(jerseyApplication);

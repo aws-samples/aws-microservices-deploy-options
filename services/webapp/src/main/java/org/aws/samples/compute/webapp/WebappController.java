@@ -2,8 +2,10 @@ package org.aws.samples.compute.webapp;
 
 import com.amazonaws.xray.AWSXRay;
 import com.amazonaws.xray.AWSXRayRecorder;
+import com.amazonaws.xray.entities.Namespace;
 import com.amazonaws.xray.entities.Segment;
 import com.amazonaws.xray.entities.Subsegment;
+import com.amazonaws.xray.entities.TraceHeader;
 import com.mashape.unirest.http.Unirest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +26,6 @@ public class WebappController {
     @Produces(MediaType.TEXT_PLAIN)
     @GET
     public String getMessage(@Context UriInfo uri, @PathParam("id") String id) {
-//        AWSXRayRecorder xrayRecorder = AWSXRay.getGlobalRecorder();
-//        Segment segment = xrayRecorder.beginSegment("webapp");
-//        segment.putAnnotation("parentId", xrayRecorder.getTraceEntity().getId());
-
         String greetingEndpoint = getEndpoint("GREETING", uri.getRequestUri().getScheme(), null);
         logger.info("ID Query is: " + id);
         
@@ -35,31 +33,44 @@ public class WebappController {
 //        String pathQuery = (id.equals("")) ? null : ("/" + id);
         String nameEndpoint = getEndpoint("NAME", uri.getRequestUri().getScheme(), pathQuery);
 
+        Segment segment = AWSXRay.getCurrentSegment();
+        AWSXRayRecorder xrayRecorder = AWSXRay.getGlobalRecorder();
+        if (AWSXRay.getGlobalRecorder().getTraceEntity() != null)
+            segment.putAnnotation("parentId", xrayRecorder.getTraceEntity().getId());
+        Subsegment subsegment = xrayRecorder.beginSubsegment("greeting");
+        subsegment.setNamespace(Namespace.REMOTE.toString());
+
         String greetingMessage = "";
         try {
             greetingMessage = Unirest
                     .get(greetingEndpoint)
                     .header("accept", "text/plain")
+                    .header("x-amzn-trace-id", getTraceHeader(segment, subsegment).toString())
                     .asString()
                     .getBody();
             logger.info("Greeting is: " + greetingMessage);
         } catch (Exception e) {
             logger.error("Failed connecting Greeting API: " + e);
         }
+        xrayRecorder.endSubsegment();
+
+        subsegment = xrayRecorder.beginSubsegment("name");
+        subsegment.setNamespace(Namespace.REMOTE.toString());
 
         String nameMessage = "";
         try {
             nameMessage = Unirest
                     .get(nameEndpoint)
                     .header("accept", "text/plain")
+                    .header("x-amzn-trace-id", getTraceHeader(segment, subsegment).toString())
                     .asString()
                     .getBody();
             logger.info("Name is: " + nameMessage);
         } catch (Exception e) {
             logger.error("Failed connecting Name API: " + e);
         }
+        xrayRecorder.endSubsegment();
 
-//        xrayRecorder.endSegment();
         return greetingMessage + " " + nameMessage;
     }
 
@@ -98,6 +109,15 @@ public class WebappController {
 
         logger.info(type + " endpoint: " + endpoint);
         return endpoint;
+    }
+
+    private TraceHeader getTraceHeader(Segment segment, Subsegment subsegment) {
+        if (segment == null || subsegment == null)
+            return new TraceHeader();
+
+        return new TraceHeader(segment.getTraceId(),
+                segment.isSampled() ? subsegment.getId() : null,
+                segment.isSampled() ? TraceHeader.SampleDecision.SAMPLED : TraceHeader.SampleDecision.NOT_SAMPLED);
     }
 
 }

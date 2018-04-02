@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 public class WebappHandler implements RequestStreamHandler {
     private static final ResourceConfig jerseyApplication = new ResourceConfig()
-                                                             .packages("org.aws.samples.compute.webapp")
+                                                             .packages(WebappHandler.class.getPackage().getName())
                                                              .register(JacksonFeature.class);
     private static final JerseyLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler
             = JerseyLambdaContainerHandler.getAwsProxyHandler(jerseyApplication);
