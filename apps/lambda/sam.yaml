@@ -2,6 +2,9 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >-
   Amazon API Gateway.
+Globals:
+  Api:
+    EndpointConfiguration: REGIONAL
 Resources:
   GreetingFunction:
     Type: 'AWS::Serverless::Function'
@@ -13,6 +16,7 @@ Resources:
         Amazon API Gateway.
       MemorySize: 1024
       Timeout: 20
+      Tracing: Active
       Events:
         greet:
           Type: Api
@@ -49,6 +53,7 @@ Resources:
         Amazon API Gateway.
       MemorySize: 1024
       Timeout: 20
+      Tracing: Active
       Events:
         findname:
           Type: Api
@@ -122,6 +127,7 @@ Resources:
         Amazon API Gateway.
       MemorySize: 1024
       Timeout: 20
+      Tracing: Active
       Environment:
         Variables:
           GREETING_SERVICE_HOST: !Sub "${GreetingApi}.execute-api.${AWS::Region}.amazonaws.com"
@@ -130,7 +136,7 @@ Resources:
           GREETING_SERVICE_SCHEME: "https"
           NAME_SERVICE_HOST: !Sub "${NamesApi}.execute-api.${AWS::Region}.amazonaws.com"
           NAME_SERVICE_PORT: "443"
-          NAME_SERVICE_PATH: "/prod/resources/names/1"
+          NAME_SERVICE_PATH: "/prod/resources/names"
           NAME_SERVICE_SCHEME: "https"
       Events:
         WebAppRoot:
