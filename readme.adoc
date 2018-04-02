@@ -102,7 +102,7 @@ Complete instructions are available at https://docs.aws.amazon.com/AmazonECS/lat
 
 This section will explain how to create an ECS cluster using AWS CLI.
 
-This section will use `us-east-1` region.
+Make sure to use `aws configure` to configure the `us-east-1` region.
 
 . Create an ECS cluster:
 +
@@ -115,7 +115,7 @@ aws ecs create-cluster --cluster-name MyCluster
 
   aws ec2 describe-key-pairs
 
-.. Create a security group. We'll use the default VPC id:
+.. Create a security group. Default VPC id will be used for the security group:
 +
 ```
 aws ec2 describe-vpcs \
@@ -132,7 +132,7 @@ aws ec2 create-security-group \
   --description "ECS cluster security group"
 ```
 +
-Note the security group id, it'll be used later.
+Note the security group id, it'll be used in the next step.
 +
 Enable SSH and an ingress at port `80`:
 +
@@ -141,7 +141,7 @@ aws ec2 authorize-security-group-ingress \
   --group-id <security-group> \
   --protocol tcp \
   --port 22 \
-  --cidr 0.0.0.0/0
+  --cidr 0.0.0.0/0;
 aws ec2 authorize-security-group-ingress \
   --group-id <security-group> \
   --protocol tcp \
@@ -151,7 +151,7 @@ aws ec2 authorize-security-group-ingress \
 +
 .. Container instances that run the agent require an IAM policy and role for the service to know that the agent belongs to you. Before you can launch container instances and register them into a cluster, you must create an IAM role for those container instances to use when they are launched.
 +
-If you've created an ECS using the console then `ecsInstanceRole` is already created for you. Check if the role exists:
+If you've created an ECS cluster using the console then `ecsInstanceRole` is already created for you. Check if the role exists:
 +
 ```
 aws iam list-roles \
@@ -162,17 +162,17 @@ If the output is empty, this means that the role does not exist and needs to be 
 +
 ```
 aws iam create-role \
-  --role-name ecsInstanceRole \
+  --role-name ecsInstanceRole2 \
   --assume-role-policy-document file://ecs-assume-role-policy.json
 aws iam put-role-policy \
-  --role-name ecsInstanceRole \
+  --role-name ecsInstanceRole2 \
   --policy-name MyPolicy \
   --policy-document file://ecs-instance-role-policy.json
 aws iam attach-role-policy \
-  --role-name ecsInstanceRole \
-  --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerServiceforEC2Role
+  --role-name ecsInstanceRole2 \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole
 aws iam attach-role-policy \
-  --role-name ecsInstanceRole \
+  --role-name ecsInstanceRole2 \
   --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
 ```
 +
@@ -186,8 +186,8 @@ aws ec2 run-instances \
   --count 3 \
   --instance-type c4.large \
   --key-name arun-us-east1 \
-  --security-group-ids sg-0184fa45c2fbbed2f \
-  --iam-instance-profile ecsInstanceRole
+  --security-group-ids sg-059060666247be0db \
+  --iam-instance-profile ecsInstanceRole2
 ```
 +
 The AMI id is for `us-east-1` as that is the only region where Fargate is currently supported. The complete list of AMI ids is listed at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html.
