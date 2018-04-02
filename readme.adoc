@@ -98,7 +98,7 @@ This section will explain how to create an ECS cluster using AWS Console.
 
 Complete instructions are available at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create_cluster.html.
 
-=== Deployment: Create Cluster using AWS CLoudFormation
+=== Deployment: Create Cluster using AWS CloudFormation
 
 This section will explain how to create an ECS cluster using CloudFormation. The cluster can be created with a private VPC or a public VPC. The CloudFormation templates for different types are available at https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/ECS/EC2LaunchType/clusters. 
 
