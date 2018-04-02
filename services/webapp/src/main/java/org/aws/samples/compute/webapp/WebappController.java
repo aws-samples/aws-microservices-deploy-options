@@ -30,7 +30,9 @@ public class WebappController {
 
         String greetingEndpoint = getEndpoint("GREETING", uri.getRequestUri().getScheme(), null);
         logger.info("ID Query is: " + id);
-        String pathQuery = (id.equals("")) ? null : ("/" + id);
+        
+        String pathQuery = (id == null || id.equals("")) ? "/1" : ("/" + id);
+//        String pathQuery = (id.equals("")) ? null : ("/" + id);
         String nameEndpoint = getEndpoint("NAME", uri.getRequestUri().getScheme(), pathQuery);
 
         String greetingMessage = "";

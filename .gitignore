@@ -9,3 +9,6 @@ apps/ecs/ecs-cli/ecs-cluster.*
 apps/ecs/ecs-cli/ecs-params_*.yaml
 readme.html
 **/~$*.pptx
+.project
+.settings
+.classpath

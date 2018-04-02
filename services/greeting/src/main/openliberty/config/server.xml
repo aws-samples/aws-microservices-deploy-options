@@ -1,0 +1,11 @@
+<server description="Greeting Service">
+
+  <featureManager>
+    <feature>jaxrs-2.0</feature>
+  </featureManager>
+
+  <httpEndpoint httpPort="${default.http.port}" id="defaultHttpEndpoint" host="*" />
+
+  <webApplication location="greeting.war" contextRoot="/" />
+
+</server>

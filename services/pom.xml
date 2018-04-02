@@ -36,6 +36,9 @@
         <jersey.version>2.26</jersey.version>
         <version.org.slf4j>1.7.5</version.org.slf4j>
         <version.org.json>20180130</version.org.json>
+        <!-- Open Liberty -->
+        <version.liberty-maven-plugin>2.2</version.liberty-maven-plugin>
+        <version.openliberty-runtime>RELEASE</version.openliberty-runtime>
     </properties>
     <dependencyManagement>
         <dependencies>
