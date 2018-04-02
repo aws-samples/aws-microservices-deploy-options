@@ -28,7 +28,7 @@ public class WebappController {
     public String getMessage(@Context UriInfo uri, @PathParam("id") String id) {
         String greetingEndpoint = getEndpoint("GREETING", uri.getRequestUri().getScheme(), null);
         logger.info("ID Query is: " + id);
-        String pathQuery = (id.equals("")) ? null : ("/" + id);
+        String pathQuery = (id.equals("")) ? "/1" : ("/" + id);
         String nameEndpoint = getEndpoint("NAME", uri.getRequestUri().getScheme(), pathQuery);
 
         Segment segment = AWSXRay.getCurrentSegment();
