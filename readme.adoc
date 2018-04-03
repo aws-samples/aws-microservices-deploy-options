@@ -425,8 +425,6 @@ aws ecs create-service \
       --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
 ```
 
-```
-
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/51
 
 === Deployment: Deploy Tasks and Service using ECS CLI
