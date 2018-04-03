@@ -108,34 +108,22 @@ The following resources are needed in order to deploy the sample application:
 - Security Group that allows the services to talk to each other
 
 . Create an ECS cluster with these resources:
-+
-```
-cd apps/ecs/fargate/templates
-aws cloudformation deploy \
-  --stack-name MyECSCluster \
-  --template-file infrastructure.yaml \
-  --region us-east-1 \
-  --capabilities CAPABILITY_IAM
-```
-+
-. Get the value of private ALB:
-+
-```
-aws cloudformation \
-  describe-stacks \
-  --region us-east-1 \
-  --stack-name MyECSCluster \
-  --query 'Stacks[].Outputs[?OutputKey==`ALBPrivateCNAME`].[OutputValue]' \
-  --output text
-```
-+
-. Register ECS task definition:
-+
-```
-aws ecs register-task-definition --cli-input-json file://greeting.json
-aws ecs register-task-definition --cli-input-json file://name.json
-aws ecs register-task-definition --cli-input-json file://webapp.json
-```
+
+  cd apps/ecs/fargate/templates
+  aws cloudformation deploy \
+    --stack-name MyECSCluster \
+    --template-file infrastructure.yaml \
+    --region us-east-1 \
+    --capabilities CAPABILITY_IAM
+
+. View the output from the cluster:
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[]' \
+    --output text
 
 ==== Deployment: Simple ECS Cluster
 
@@ -270,9 +258,102 @@ This concludes the creation of an ECS cluster using AWS CLI.
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/101
 
-=== Deployment: Deploy Tasks and Service using AWS CLI
+=== Deployment: Deploy Fargate Service using AWS CLI
 
-This section will explain how to deploy tasks and services in Fargate and EC2 mode using AWS CLI. Difference between the two deployment modes will be clearly highlighted.
+This section will explain how to deploy Fargate services using AWS CLI.
+
+This section will use a cluster previously created.
+
+. Register task definitions
+.. Get the value of private ALB:
++
+```
+aws cloudformation \
+  describe-stacks \
+  --region us-east-1 \
+  --stack-name MyECSCluster \
+  --query 'Stacks[].Outputs[?OutputKey==`ALBPrivateCNAME`].[OutputValue]' \
+  --output text
+```
++
+.. Update the value in `webapp.json`
+.. Register task definitions:
+
+  aws ecs register-task-definition --cli-input-json file://greeting.json
+  aws ecs register-task-definition --cli-input-json file://name.json
+  aws ecs register-task-definition --cli-input-json file://webapp.json
+
+.. List task definitions:
+
+  aws ecs list-task-definitions
+
+. Create services
+.. Get the cluster name:
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`ECSCluster`].[OutputValue]' \
+    --output text
+
+.. Get private subnet to create `greeting` and `name` service:
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`PrivateSubnet1`].[OutputValue]' \
+    --output text
+
+.. Create the `greeting` service:
+
+  aws ecs create-service \
+    --cluster <cluster-name> \
+    --service-name greeting-service \
+    --task-definition greeting:7 \
+    --desired-count 1 \
+    --launch-type "FARGATE" \
+    --network-configuration "awsvpcConfiguration={subnets=[subnet-abcd1234],securityGroups=[sg-abcd1234]}"
+
+.. Create the `name` service:
+
+    aws ecs create-service \
+      --cluster fargate-cluster \
+      --service-name name-service \
+      --task-definition name:8 \
+      --desired-count 1 \
+      --launch-type "FARGATE" \
+      --network-configuration "awsvpcConfiguration={subnets=[subnet-abcd1234],securityGroups=[sg-abcd1234]}"
+
+.. Create the `webapp` service. For that, get the public subnet and security group:
++
+```
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`PublicSubnet1`].[OutputValue]' \
+    --output text
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`SecurityGroupWebapp`].[OutputValue]' \
+    --output text
+```
++
+And, finally create the `webapp` service:
++
+```
+aws ecs create-service \
+      --cluster fargate-cluster \
+      --service-name name-service \
+      --task-definition name:8 \
+      --desired-count 1 \
+      --launch-type "FARGATE" \
+      --network-configuration "awsvpcConfiguration={subnets=[subnet-abcd1234],securityGroups=[sg-abcd1234]}"
+```
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/103
 
