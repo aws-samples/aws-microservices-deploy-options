@@ -284,9 +284,11 @@ aws cloudformation \
   aws ecs register-task-definition --cli-input-json file://webapp.json
 
 .. List task definitions:
-
++
   aws ecs list-task-definitions
-
++
+Note the task name and the version number from each ARN. This will be used for creting the service later.
++
 . Create services
 .. Get the cluster name:
 
@@ -306,25 +308,25 @@ aws cloudformation \
     --query 'Stacks[].Outputs[?OutputKey==`PrivateSubnet1`].[OutputValue]' \
     --output text
 
-.. Create the `greeting` service:
+.. Replace the `<cluster-name>`, `<greeting-task>` and `<subnet>` in the following command and create the `greeting` service:
 
   aws ecs create-service \
     --cluster <cluster-name> \
     --service-name greeting-service \
-    --task-definition greeting:7 \
+    --task-definition <greeting-task> \
     --desired-count 1 \
     --launch-type "FARGATE" \
-    --network-configuration "awsvpcConfiguration={subnets=[subnet-abcd1234],securityGroups=[sg-abcd1234]}"
+    --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
 
-.. Create the `name` service:
+.. Replace the `<cluster-name>`, `<name-task>` and `<subnet>` in the following command and create the `name` service:
 
     aws ecs create-service \
-      --cluster fargate-cluster \
+      --cluster <cluster-name> \
       --service-name name-service \
-      --task-definition name:8 \
+      --task-definition <name-task> \
       --desired-count 1 \
       --launch-type "FARGATE" \
-      --network-configuration "awsvpcConfiguration={subnets=[subnet-abcd1234],securityGroups=[sg-abcd1234]}"
+      --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
 
 .. Create the `webapp` service. For that, get the public subnet and security group:
 +
@@ -343,19 +345,19 @@ aws cloudformation \
     --output text
 ```
 +
-And, finally create the `webapp` service:
+And, finally create the `webapp` service. Make sure to replace `<cluster-name>`, `<webapp-task>`, `<subnet>` and `<security-group>`:
 +
 ```
 aws ecs create-service \
-      --cluster fargate-cluster \
-      --service-name name-service \
-      --task-definition name:8 \
+      --cluster <cluster-name> \
+      --service-name webapp-service \
+      --task-definition <webapp-task> \
       --desired-count 1 \
       --launch-type "FARGATE" \
-      --network-configuration "awsvpcConfiguration={subnets=[subnet-abcd1234],securityGroups=[sg-abcd1234]}"
+      --network-configuration "awsvpcConfiguration={subnets=[<subnet>],securityGroups=[<security-group>]}"
 ```
 
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/103
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/51
 
 === Deployment: Deploy Tasks and Service using ECS CLI
 
