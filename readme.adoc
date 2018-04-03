@@ -384,7 +384,7 @@ Note the task name and the version number from each ARN. This will be used for c
     --query 'Stacks[].Outputs[?OutputKey==`ECSCluster`].[OutputValue]' \
     --output text
 
-.. Get private subnet to create `greeting` and `name` service:
+.. Get private subnet:
 
   aws cloudformation \
     describe-stacks \
@@ -393,33 +393,33 @@ Note the task name and the version number from each ARN. This will be used for c
     --query 'Stacks[].Outputs[?OutputKey==`PrivateSubnet1`].[OutputValue]' \
     --output text
 
-.. Replace the `<cluster-name>`, `<greeting-task>` and `<subnet>` in the following command and create the `greeting` service:
+.. Replace the `<cluster-name>`, `<greeting-task-name-and-version>` and `<subnet>` in the following command and create the `greeting` service:
 
   aws ecs create-service \
     --cluster <cluster-name> \
     --service-name greeting-service \
-    --task-definition <greeting-task> \
+    --task-definition <greeting-task-name-and-version> \
     --desired-count 1 \
     --launch-type "FARGATE" \
     --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
 
-.. Replace the `<cluster-name>`, `<name-task>` and `<subnet>` in the following command and create the `name` service:
+.. Replace the `<cluster-name>`, `<name-task-name-and-version>` and `<subnet>` in the following command and create the `name` service:
 
     aws ecs create-service \
       --cluster <cluster-name> \
       --service-name name-service \
-      --task-definition <name-task> \
+      --task-definition <name-task-name-and-version> \
       --desired-count 1 \
       --launch-type "FARGATE" \
       --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
 
-.. Replace the `<cluster-name>`, `<name-task>` and `<subnet>` in the following command and create the `name` service:
+.. Replace the `<cluster-name>`, `<webapp-task-name-and-version>` and `<subnet>` in the following command and create the `name` service:
 +
 ```
 aws ecs create-service \
       --cluster <cluster-name> \
       --service-name webapp-service \
-      --task-definition <webapp-task> \
+      --task-definition <webapp-task-name-and-version> \
       --desired-count 1 \
       --launch-type "FARGATE" \
       --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
