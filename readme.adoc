@@ -262,7 +262,92 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/101
 
 This section will explain how to deploy Fargate services using AWS CLI.
 
-This section will use a cluster previously created.
+This section will use a cluster previously created using CloudFormation.
+
+. Create target groups
+.. Get VPC id from the CloudFormation stack:
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`VPC`].[OutputValue]' \
+    --output text
+
+.. Create target group for `greeting`, `name` and `webapp`:
++
+  aws elbv2 create-target-group \
+    --name greeting-target-group \
+    --protocol HTTP \
+    --port 80 \
+    --vpc-id <vpc> \
+    --health-check-protocol HTTP \
+    --health-check-path /\;
+  aws elbv2 create-target-group \
+    --name name-target-group \
+    --protocol HTTP \
+    --port 80 \
+    --vpc-id <vpc> \
+    --health-check-protocol HTTP \
+    --health-check-path /\;
+  aws elbv2 create-target-group \
+    --name webapp-target-group \
+    --protocol HTTP \
+    --port 80 \
+    --vpc-id <vpc> \
+    --health-check-protocol HTTP \
+    --health-check-path /\;
++
+Note down the ARNs for each target group.
++
+. Configure target groups and rules for private ALB
+.. Get private ALB:
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`ALBPrivate`].[OutputValue]' \
+    --output text
+
+.. Create listener:
+
+  aws elbv2 create-listener \
+    --load-balancer-arn <private-alb-arn> \
+    --protocol HTTP
+    --port 80
+    --default-actions Type=forward,TargetGroupArn=<name-target-group-arn>
+
+.. Note down the listener ARN from previous step. Add rules:
+
+  aws elbv2 create-rule \
+    --listener-arn <listener-arn> \
+    --conditions Field=path-pattern,Values='/greeting-service' \
+    --priority 10 \
+    --actions Type=forward,TargetGroupArn=<greeting-target-group-arn>;
+  aws elbv2 create-rule \
+    --listener-arn <listener-arn> \
+    --conditions Field=path-pattern,Values='/name-service' \
+    --priority 10 \
+    --actions Type=forward,TargetGroupArn=<name-target-group-arn>
+
+. Configure target groups and rules for public ALB
+.. Get public ALB
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`ALBPublic`].[OutputValue]' \
+    --output text
+
+.. Create listener:
+
+  aws elbv2 create-listener \
+    --load-balancer-arn <public-alb-arn> \
+    --protocol HTTP
+    --port 80
+    --default-actions Type=forward,TargetGroupArn=<webapp-target-group-arn>
 
 . Register task definitions
 .. Get the value of private ALB:
@@ -299,7 +384,7 @@ Note the task name and the version number from each ARN. This will be used for c
     --query 'Stacks[].Outputs[?OutputKey==`ECSCluster`].[OutputValue]' \
     --output text
 
-.. Get private subnet to create `greeting` and `name` service:
+.. Get private subnet:
 
   aws cloudformation \
     describe-stacks \
@@ -308,53 +393,36 @@ Note the task name and the version number from each ARN. This will be used for c
     --query 'Stacks[].Outputs[?OutputKey==`PrivateSubnet1`].[OutputValue]' \
     --output text
 
-.. Replace the `<cluster-name>`, `<greeting-task>` and `<subnet>` in the following command and create the `greeting` service:
+.. Replace the `<cluster-name>`, `<greeting-task-name-and-version>` and `<subnet>` in the following command and create the `greeting` service:
 
   aws ecs create-service \
     --cluster <cluster-name> \
     --service-name greeting-service \
-    --task-definition <greeting-task> \
+    --task-definition <greeting-task-name-and-version> \
     --desired-count 1 \
     --launch-type "FARGATE" \
     --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
 
-.. Replace the `<cluster-name>`, `<name-task>` and `<subnet>` in the following command and create the `name` service:
+.. Replace the `<cluster-name>`, `<name-task-name-and-version>` and `<subnet>` in the following command and create the `name` service:
 
     aws ecs create-service \
       --cluster <cluster-name> \
       --service-name name-service \
-      --task-definition <name-task> \
+      --task-definition <name-task-name-and-version> \
       --desired-count 1 \
       --launch-type "FARGATE" \
       --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
 
-.. Create the `webapp` service. For that, get the public subnet and security group:
-+
-```
-  aws cloudformation \
-    describe-stacks \
-    --region us-east-1 \
-    --stack-name MyECSCluster \
-    --query 'Stacks[].Outputs[?OutputKey==`PublicSubnet1`].[OutputValue]' \
-    --output text
-  aws cloudformation \
-    describe-stacks \
-    --region us-east-1 \
-    --stack-name MyECSCluster \
-    --query 'Stacks[].Outputs[?OutputKey==`SecurityGroupWebapp`].[OutputValue]' \
-    --output text
-```
-+
-And, finally create the `webapp` service. Make sure to replace `<cluster-name>`, `<webapp-task>`, `<subnet>` and `<security-group>`:
+.. Replace the `<cluster-name>`, `<webapp-task-name-and-version>` and `<subnet>` in the following command and create the `name` service:
 +
 ```
 aws ecs create-service \
       --cluster <cluster-name> \
       --service-name webapp-service \
-      --task-definition <webapp-task> \
+      --task-definition <webapp-task-name-and-version> \
       --desired-count 1 \
       --launch-type "FARGATE" \
-      --network-configuration "awsvpcConfiguration={subnets=[<subnet>],securityGroups=[<security-group>]}"
+      --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
 ```
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/51
