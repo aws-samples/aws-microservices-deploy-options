@@ -417,6 +417,19 @@ Use the command to test:
 curl http://<public_endpoint>
 ```
 
+=== Deployment Pipeline for Fargate: AWS CodePipeline
+
+This module explains how to automate the deployment of Fargate tasks using CodeCommit as the source code repository, CodeBuild for compiling assets and building Docker images, and CodePipeline for orchestrating the activities required to create, update, or deploy your Fargate tasks.  The guide for creating an automated pipeline can be found at [Running Containers on AWS Fargate](http://running-containers-on-aws-fargate.s3-website-us-east-1.amazonaws.com/build-a-continuous-deployment-pipeline.html).   Before you create the pipeline, you must complete the tasks in the [Introduction](http://running-containers-on-aws-fargate.s3-website-us-east-1.amazonaws.com/index.html#introduction) section which includes instructions for creating a *workshop* repository for storing your Docker images and a DDB table that will serve as the backing store for the containerized application that you will be deploying later.  You will also need to create an ECS cluster among other things.  If you’re new to ECS, the [first run wizard](https://console.aws.amazon.com/ecs/home?region=us-east-1#/firstRun) to step you through you through creating a cluster and a task definitionI for deploying a Hello World application.
+
+If you rather not use Cloud9 for your development environment, you will need to install the [AWS](https://docs.aws.amazon.com/cli/latest/userguide/awscli-install-windows.html) and [Git](https://git-scm.com/downloads) and [Docker](https://www.docker.com/community-edition) CLIs on your local machine. 
+
+When you complete this module, you will have learnt: 
+
+. How to push code to a CodeCommit source code repository
+. How to use CodeBuild to build a push an Docker image to ECR
+. How CodePipeline can be used to orchestrate the step required to deploy a Fargate task
+. The additional parameters you need to add to your task definition to deploy a Fargate task
+
 === Deployment Pipeline: AWS CodePipeline
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/104
