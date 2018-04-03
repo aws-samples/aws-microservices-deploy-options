@@ -456,9 +456,13 @@ Use the command to test:
 curl http://<public_endpoint>
 ```
 
-=== Deployment Pipeline: AWS CodePipeline
+=== Deployment Pipeline: EC2-mode with AWS CodePipeline
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/104
+
+=== Deployment Pipeline: Fargate with AWS CodePipeline
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/82
 
 === Monitoring: AWS X-Ray
 
