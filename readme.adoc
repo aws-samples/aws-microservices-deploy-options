@@ -100,7 +100,46 @@ Complete instructions are available at https://docs.aws.amazon.com/AmazonECS/lat
 
 === Deployment: Create Cluster using AWS CloudFormation
 
-This section will explain how to create an ECS cluster using CloudFormation. The cluster can be created with a private VPC or a public VPC. The CloudFormation templates for different types are available at https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/ECS/EC2LaunchType/clusters. 
+This section will explain how to create an ECS cluster using CloudFormation.
+
+The following resources are needed in order to deploy the sample application:
+
+- Private Application Load Balancer for `greeting` and `name` and a public ALB for `webapp`
+- Security Group that allows the services to talk to each other
+
+. Create an ECS cluster with these resources:
++
+```
+cd apps/ecs/fargate/templates
+aws cloudformation deploy \
+  --stack-name MyECSCluster \
+  --template-file infrastructure.yaml \
+  --region us-east-1 \
+  --capabilities CAPABILITY_IAM
+```
++
+. Get the value of private ALB:
++
+```
+aws cloudformation \
+  describe-stacks \
+  --region us-east-1 \
+  --stack-name MyECSCluster \
+  --query 'Stacks[].Outputs[?OutputKey==`ALBPrivateCNAME`].[OutputValue]' \
+  --output text
+```
++
+. Register ECS task definition:
++
+```
+aws ecs register-task-definition --cli-input-json file://greeting.json
+aws ecs register-task-definition --cli-input-json file://name.json
+aws ecs register-task-definition --cli-input-json file://webapp.json
+```
+
+==== Deployment: Simple ECS Cluster
+
+This section explains how to create a ECS cluster with no additional resources. The cluster can be created with a private VPC or a public VPC. The CloudFormation templates for different types are available at https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/ECS/EC2LaunchType/clusters. 
 
 This section will create a 3-instance cluster using a public VPC:
 
