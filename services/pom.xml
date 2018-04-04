@@ -16,7 +16,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <docker.repo>arungupta</docker.repo>
         <docker.tag>latest</docker.tag>
-        <service.http.port>none</service.http.port>
         <webapp.host>localhost</webapp.host>
         <webapp.port>8080</webapp.port>
         <greeting.host>localhost</greeting.host>
@@ -41,12 +40,6 @@
         <version.jackson.databind>2.9.4</version.jackson.databind>
         <version.jackson.annotations>2.9.4</version.jackson.annotations>
         <version.javax.inject>1</version.javax.inject>
-        <!-- Skip for parent -->
-        <wildfly.package.phase>none</wildfly.package.phase>
-        <liberty.create-server.phase>none</liberty.create-server.phase>
-        <liberty.install-apps.phase>none</liberty.install-apps.phase>
-        <liberty.start-server.phase>none</liberty.start-server.phase>
-        <liberty.stop-server.phase>none</liberty.stop-server.phase>
         <!-- Open Liberty -->
         <version.liberty-maven-plugin>2.2</version.liberty-maven-plugin>
         <version.openliberty-runtime>RELEASE</version.openliberty-runtime>
