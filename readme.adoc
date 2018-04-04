@@ -100,7 +100,34 @@ Complete instructions are available at https://docs.aws.amazon.com/AmazonECS/lat
 
 === Deployment: Create Cluster using AWS CloudFormation
 
-This section will explain how to create an ECS cluster using CloudFormation. The cluster can be created with a private VPC or a public VPC. The CloudFormation templates for different types are available at https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/ECS/EC2LaunchType/clusters. 
+This section will explain how to create an ECS cluster using CloudFormation.
+
+The following resources are needed in order to deploy the sample application:
+
+- Private Application Load Balancer for `greeting` and `name` and a public ALB for `webapp`
+- Security Group that allows the services to talk to each other
+
+. Create an ECS cluster with these resources:
+
+  cd apps/ecs/fargate/templates
+  aws cloudformation deploy \
+    --stack-name MyECSCluster \
+    --template-file infrastructure.yaml \
+    --region us-east-1 \
+    --capabilities CAPABILITY_IAM
+
+. View the output from the cluster:
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[]' \
+    --output text
+
+==== Deployment: Simple ECS Cluster
+
+This section explains how to create a ECS cluster with no additional resources. The cluster can be created with a private VPC or a public VPC. The CloudFormation templates for different types are available at https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/ECS/EC2LaunchType/clusters. 
 
 This section will create a 3-instance cluster using a public VPC:
 
@@ -123,119 +150,174 @@ List the cluster using `aws ecs list-clusters` command:
 }
 ```
 
-=== Deployment: Create Cluster using AWS CLI
+=== Deployment: Deploy Fargate Service using AWS CLI
 
-This section will explain how to create an ECS cluster using AWS CLI.
+This section will explain how to deploy Fargate services using AWS CLI.
 
-Make sure to use `aws configure` to configure the `us-east-1` region.
+This section will use a cluster previously created using CloudFormation.
 
-. Create an ECS cluster:
+. Create target groups
+.. Get VPC id from the CloudFormation stack:
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`VPC`].[OutputValue]' \
+    --output text
+
+.. Create target group for `greeting`, `name` and `webapp`:
++
+  aws elbv2 create-target-group \
+    --name greeting-target-group \
+    --protocol HTTP \
+    --port 80 \
+    --vpc-id <vpc> \
+    --health-check-protocol HTTP \
+    --health-check-path /\;
+  aws elbv2 create-target-group \
+    --name name-target-group \
+    --protocol HTTP \
+    --port 80 \
+    --vpc-id <vpc> \
+    --health-check-protocol HTTP \
+    --health-check-path /\;
+  aws elbv2 create-target-group \
+    --name webapp-target-group \
+    --protocol HTTP \
+    --port 80 \
+    --vpc-id <vpc> \
+    --health-check-protocol HTTP \
+    --health-check-path /\;
++
+Note down the ARNs for each target group.
++
+. Configure target groups and rules for private ALB
+.. Get private ALB:
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`ALBPrivate`].[OutputValue]' \
+    --output text
+
+.. Create listener:
+
+  aws elbv2 create-listener \
+    --load-balancer-arn <private-alb-arn> \
+    --protocol HTTP
+    --port 80
+    --default-actions Type=forward,TargetGroupArn=<name-target-group-arn>
+
+.. Note down the listener ARN from previous step. Add rules:
+
+  aws elbv2 create-rule \
+    --listener-arn <listener-arn> \
+    --conditions Field=path-pattern,Values='/greeting-service' \
+    --priority 10 \
+    --actions Type=forward,TargetGroupArn=<greeting-target-group-arn>;
+  aws elbv2 create-rule \
+    --listener-arn <listener-arn> \
+    --conditions Field=path-pattern,Values='/name-service' \
+    --priority 10 \
+    --actions Type=forward,TargetGroupArn=<name-target-group-arn>
+
+. Configure target groups and rules for public ALB
+.. Get public ALB
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`ALBPublic`].[OutputValue]' \
+    --output text
+
+.. Create listener:
+
+  aws elbv2 create-listener \
+    --load-balancer-arn <public-alb-arn> \
+    --protocol HTTP
+    --port 80
+    --default-actions Type=forward,TargetGroupArn=<webapp-target-group-arn>
+
+. Register task definitions
+.. Get the value of private ALB:
 +
 ```
-aws ecs create-cluster --cluster-name MyCluster
-```
-+
-. Create and/or identify AWS resources needed for the cluster
-.. Get the list of key pairs:
-
-  aws ec2 describe-key-pairs
-
-.. Create a security group. Default VPC id will be used for the security group:
-+
-```
-aws ec2 describe-vpcs \
-  --query 'Vpcs[?IsDefault==`true`].VpcId' \
+aws cloudformation \
+  describe-stacks \
+  --region us-east-1 \
+  --stack-name MyECSCluster \
+  --query 'Stacks[].Outputs[?OutputKey==`ALBPrivateCNAME`].[OutputValue]' \
   --output text
 ```
 +
-Now, create the security group:
+.. Update the value in `webapp.json`
+.. Register task definitions:
+
+  aws ecs register-task-definition --cli-input-json file://greeting.json
+  aws ecs register-task-definition --cli-input-json file://name.json
+  aws ecs register-task-definition --cli-input-json file://webapp.json
+
+.. List task definitions:
++
+  aws ecs list-task-definitions
++
+Note the task name and the version number from each ARN. This will be used for creting the service later.
++
+. Create services
+.. Get the cluster name:
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`ECSCluster`].[OutputValue]' \
+    --output text
+
+.. Get private subnet:
+
+  aws cloudformation \
+    describe-stacks \
+    --region us-east-1 \
+    --stack-name MyECSCluster \
+    --query 'Stacks[].Outputs[?OutputKey==`PrivateSubnet1`].[OutputValue]' \
+    --output text
+
+.. Replace the `<cluster-name>`, `<greeting-task-name-and-version>` and `<subnet>` in the following command and create the `greeting` service:
+
+  aws ecs create-service \
+    --cluster <cluster-name> \
+    --service-name greeting-service \
+    --task-definition <greeting-task-name-and-version> \
+    --desired-count 1 \
+    --launch-type "FARGATE" \
+    --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
+
+.. Replace the `<cluster-name>`, `<name-task-name-and-version>` and `<subnet>` in the following command and create the `name` service:
+
+    aws ecs create-service \
+      --cluster <cluster-name> \
+      --service-name name-service \
+      --task-definition <name-task-name-and-version> \
+      --desired-count 1 \
+      --launch-type "FARGATE" \
+      --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
+
+.. Replace the `<cluster-name>`, `<webapp-task-name-and-version>` and `<subnet>` in the following command and create the `name` service:
 +
 ```
-aws ec2 create-security-group \
-  --group-name MySecurityGroup \
-  --vpc-id <default-vpc-id> \
-  --description "ECS cluster security group"
-```
-+
-Note the security group id, it'll be used in the next step.
-+
-Enable SSH and an ingress at port `80`:
-+
-```
-aws ec2 authorize-security-group-ingress \
-  --group-id <security-group> \
-  --protocol tcp \
-  --port 22 \
-  --cidr 0.0.0.0/0;
-aws ec2 authorize-security-group-ingress \
-  --group-id <security-group> \
-  --protocol tcp \
-  --port 80 \
-  --cidr 0.0.0.0/0
-```
-+
-.. Container instances that run the agent require an IAM policy and role for the service to know that the agent belongs to you. Before you can launch container instances and register them into a cluster, you must create an IAM role for those container instances to use when they are launched.
-+
-If you've created an ECS cluster using the console then `ecsInstanceRole` is already created for you. Check if the role exists:
-+
-```
-aws iam list-roles \
-  --query 'Roles[?RoleName==`ecsInstanceRole`]'
-```
-+
-If the output is empty, this means that the role does not exist and needs to be created. Create the role and attach the appropriate policies:
-+
-```
-aws iam create-role \
-  --role-name ecsInstanceRole2 \
-  --assume-role-policy-document file://ecs-assume-role-policy.json
-aws iam put-role-policy \
-  --role-name ecsInstanceRole2 \
-  --policy-name MyPolicy \
-  --policy-document file://ecs-instance-role-policy.json
-aws iam attach-role-policy \
-  --role-name ecsInstanceRole2 \
-  --policy-arn arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole
-aws iam attach-role-policy \
-  --role-name ecsInstanceRole2 \
-  --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
-```
-+
-The container instance will be launched with these IAM permissions. This allows the ECS Agent in the EC2 instance to connect to the ECS cluster.
-+
-. Launch an instance (work in progress):
-+
-```
-aws ec2 run-instances \
-  --image-id ami-cb17d8b6 \
-  --count 3 \
-  --instance-type c4.large \
-  --key-name arun-us-east1 \
-  --security-group-ids sg-059060666247be0db \
-  --iam-instance-profile ecsInstanceRole2
-```
-+
-The AMI id is for `us-east-1` as that is the only region where Fargate is currently supported. The complete list of AMI ids is listed at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html.
-+
-By default, this instance is launched using a default subnet from the default VPC. Alternatively, you can use `--subnet-id` to specify the subnet from a different VPC.
-+
-This is causing https://github.com/aws-samples/aws-microservices-deploy-options/issues/121.
-+
-. List the container instances in the cluster:
-+
-```
-aws ecs list-container-instances --cluster MyCluster
+aws ecs create-service \
+      --cluster <cluster-name> \
+      --service-name webapp-service \
+      --task-definition <webapp-task-name-and-version> \
+      --desired-count 1 \
+      --launch-type "FARGATE" \
+      --network-configuration "awsvpcConfiguration={subnets=[<subnet>]}"
 ```
 
-This concludes the creation of an ECS cluster using AWS CLI.
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/101
-
-=== Deployment: Deploy Tasks and Service using AWS CLI
-
-This section will explain how to deploy tasks and services in Fargate and EC2 mode using AWS CLI. Difference between the two deployment modes will be clearly highlighted.
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/103
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/51
 
 === Deployment: Deploy Tasks and Service using ECS CLI
 
@@ -417,9 +499,13 @@ Use the command to test:
 curl http://<public_endpoint>
 ```
 
-=== Deployment Pipeline: AWS CodePipeline
+=== Deployment Pipeline: EC2-mode with AWS CodePipeline
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/104
+
+=== Deployment Pipeline: Fargate with AWS CodePipeline
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/82
 
 === Monitoring: AWS X-Ray
 
@@ -430,6 +516,30 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/55
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/78
 
 == Kubernetes
+
+=== Deployment: Create Cluster using kops
+
+. Install kops
+
+  brew update && brew install kops
+
+. Create an S3 bucket and setup `KOPS_STATE_STORE`:
+
+  aws s3 mb s3://kubernetes-aws-io
+  export KOPS_STATE_STORE=s3://kubernetes-aws-io
+
+. Define an envinronment variable for Availability Zones for the cluster:
+
+  export AWS_AVAILABILITY_ZONES="$(aws ec2 describe-availability-zones --query 'AvailabilityZones[].ZoneName' --output text | awk -v OFS="," '$1=$1')"
+
+. Create cluster:
+
+  kops create cluster \
+    --name=cluster.k8s.local \
+    --zones=$AWS_AVAILABILITY_ZONES \
+    --yes
+
+By default, it creates a single master and 2 worker cluster spread across the AZs.
 
 === Deployment: Standalone Manifests
 

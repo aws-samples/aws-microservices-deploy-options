@@ -3,21 +3,21 @@
   "containerDefinitions": [
     {
       "name": "webapp",
-      "image": "arungupta/webapp",
-      "cpu": "1024",
+      "image": "arungupta/webapp:latest",
+      "cpu": "256",
       "memory": "1024",
       "essential": true,
       "portMappings": [
         {
-          "hostPort": "8080"
-          "containerPort": "8080"
+          "hostPort": "8080",
+          "containerPort": "8080",
           "protocol": "tcp"
         }
       ],
       "environment": [
         {
           "name": "GREETING_SERVICE_HOST",
-          "value": "INTERNAL_ALB_URL"
+          "value": "REPLACE_WITH_INTERNAL_ALB_URL"
         },
         {
           "name": "GREETING_SERVICE_PORT",
@@ -29,7 +29,7 @@
         },
         {
           "name": "NAME_SERVICE_HOST",
-          "value": "INTERNAL_ALB_URL"
+          "value": "REPLACE_WITH_INTERNAL_ALB_URL"
         },
         {
           "name": "NAME_SERVICE_PORT",
@@ -38,7 +38,7 @@
         {
           "name": "NAME_SERVICE_PATH",
           "value": "/resources/names/1"
-        },
+        }
       ]
     }
   ]
