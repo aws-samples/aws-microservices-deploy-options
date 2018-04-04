@@ -583,7 +583,20 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
 === Deployment: Kubepack
 
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/63
+Make sure `kubectl` and `kubepack` CLI is installed and configured for the Kubernetes cluster. To install `kubepack` cli, run:
+
+```
+wget -O kubepack https://github.com/kubepack/kubepack/releases/download/0.1.0/kubepack-darwin-amd64 \
+  && chmod +x kubepack \
+  && sudo mv kubepack /usr/local/bin/
+```
+
+. Move to package root directory: `cd apps/k8s/kubepack`
+. Pull dependent packages: `pack dep -f .`
+. Compile final package: `pack up -f .`
+. Install package: `./manifests/output/install.sh`
+. Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
+. Delete the application: `kubectl delete -R -f manifests/output/github.com/kubepack/aws-microservices-deploy-options/apps/k8s/kubepack`
 
 === Deployment Pipeline: AWS Codepipeline
 
