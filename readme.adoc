@@ -517,6 +517,30 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/78
 
 == Kubernetes
 
+=== Deployment: Create Cluster using kops
+
+. Install kops
+
+  brew update && brew install kops
+
+. Create an S3 bucket and setup `KOPS_STATE_STORE`:
+
+  aws s3 mb s3://kubernetes-aws-io
+  export KOPS_STATE_STORE=s3://kubernetes-aws-io
+
+. Define an envinronment variable for Availability Zones for the cluster:
+
+  export AWS_AVAILABILITY_ZONES="$(aws ec2 describe-availability-zones --query 'AvailabilityZones[].ZoneName' --output text | awk -v OFS="," '$1=$1')"
+
+. Create cluster:
+
+  kops create cluster \
+    --name=cluster.k8s.local \
+    --zones=$AWS_AVAILABILITY_ZONES \
+    --yes
+
+By default, it creates a single master and 2 worker cluster spread across the AZs.
+
 === Deployment: Standalone Manifests
 
 Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
