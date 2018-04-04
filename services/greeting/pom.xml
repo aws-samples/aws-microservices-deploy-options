@@ -14,7 +14,7 @@
     <artifactId>greeting</artifactId>
     <packaging>war</packaging>
 
-    <build>
+<!--     <build>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
@@ -34,7 +34,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Liberty plugin -->
             <plugin>
                 <groupId>net.wasdev.wlp.maven.plugins</groupId>
                 <artifactId>liberty-maven-plugin</artifactId>
@@ -89,9 +88,98 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>
+    </build> -->
 
     <profiles>
+        <profile>
+            <id>wildfly</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.swarm</groupId>
+                        <artifactId>wildfly-swarm-plugin</artifactId>
+                        <version>${version.wildfly.swarm}</version>
+                        <configuration>
+                            <properties>
+                                <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+                                <swarm.http.port>${greeting.port}</swarm.http.port>
+                            </properties>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>openliberty</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>net.wasdev.wlp.maven.plugins</groupId>
+                        <artifactId>liberty-maven-plugin</artifactId>
+                        <version>${version.liberty-maven-plugin}</version>
+                        <configuration>
+                            <!-- Open Liberty runtime -->
+                            <assemblyArtifact>
+                                <groupId>io.openliberty</groupId>
+                                <artifactId>openliberty-runtime</artifactId>
+                                <version>${version.openliberty-runtime}</version>
+                                <type>zip</type>
+                            </assemblyArtifact>
+                            <configFile>src/main/openliberty/config/server.xml</configFile>
+                            <include>usr</include>
+                            <bootstrapProperties>
+                                <default.http.port>${greeting.port}</default.http.port>
+                            </bootstrapProperties>
+                        </configuration>
+                        <executions>
+                            <!-- Create the defaultServer -->
+                            <execution>
+                                <id>create-default-server</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>create-server</goal>
+                                </goals>
+                            </execution>
+                            <!-- Install the service war into the defaultServer apps/ directory-->
+                            <execution>
+                                <id>install-app</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>install-apps</goal>
+                                </goals>
+                                <configuration>
+                                    <appsDirectory>apps</appsDirectory>
+                                    <stripVersion>true</stripVersion>
+                                    <installAppPackages>project</installAppPackages>
+                                </configuration>
+                            </execution>
+                            <!-- Start/stop server goals -->
+                            <execution>
+                                <id>start-server</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>test-start-server</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop-server</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>test-stop-server</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>docker</id>
             <build>

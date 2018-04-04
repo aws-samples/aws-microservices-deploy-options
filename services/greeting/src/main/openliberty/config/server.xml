@@ -6,6 +6,12 @@
 
   <httpEndpoint httpPort="${default.http.port}" id="defaultHttpEndpoint" host="*" />
 
+<!--     <logging  traceSpecification="com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all:HTTPDispatcher=all"
+            traceFileName="trace.log"
+            maxFileSize="20"
+            maxFiles="10"
+            traceFormat="BASIC" /> -->
+
   <webApplication location="greeting.war" contextRoot="/" />
 
 </server>

@@ -9,6 +9,7 @@
 
     <artifactId>webapp</artifactId>
     <packaging>war</packaging>
+
     <properties>
         <fabric8.generator.name>${docker.repo}/${project.build.finalName}:${docker.tag}</fabric8.generator.name>
     </properties>
@@ -43,107 +44,10 @@
             <artifactId>slf4j-jdk14</artifactId>
             <version>${version.org.slf4j}</version>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.9.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.9.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.9.5</version>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>wildfly-swarm-plugin</artifactId>
-                <version>${version.wildfly.swarm}</version>
-                <configuration>
-                    <properties>
-                        <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
-                        <swarm.http.host>${webapp.host}</swarm.http.host>
-                        <swarm.http.port>${webapp.port}</swarm.http.port>
-                    </properties>
-                    <environment>
-                        <GREETING_SERVICE_HOST>${greeting.host}</GREETING_SERVICE_HOST>
-                        <GREETING_SERVICE_PORT>${greeting.port}</GREETING_SERVICE_PORT>
-                        <GREETING_SERVICE_PATH>${greeting.path}</GREETING_SERVICE_PATH>
-                        <NAME_SERVICE_HOST>${name.host}</NAME_SERVICE_HOST>
-                        <NAME_SERVICE_PORT>${name.port}</NAME_SERVICE_PORT>
-                        <NAME_SERVICE_PATH>${name.path}</NAME_SERVICE_PATH>
-                    </environment>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>package</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Liberty plugin -->
-            <plugin>
-                <groupId>net.wasdev.wlp.maven.plugins</groupId>
-                <artifactId>liberty-maven-plugin</artifactId>
-                <version>${version.liberty-maven-plugin}</version>
-                <configuration>
-                    <assemblyArtifact>
-                        <groupId>io.openliberty</groupId>
-                        <artifactId>openliberty-runtime</artifactId>
-                        <version>${version.openliberty-runtime}</version>
-                        <type>zip</type>
-                    </assemblyArtifact>
-                    <configFile>src/main/openliberty/config/server.xml</configFile>
-                    <serverEnv>src/main/openliberty/env/server.env</serverEnv>
-                    <include>usr</include>
-                    <bootstrapProperties>
-                        <default.http.port>${webapp.port}</default.http.port>
-                    </bootstrapProperties>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>create-default-server</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>create-server</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>install-app</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>install-apps</goal>
-                        </goals>
-                        <configuration>
-                            <appsDirectory>apps</appsDirectory>
-                            <stripVersion>true</stripVersion>
-                            <installAppPackages>project</installAppPackages>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>start-server</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>test-start-server</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>stop-server</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>test-stop-server</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>fabric8-maven-plugin</artifactId>
@@ -151,7 +55,107 @@
             </plugin>
         </plugins>
     </build>
+
     <profiles>
+        <profile>
+            <id>wildfly</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.swarm</groupId>
+                        <artifactId>wildfly-swarm-plugin</artifactId>
+                        <version>${version.wildfly.swarm}</version>
+                        <configuration>
+                            <properties>
+                                <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+                                <swarm.http.host>${webapp.host}</swarm.http.host>
+                                <swarm.http.port>${webapp.port}</swarm.http.port>
+                            </properties>
+                            <environment>
+                                <GREETING_SERVICE_HOST>${greeting.host}</GREETING_SERVICE_HOST>
+                                <GREETING_SERVICE_PORT>${greeting.port}</GREETING_SERVICE_PORT>
+                                <GREETING_SERVICE_PATH>${greeting.path}</GREETING_SERVICE_PATH>
+                                <NAME_SERVICE_HOST>${name.host}</NAME_SERVICE_HOST>
+                                <NAME_SERVICE_PORT>${name.port}</NAME_SERVICE_PORT>
+                                <NAME_SERVICE_PATH>${name.path}</NAME_SERVICE_PATH>
+                            </environment>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>openliberty</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>net.wasdev.wlp.maven.plugins</groupId>
+                        <artifactId>liberty-maven-plugin</artifactId>
+                        <version>${version.liberty-maven-plugin}</version>
+                        <configuration>
+                            <!-- Open Liberty runtime -->
+                            <assemblyArtifact>
+                                <groupId>io.openliberty</groupId>
+                                <artifactId>openliberty-runtime</artifactId>
+                                <version>${version.openliberty-runtime}</version>
+                                <type>zip</type>
+                            </assemblyArtifact>
+                            <configFile>src/main/openliberty/config/server.xml</configFile>
+                            <serverEnv>src/main/openliberty/env/server.env</serverEnv>
+                            <include>usr</include>
+                            <bootstrapProperties>
+                                <default.http.port>${webapp.port}</default.http.port>
+                            </bootstrapProperties>
+                        </configuration>
+                        <executions>
+                            <!-- Create the defaultServer -->
+                            <execution>
+                                <id>create-default-server</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>create-server</goal>
+                                </goals>
+                            </execution>
+                            <!-- Install the service war into the defaultServer apps/ directory-->
+                            <execution>
+                                <id>install-app</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>install-apps</goal>
+                                </goals>
+                                <configuration>
+                                    <appsDirectory>apps</appsDirectory>
+                                    <stripVersion>true</stripVersion>
+                                    <installAppPackages>project</installAppPackages>
+                                </configuration>
+                            </execution>
+                            <!-- Start/stop server goals -->
+                            <execution>
+                                <id>start-server</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>test-start-server</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop-server</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>test-stop-server</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>docker</id>
             <build>
