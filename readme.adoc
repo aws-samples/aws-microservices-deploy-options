@@ -731,8 +731,18 @@ docker image push arungupta/xray:us-west-2
 ```
 +
 . Deploy the DaemonSet: `kubectl apply -f xray-daemonset.yaml`
-. Deploy the application using Helm charts
-. Access the application
+. Deploy the application link:#deployment-helm[using Helm charts]:
++
+```
+helm install --name myapp apps/k8s/helm/myapp
+```
++
+. Access the application:
++
+```
+curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+```
++
 . Open the https://us-west-2.console.aws.amazon.com/xray/home?region=us-west-2#/service-map[X-Ray console] and watch the service map and traces. This is tracked as https://github.com/aws-samples/aws-microservices-deploy-options/issues/60[#60].
 
 === Monitoring: Prometheus and Grafana
