@@ -505,7 +505,58 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/104
 
 === Deployment Pipeline: Fargate with AWS CodePipeline
 
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/82
+This section will explain how to deploy a Fargate task via CodePipeline
+
+. Create a fork of the Github repository that contains the https://github.com/awslabs/ecs-demo-php-simple-app[Amazon ECS Sample App].
+. Clone the forked repository to your local machine:
++
+```
+git clone https://github.com/<your_github_username>/ecs-demo-php-simple-app
+```
++
+. Create the CloudFormation stack
+|===
+|Region | Launch Template
+| *N. Virginia* (us-east-1)
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=ECS-ContinuousDeployment&templateURL=https://s3.amazonaws.com/ecs-refarch-continuous-deployment/ecs-refarch-continuous-deployment.yaml&param_LaunchType=Fargate]
+|===
+
+The CloudFormation template requires the following input parameters: 
+
+. Cluster Configuration
+.. *Launch Type:* Select Fargate.
+. GitHub Configuration
+.. *Repo:* The repository name for the sample service. This has to be the forked repo.
+.. *Branch:* The branch of the repository to deploy continuously, e.g. master.
+.. *User:* Your GitHub username.
+.. *Personal Access Token:* A token for the user specified above. Use https://github.com/settings/tokens to create a new token. See https://help.github.com/enterprise/2.12/user/articles/creating-a-personal-access-token-for-the-command-line/[Creating a personal access token for the command line] for more details.
+
+The CloudFormation stack has the following outputs:
+
+* *ServiceUrl:* The URL of the sample service that is being deployed.
+* *PipelineUrl:* A deep link for the pipeline in the AWS Management Console. 
+
+Once the stack has been provisioned, *click* the link for the *PipelineUrl*. This will open the CodePipline console.  Clicking on the pipeline will display a diagram that looks like this: 
+
+image::images/fargate-pipeline.png[Fargate Pipeline, 350]
+
+Now that a deployment pipeline has been established, you can modify files in the repository we cloned earlier and push your changes to GitHub which will cause the following actions to occur: 
+
+* The latest changes will be pulled from GitHub.
+* A new Docker image will be created and pushed to ECR.
+* A new revision of the task definition will be created using the latest version of the Docker image.
+* The service definition will be updated with the latest version of the task definition.
+*  ECS will deploy a new version of the Fargate task.
+
+==== Cleaning up the example resources
+
+To remove all the resources created by the example, do the following: 
+
+. Delete the main CloudFromation stack which deletes the sub stacks and resouces. 
+. Manually delete the resources which may contain content: 
+.. S3 Bucket: ArtifactBucket
+.. ECR Repository: Repository
+
 
 === Monitoring: AWS X-Ray
 
@@ -583,7 +634,36 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 
 === Deployment: Kubepack
 
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/63
+This section will explain how to use https://kubepack.com/[Kubepack] to deploy your Kubernetes application.
+
+. Install `kubepack` CLI:
++
+```
+wget -O pack https://github.com/kubepack/pack/releases/download/0.1.0/pack-darwin-amd64 \
+  && chmod +x pack \
+  && sudo mv pack /usr/local/bin/
+```
++
+. Move to package root directory: `cd apps/k8s/kubepack`
+. Pull dependent packages:
++
+```
+pack dep -f .
+```
++
+This will generate `manifests/vendor` folder.
++
+. Generate final manifests: Combine the manifests for this package and its dependencies and potential patches into the final manifests:
++
+```
+pack up -f .
+```
++
+This will create `manifests/output` folder with an installer script and final manifests.
++
+. Install package: `./manifests/output/install.sh`
+. Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
+. Delete the application: `kubectl delete -R -f manifests/output`
 
 === Deployment Pipeline: AWS Codepipeline
 
