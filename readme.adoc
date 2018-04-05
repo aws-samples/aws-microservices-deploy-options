@@ -586,9 +586,9 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster.
 Make sure `kubectl` and `kubepack` CLI is installed and configured for the Kubernetes cluster. To install `kubepack` cli, run:
 
 ```
-wget -O kubepack https://github.com/kubepack/kubepack/releases/download/0.1.0/kubepack-darwin-amd64 \
-  && chmod +x kubepack \
-  && sudo mv kubepack /usr/local/bin/
+wget -O pack https://github.com/kubepack/pack/releases/download/0.1.0/pack-darwin-amd64 \
+  && chmod +x pack \
+  && sudo mv pack /usr/local/bin/
 ```
 
 . Move to package root directory: `cd apps/k8s/kubepack`
