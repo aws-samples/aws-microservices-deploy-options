@@ -16,45 +16,11 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jaxrs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-xray-recorder-sdk-core</artifactId>
-            <version>1.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.mashape.unirest</groupId>
-            <artifactId>unirest-java</artifactId>
-            <version>1.4.9</version>
-        </dependency>
-        <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${version.org.slf4j}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>${version.org.slf4j}</version>
-        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>fabric8-maven-plugin</artifactId>
-                <version>${version.fabric8.maven.plugin}</version>
-            </plugin>
-        </plugins>
-    </build>
 
     <profiles>
         <profile>
@@ -88,6 +54,11 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <version>${version.fabric8.maven.plugin}</version>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -108,7 +79,7 @@
                                 <type>zip</type>
                             </assemblyArtifact>
                             <configFile>src/main/openliberty/config/server.xml</configFile>
-                            <serverEnv>src/main/openliberty/env/server.env</serverEnv>
+                            <serverEnv>src/main/openliberty/config/server.env</serverEnv>
                             <include>usr</include>
                             <bootstrapProperties>
                                 <default.http.port>${webapp.port}</default.http.port>
@@ -136,22 +107,12 @@
                                     <installAppPackages>project</installAppPackages>
                                 </configuration>
                             </execution>
-                            <!-- Start/stop server goals -->
-                            <execution>
-                                <id>start-server</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>test-start-server</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>stop-server</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>test-stop-server</goal>
-                                </goals>
-                            </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <version>${version.fabric8.maven.plugin}</version>
                     </plugin>
                 </plugins>
             </build>

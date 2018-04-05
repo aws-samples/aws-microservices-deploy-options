@@ -43,7 +43,9 @@
         <!-- Open Liberty -->
         <version.liberty-maven-plugin>2.2</version.liberty-maven-plugin>
         <version.openliberty-runtime>RELEASE</version.openliberty-runtime>
+        <version.javax.ws.rs-api>2.1</version.javax.ws.rs-api>
     </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -113,6 +115,12 @@
                 <artifactId>unirest-java</artifactId>
                 <version>${version.unirest}</version>
             </dependency>
+            <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>${version.javax.ws.rs-api}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     
@@ -135,6 +143,16 @@
     <profiles>
         <profile>
             <id>wildfly</id>
+            <dependencies>
+<!--                 <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>bom-all</artifactId>
+                </dependency> -->
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>jaxrs</artifactId>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -149,7 +167,6 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <phase>${wildfly.package.phase}</phase>
                                 <goals>
                                     <goal>package</goal>
                                 </goals>
@@ -161,6 +178,12 @@
         </profile>
         <profile>
             <id>openliberty</id>
+            <dependencies>
+                <dependency>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>javax.ws.rs-api</artifactId>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -180,10 +203,6 @@
     </profiles>
 
     <dependencies>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jaxrs</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-xray-recorder-sdk-core</artifactId>
