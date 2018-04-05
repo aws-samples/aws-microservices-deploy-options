@@ -535,8 +535,8 @@ The cloudFormation stack has the following outputs:
 * *PipelineUrl:* A deep link for the pipeline in the AWS Management Console. 
 
 Once the stack has been provisioned, *click* the link for the *PipelineUrl*. This will open the CodePipline console.  Clicking on the pipeline will display a diagram that looks like this: 
-+
-image::images/fargate-pipeline.png
+
+image::images/fargate-pipeline.png[Fargate Pipeline, 350]
 
 Now that a deployment pipeline has been established, you can modify files in the repository we cloned earlier and push your changes to GitHub which will cause the following actions to occur: 
 
