@@ -1,4 +1,4 @@
-<server description="Names service">
+<server description="Name service">
 
   <featureManager>
     <feature>jaxrs-2.0</feature>
