@@ -663,7 +663,7 @@ This will create `manifests/output` folder with an installer script and final ma
 +
 . Install package: `./manifests/output/install.sh`
 . Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
-. Delete the application: `kubectl delete -R -f manifests/output/github.com/aws-samples/aws-microservices-deploy-options/apps/k8s/kubepack`
+. Delete the application: `kubectl delete -R -f manifests/output`
 
 === Deployment Pipeline: AWS Codepipeline
 
