@@ -596,7 +596,7 @@ wget -O pack https://github.com/kubepack/pack/releases/download/0.1.0/pack-darwi
 . Now you have to combine the manifests for this package and its dependencies and potential patches into the final manifests. To do that, run : `pack up -f .` This will create `manifests/output` folder with an installer script and final manifests.
 . Install package: `./manifests/output/install.sh`
 . Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
-. Delete the application: `kubectl delete -R -f manifests/output/github.com/kubepack/aws-microservices-deploy-options/apps/k8s/kubepack`
+. Delete the application: `kubectl delete -R -f manifests/output/github.com/aws-samples/aws-microservices-deploy-options/apps/k8s/kubepack`
 
 === Deployment Pipeline: AWS Codepipeline
 
