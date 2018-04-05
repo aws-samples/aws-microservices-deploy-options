@@ -505,7 +505,55 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/104
 
 === Deployment Pipeline: Fargate with AWS CodePipeline
 
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/82
+### Deployment Pipeline
+This section will explain how to deploy a Fargate task via CodePipeline
+
+. Create a fork of the Github repository that contains the [Amazon ECS Sample App](https://github.com/awslabs/ecs-demo-php-simple-app).  
+*Note:* You will need to have a GitHub account to fork this repository. If this is your first time using GitHub, follow the instructions for [Siging up for a new GitHub account](https://help.github.com/articles/signing-up-for-a-new-github-account/).
+. Clone the forked repository to your local machine.
+`git clone https://github.com/<your_github_username>/ecs-demo-php-simple-app`
+. Create the CloudFormation stack
+|===
+|Region | Launch Template
+| *N. Virginia* (us-east-1)
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=ECS-ContinuousDeployment&templateURL=https://s3.amazonaws.com/ecs-refarch-continuous-deployment/ecs-refarch-continuous-deployment.yaml&param_LaunchType=Fargate]
+|===
+
+The CloudFormation template requires the following input parameters: 
+
+* Cluster Configuration
+	* *Launch Type:* Select Fargate.
+* GitHub Configuration
+	* *Repo:* The repository name for the sample service.
+	* *Branch:* The branch of the repository to deploy continuously, e.g. master. 
+	* *User:* Your GitHub username.
+	* *Personal Access Token:* A token for the user specified above. See [Creating a personal access token for the command line](https://help.github.com/enterprise/2.12/user/articles/creating-a-personal-access-token-for-the-command-line/) for further instructions or visit https://github.com/settings/tokens to create a new token. 
+
+The cloudFormation stack has the following outputs:
+
+* *ServiceUrl:* The URL of the sample service that is being deployed.
+* *PipelineUrl:* A deep link for the pipeline in the AWS Management Console. 
+
+Once the stack has been provisioned, *click* the link for the *PipelineUrl*. This will open the CodePipline console.  Clicking on the pipeline will display a diagram that looks like this: 
+
+[image:8C21D1C8-1710-42A9-9CC6-5FBDB7230871-753-00001B51D67262CB/2998097E-D752-46E5-A98C-BBBAA24A4C0A.png]
+
+Now that a deployment pipeline has been established, you can modify files in the repository we cloned earlier and push your changes to GitHub which will cause the following actions to occur: 
+
+* The latest changes will be pulled from GitHub.
+* A new Docker image will be created and pushed to ECR.
+* A new revision of the task definition will be created using the latest version of the Docker image.
+* The service definition will be updated with the latest version of the task definition.
+*  ECS will deploy a new version of the Fargate task.
+
+### Cleaning up the example resources
+To remove all the resources created by the example, do the following: 
+
+. Delete the main CloudFromation stack which deletes the sub stacks and resouces. 
+. Manually delete the resources which may contain content: 
+	* S3 Bucket: ArtifactBucket
+	* ECR Repository: Repository
+
 
 === Monitoring: AWS X-Ray
 
