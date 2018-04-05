@@ -23,7 +23,7 @@
         <greeting.path>/resources/greeting</greeting.path>
         <name.host>localhost</name.host>
         <name.port>8082</name.port>
-        <name.path>/resources/names</name.path>
+        <name.path>/resources/names/1</name.path>
         <docker.push.username>arungupta</docker.push.username>
         <docker.push.password>password</docker.push.password>
         <version.fabric8.maven.plugin>3.5.30</version.fabric8.maven.plugin>
@@ -144,10 +144,7 @@
         <profile>
             <id>wildfly</id>
             <dependencies>
-<!--                 <dependency>
-                    <groupId>org.wildfly.swarm</groupId>
-                    <artifactId>bom-all</artifactId>
-                </dependency> -->
+                <!-- Wildfly JAX-RS -->
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
                     <artifactId>jaxrs</artifactId>
@@ -178,6 +175,7 @@
         </profile>
         <profile>
             <id>openliberty</id>
+            <!-- JavaEE JAX-RS -->
             <dependencies>
                 <dependency>
                     <groupId>javax.ws.rs</groupId>

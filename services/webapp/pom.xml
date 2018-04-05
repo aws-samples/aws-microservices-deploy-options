@@ -14,14 +14,6 @@
         <fabric8.generator.name>${docker.repo}/${project.build.finalName}:${docker.tag}</fabric8.generator.name>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.2</version>
-        </dependency>
-    </dependencies>
-
     <profiles>
         <profile>
             <id>wildfly</id>
