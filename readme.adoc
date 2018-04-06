@@ -776,7 +776,9 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/76
 
 === Monitoring: AWS X-Ray
 
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/80
+AWS X-Ray is fully integrated with AWS Lambda. This integration is explained at https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html.
+
+Deploying the functions as explained above will generate X-Ray service map and traces.
 
 === Deployment: Remove the stack
 
