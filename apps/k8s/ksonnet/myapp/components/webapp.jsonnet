@@ -25,7 +25,7 @@ local appDeployment = deployment
     .withEnv([
         container.envType.new("NAME_SERVICE_HOST", "name"),
         container.envType.new("NAME_SERVICE_PORT", "8082"),
-        container.envType.new("NAME_SERVICE_PATH", "/resources/names/1"),
+        container.envType.new("NAME_SERVICE_PATH", "/resources/names"),
         container.envType.new("GREETING_SERVICE_HOST", "greeting"),
         container.envType.new("GREETING_SERVICE_PORT", "8081"),
         container.envType.new("GREETING_SERVICE_PATH", "/resources/greeting"),
