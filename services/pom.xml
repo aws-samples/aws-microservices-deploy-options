@@ -37,8 +37,15 @@
         <version.unirest>1.4.9</version.unirest>
         <version.xray.sdk-core>1.2.1</version.xray.sdk-core>
         <version.jackson.core>2.9.4</version.jackson.core>
+        <version.jackson.databind>2.9.4</version.jackson.databind>
+        <version.jackson.annotations>2.9.4</version.jackson.annotations>
         <version.javax.inject>1</version.javax.inject>
+        <!-- Open Liberty -->
+        <version.liberty-maven-plugin>2.2</version.liberty-maven-plugin>
+        <version.openliberty-runtime>RELEASE</version.openliberty-runtime>
+        <version.javax.ws.rs-api>2.1</version.javax.ws.rs-api>
     </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -94,12 +101,29 @@
                 <version>${version.jackson.core}</version>
             </dependency>
             <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${version.jackson.databind}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${version.jackson.annotations}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.mashape.unirest</groupId>
                 <artifactId>unirest-java</artifactId>
                 <version>${version.unirest}</version>
             </dependency>
+            <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>${version.javax.ws.rs-api}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+    
     <build>
         <finalName>${project.artifactId}</finalName>
         <pluginManagement>
@@ -116,11 +140,35 @@
         </pluginManagement>
     </build>
 
+    <profiles>
+        <profile>
+            <id>openliberty</id>
+            <!-- JavaEE JAX-RS -->
+            <dependencies>
+                <dependency>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>javax.ws.rs-api</artifactId>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>net.wasdev.wlp.maven.plugins</groupId>
+                        <artifactId>liberty-maven-plugin</artifactId>
+                        <version>${version.liberty-maven-plugin}</version>
+                        <!-- Dont propagate this config to child poms -->
+                        <inherited>false</inherited>
+                        <configuration>
+                            <!-- Skip build for parent project -->
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <dependencies>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jaxrs</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-xray-recorder-sdk-core</artifactId>

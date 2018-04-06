@@ -1,0 +1,12 @@
+<server description="Name service">
+
+  <featureManager>
+    <feature>jaxrs-2.0</feature>
+    <feature>cdi-1.2</feature>
+  </featureManager>
+
+  <httpEndpoint httpPort="${default.http.port}" id="defaultHttpEndpoint" host="*" />
+
+  <webApplication location="name.war" contextRoot="/" />
+
+</server>

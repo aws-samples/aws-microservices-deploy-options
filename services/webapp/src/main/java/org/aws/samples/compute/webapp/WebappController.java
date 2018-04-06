@@ -10,6 +10,7 @@ import com.mashape.unirest.http.Unirest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,11 +26,15 @@ public class WebappController {
 
     @Produces(MediaType.TEXT_PLAIN)
     @GET
-    public String getMessage(@Context UriInfo uri, @PathParam("id") String id) {
+    public String getMessage(@Context UriInfo uri, @DefaultValue("1") @PathParam("id") String id) {
         String greetingEndpoint = getEndpoint("GREETING", uri.getRequestUri().getScheme(), null);
         logger.info("ID Query is: " + id);
-        String pathQuery = (id.equals("")) ? "/1" : ("/" + id);
-        String nameEndpoint = getEndpoint("NAME", uri.getRequestUri().getScheme(), pathQuery);
+        
+//        String pathQuery = (id == null || id.equals("")) ? "/1" : ("/" + id);
+//        String pathQuery = (id.equals("")) ? null : ("/" + id);
+        String nameEndpoint = getEndpoint("NAME", uri.getRequestUri().getScheme(), "/" + id);
+//        String nameEndpoint = getEndpoint("NAME", uri.getRequestUri().getScheme(), pathQuery);
+        
 
         Segment segment = AWSXRay.getCurrentSegment();
         AWSXRayRecorder xrayRecorder = AWSXRay.getGlobalRecorder();

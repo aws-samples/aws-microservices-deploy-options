@@ -19,6 +19,7 @@ public class MyApplication extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new java.util.HashSet<>();
         classes.add(NameEndpoint.class);
+        classes.add(NameMessageBodyWriter.class);
         return classes;
     }
 
