@@ -3,42 +3,40 @@
 
 This repo contains a simple application that consists of three microservices. The sample application uses three services:
 
-. "`webapp`": Web application microservice uses "`greeting`" and "`name`"" microservice to generate a greeting for a person.
-. "`greeting`": A microservice that returns a greeting.
-. "`name`": A microservice that returns a person’s name based upon `{id}` in the URL.
+. `webapp`: Web application microservice calls `greeting` and `name` microservice to generate a greeting for a person.
+. `greeting`: A microservice that returns a greeting.
+. `name`: A microservice that returns a person’s name based upon `{id}` in the URL.
 
-Each application is deployed using different AWS Compute options. Each deployment model will highlight:
-
-. Local dev, test and debug
-. Deployment options
-. Deployment pipeline
-. Logging
-. Monitoring
+Each application is deployed using different AWS Compute options.
 
 == Build and Test Services using Maven
 
-Change to the "`services`" directory: `cd services`
-
-. Greeting service in Terminal 1: `mvn -pl greeting wildfly-swarm:run`
+. Each microservice is in a different repo:
++
+[cols="1,3"]
+|====
+| `greeting` | https://github.com/arun-gupta/microservices-greeting
+| `name` | https://github.com/arun-gupta/microservices-name
+| `webapp` | https://github.com/arun-gupta/microservices-webapp
+|====
++
+. Clone all the repos. Open each one in a separate terminal.
+. Run `greeting` service: `mvn wildfly-swarm:run`
 .. Optionally test: `curl http://localhost:8081/resources/greeting`
-. Name service in Terminal 2: `mvn -pl name wildfly-swarm:run`
+. Run `name` service: `mvn wildfly-swarm:run`
 .. Optionally test:
 ... `curl http://localhost:8082/resources/names`
 ... `curl http://localhost:8082/resources/names/1`
-. Webapp service in Terminal 3: `mvn -pl webapp wildfly-swarm:run`
-. Invoke the application in Terminal 4: `curl http://localhost:8080/`
+. Run `webapp` service: `mvn wildfly-swarm:run`
+. Run the application: `curl http://localhost:8080/`
 
 == Docker
 
 === Create Docker Images
 
-`mvn -pl <service> package -Pdocker` where `<service>` is `greeting`, `name` or `webapp`
+`mvn package -Pdocker` for each repo will create the Docker image.
 
-Docker images for all the services can be created from the `services` directory:
-
-  mvn package -Pdocker
-
-By default, the Docker image name is `arungupta/<service>`. The image can be created in your repo:
+By default, the Docker image name is `arungupta/<service>` where `<service>` is `greeting`, `name` or `webapp`. The image can be created in your repo:
 
   mvn package -Pdocker -Ddocker.repo=<repo>
 
@@ -61,7 +59,7 @@ This is a workaround until https://github.com/aws-samples/aws-compute-options/is
 . `docker swarm init`
 . `cd apps/docker`
 . `docker stack deploy --compose-file docker-compose.yaml myapp`
-. Access the application: `curl http://localhost:80`
+. Access the application: `curl http://localhost:8080`
 .. Optionally test the endpoints:
 ... Greeting endpoint: `curl http://localhost:8081/resources/greeting`
 ... Name endpoint: `curl http://localhost:8082/resources/names/1`
@@ -88,7 +86,7 @@ This is a workaround until https://github.com/aws-samples/aws-compute-options/is
 
 == Amazon ECS and AWS Fargate
 
-This section will explain how to create Amazon ECS cluster. The three microservices will be deployed on this cluster using `Fargate` and `EC2` mode.
+This section will explain how to deploy these microservices using Fargate on Amazon ECS cluster.
 
 NOTE: AWS Fargate is only supported in `us-east-1` region at this time. The instructions will only work in that region.
 
@@ -101,7 +99,7 @@ This section explains how to create a Fargate cluster and run services on it.
 
   fargate lb create options-lb --port 80
 
-. Get name of the LoadBalancer:
+. Get URL of the LoadBalancer:
 
   fargate lb info options-lb
 
@@ -130,12 +128,17 @@ This section explains how to create a Fargate cluster and run services on it.
     -m 1024 \
     -i arungupta/webapp \
     -p http:8080 \
-    -e GREETING_SERVICE_HOST=options-lb-436743184.us-east-1.elb.amazonaws.com \
+    -e GREETING_SERVICE_HOST=<lb> \
     -e GREETING_SERVICE_PORT=80 \
     -e GREETING_SERVICE_PATH=/resources/greeting \
-    -e NAME_SERVICE_HOST=options-lb-436743184.us-east-1.elb.amazonaws.com \
+    -e NAME_SERVICE_HOST=<lb> \
     -e NAME_SERVICE_PORT=80 \
-    -e NAME_SERVICE_PATH=/resources/names/1
+    -e NAME_SERVICE_PATH=/resources/names
+
+. Test the application:
+
+  curl http://<lb>
+  curl http://<lb>/2
 
 . Scale the service: `fargate service scale webapp-service +3`
 
