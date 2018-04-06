@@ -127,6 +127,67 @@
             </build>
         </profile>
         <profile>
+            <id>docker-openliberty</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.7.0</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*Handler.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <version>${version.fabric8.maven.plugin}</version>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>arungupta/${project.artifactId}:openliberty</name>
+                                    <build>
+                                        <from>open-liberty:microProfile1-java8-ibm</from>
+                                        <assembly>
+                                            <mode>dir</mode>
+                                            <targetDir>/opt/ol/wlp/usr/servers/defaultServer</targetDir>
+                                            <inline>
+                                                <files>
+                                                    <file>
+                                                        <source>./target/${project.artifactId}.war</source>
+                                                        <outputDirectory>./apps</outputDirectory>
+                                                    </file>
+                                                    <file>
+                                                        <source>./src/main/openliberty/config/server.xml</source>
+                                                        <outputDirectory>.</outputDirectory>
+                                                    </file>
+                                                    <file>
+                                                        <source>./src/main/openliberty/config/bootstrap.properties</source>
+                                                        <outputDirectory>.</outputDirectory>
+                                                    </file>
+                                                </files>
+                                            </inline>
+                                        </assembly>
+                                        <ports>${greeting.port}</ports>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>lambda</id>
             <dependencies>
                 <dependency>
