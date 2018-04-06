@@ -183,7 +183,7 @@ Get output from the CloudFormation stack:
     --launch-type "FARGATE" \
     --load-balancer "targetGroupArn=<greeting-target-group-ARN>,containerName=greeting,containerPort=8081" \
     --health-check-grace-period-seconds 60 \
-    --network-configuration "awsvpcConfiguration={subnets=[<private-subnet-name>],securityGroups=<sg-namehere>}"
+    --network-configuration "awsvpcConfiguration={subnets=[<private-subnet-name1>,<private-subnet-name-2>],securityGroups=<sg-namehere>,assignPublicIp=ENABLED}"
 
 .. `name` service:
 
@@ -195,7 +195,7 @@ Get output from the CloudFormation stack:
     --launch-type "FARGATE" \
     --load-balancer "targetGroupArn=<name-target-group-ARN>,loadBalancerName=<private-ALB-name>,containerName=name,containerPort=8082" \
     --health-check-grace-period-seconds 60 \
-    --network-configuration "awsvpcConfiguration={subnets=[<private-subnet-name>],securityGroups=<sg-namehere>}"
+    --network-configuration "awsvpcConfiguration={subnets=[<private-subnet-name1>,<private-subnet-name-2>],securityGroups=<sg-namehere>,assignPublicIp=ENABLED}"
 
 .. `webapp` service:
 
@@ -207,7 +207,7 @@ Get output from the CloudFormation stack:
     --launch-type "FARGATE" \
     --load-balancer "targetGroupArn=<webapp-target-group-ARN>,containerName=webapp,containerPort=8080" \
     --health-check-grace-period-seconds 60 \
-    --network-configuration "awsvpcConfiguration={subnets=[<public-subnet-name>],securityGroups=<sg-namehere>}"
+    --network-configuration "awsvpcConfiguration={subnets=[<private-subnet-name-1>,<private-subnet-name-2>],securityGroups=<sg-namehere>,assignPublicIp=ENABLED}"
 
 Access the service:
 
@@ -776,7 +776,9 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/76
 
 === Monitoring: AWS X-Ray
 
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/80
+AWS X-Ray is fully integrated with AWS Lambda. This integration is explained at https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html.
+
+Deploying the functions as explained above will generate X-Ray service map and traces.
 
 === Deployment: Remove the stack
 
