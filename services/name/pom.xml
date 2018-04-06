@@ -170,7 +170,7 @@
                                                 </files>
                                             </inline>
                                         </assembly>
-                                        <ports>${greeting.port}</ports>
+                                        <ports>${name.port}</ports>
                                     </build>
                                 </image>
                             </images>
