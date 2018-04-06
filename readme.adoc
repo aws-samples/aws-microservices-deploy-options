@@ -92,6 +92,18 @@ This section will explain how to create Amazon ECS cluster. The three microservi
 
 NOTE: AWS Fargate is only supported in `us-east-1` region at this time. The instructions will only work in that region.
 
+=== Deployment: Create Cluster using Fargate CLI
+
+. Download CLI from http://somanymachines.com/fargate/
+. Create LB: `fargate lb create options-lb --port 80`
+. Get the name of LB: `fargate lb info options-lb`
+. Create greeting service: `fargate service create greeting-service --lb options-lb -m 1024 -i arungupta/greeting -p http:8081 --rule path=/resources/greeting`
+. Create name service: `fargate service create name-service --lb options-lb -m 1024 -i arungupta/name -p http:8082 --rule path=/resources/names/*`
+. Create webapp service: `fargate service create webapp-service --lb options-lb -m 1024 -i arungupta/webapp -p http:8080 -e GREETING_SERVICE_HOST=options-lb-436743184.us-east-1.elb.amazonaws.com -e GREETING_SERVICE_PORT=80 -e GREETING_SERVICE_PATH=/resources/greeting -e NAME_SERVICE_HOST=options-lb-436743184.us-east-1.elb.amazonaws.com -e NAME_SERVICE_PORT=80 -e NAME_SERVICE_PATH=/resources/names/1`
+. Scale the service: `fargate service scale webapp-service +3`
+
+NOTE: As described at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_limits.html, the number of tasks using the Fargate launch type, per region, per account is 20. This limit can be increased by filing a support ticket from the AWS Console.
+
 === Deployment: Create Cluster using AWS Console
 
 This section will explain how to create an ECS cluster using AWS Console.
@@ -150,70 +162,6 @@ List the cluster using `aws ecs list-clusters` command:
     ]
 }
 ```
-
-=== Deployment: Deploy Fargate Service using AWS CLI
-
-This section will explain how to deploy Fargate services using AWS CLI. It will use an ECS cluster created using CloudFormation as explained at link:#deployment-create-cluster-using-aws-cloudformation[].
-
-Get output from the CloudFormation stack:
-
-  aws cloudformation \
-    describe-stacks \
-    --region us-east-1 \
-    --stack-name fargate-cluster \
-    --query 'Stacks[].Outputs[]' \
-    --output table
-
-. Register task definitions:
-.. In `webapp.json`, update the `INTERNAL_ALB_URL_GOES_HERE` to the value of `ALBPrivateCNAME`.
-.. Register taskdefs:
-
-  aws ecs register-task-definition --cli-input-json file://greeting.json
-  aws ecs register-task-definition --cli-input-json file://name.json
-  aws ecs register-task-definition --cli-input-json file://webapp.json
-
-. Create services. Replace the value in the following command with the output from the CloudFormation template, and create the services
-.. `greeting` service:
-
-  aws ecs create-service \
-    --cluster <cluster-name> \
-    --service-name greeting-service \
-    --task-definition greeting \
-    --desired-count 1 \
-    --launch-type "FARGATE" \
-    --load-balancer "targetGroupArn=<greeting-target-group-ARN>,containerName=greeting,containerPort=8081" \
-    --health-check-grace-period-seconds 60 \
-    --network-configuration "awsvpcConfiguration={subnets=[<private-subnet-name1>,<private-subnet-name-2>],securityGroups=<sg-namehere>,assignPublicIp=ENABLED}"
-
-.. `name` service:
-
-  aws ecs create-service \
-    --cluster <cluster-name> \
-    --service-name name-service \
-    --task-definition name \
-    --desired-count 1 \
-    --launch-type "FARGATE" \
-    --load-balancer "targetGroupArn=<name-target-group-ARN>,loadBalancerName=<private-ALB-name>,containerName=name,containerPort=8082" \
-    --health-check-grace-period-seconds 60 \
-    --network-configuration "awsvpcConfiguration={subnets=[<private-subnet-name1>,<private-subnet-name-2>],securityGroups=<sg-namehere>,assignPublicIp=ENABLED}"
-
-.. `webapp` service:
-
-  aws ecs create-service \
-    --cluster <cluster-name> \
-    --service-name webapp-service \
-    --task-definition webapp \
-    --desired-count 1 \
-    --launch-type "FARGATE" \
-    --load-balancer "targetGroupArn=<webapp-target-group-ARN>,containerName=webapp,containerPort=8080" \
-    --health-check-grace-period-seconds 60 \
-    --network-configuration "awsvpcConfiguration={subnets=[<private-subnet-name-1>,<private-subnet-name-2>],securityGroups=<sg-namehere>,assignPublicIp=ENABLED}"
-
-Access the service:
-
-curl http://<public-ALB-CNAME>
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/51
 
 === Deployment: Deploy Tasks and Service using ECS CLI
 
