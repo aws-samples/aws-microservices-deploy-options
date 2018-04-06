@@ -24,7 +24,7 @@ spec:
         - name: NAME_SERVICE_PORT
           value: "8082"
         - name: NAME_SERVICE_PATH
-          value: /resources/names/1
+          value: /resources/names
         - name: GREETING_SERVICE_HOST
           value: {{ .Release.Name }}-greeting
         - name: GREETING_SERVICE_PORT
