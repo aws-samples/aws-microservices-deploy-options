@@ -142,38 +142,6 @@
 
     <profiles>
         <profile>
-            <id>wildfly</id>
-            <dependencies>
-                <!-- Wildfly JAX-RS -->
-                <dependency>
-                    <groupId>org.wildfly.swarm</groupId>
-                    <artifactId>jaxrs</artifactId>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.wildfly.swarm</groupId>
-                        <artifactId>wildfly-swarm-plugin</artifactId>
-                        <version>${version.wildfly.swarm}</version>
-                        <configuration>
-                            <properties>
-                                <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
-                                <swarm.http.port>${service.http.port}</swarm.http.port>
-                            </properties>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>package</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
             <id>openliberty</id>
             <!-- JavaEE JAX-RS -->
             <dependencies>

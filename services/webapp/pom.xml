@@ -17,6 +17,13 @@
     <profiles>
         <profile>
             <id>wildfly</id>
+            <!-- Wildfly JAX-RS -->
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>jaxrs</artifactId>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
