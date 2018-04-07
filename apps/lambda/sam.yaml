@@ -11,7 +11,8 @@ Resources:
     Properties:
       Handler: org.aws.samples.compute.greeting.GreetingHandler::handleRequest
       Runtime: java8
-      CodeUri: ../../services/greeting/target/greeting.zip
+#      CodeUri: ../../services/greeting/target/greeting.zip
+      CodeUri: ../../../microservices-greeting/target/greeting.zip
       Description: >-
         Amazon API Gateway.
       MemorySize: 1024
@@ -48,7 +49,8 @@ Resources:
     Properties:
       Handler: org.aws.samples.compute.name.NameHandler::handleRequest
       Runtime: java8
-      CodeUri: ../../services/name/target/name.zip
+#      CodeUri: ../../services/name/target/name.zip
+      CodeUri: ../../../microservices-name/target/name.zip
       Description: >-
         Amazon API Gateway.
       MemorySize: 1024
@@ -122,7 +124,8 @@ Resources:
     Properties:
       Handler: org.aws.samples.compute.webapp.WebappHandler::handleRequest
       Runtime: "java8"
-      CodeUri: ../../services/webapp/target/webapp.zip
+#      CodeUri: ../../services/webapp/target/webapp.zip
+      CodeUri: ../../../microservices-webapp/target/webapp.zip
       Description: >-
         Amazon API Gateway.
       MemorySize: 1024
