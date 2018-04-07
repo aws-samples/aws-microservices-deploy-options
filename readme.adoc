@@ -46,11 +46,9 @@ By default, the `latest` tag is used for the image. A different tag may be speci
 
 === Push Docker Images to Registry
 
-```
-docker push <repo>/greeting:<tag>
-docker push <repo>/name:<tag>
-docker push <repo>/webapp:<tag>
-```
+  docker push <repo>/greeting:<tag>
+  docker push <repo>/name:<tag>
+  docker push <repo>/webapp:<tag>
 
 This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
 
@@ -183,24 +181,20 @@ This section explains how to create a ECS cluster with no additional resources. 
 
 This section will create a 3-instance cluster using a public VPC:
 
-```
-curl -O https://raw.githubusercontent.com/awslabs/aws-cloudformation-templates/master/aws/services/ECS/EC2LaunchType/clusters/public-vpc.yml
-aws cloudformation deploy \
-  --stack-name MyECSCluster \
-  --template-file public-vpc.yml \
-  --region us-east-1 \
-  --capabilities CAPABILITY_IAM
-```
+  curl -O https://raw.githubusercontent.com/awslabs/aws-cloudformation-templates/master/aws/services/ECS/EC2LaunchType/clusters/public-vpc.yml
+  aws cloudformation deploy \
+    --stack-name MyECSCluster \
+    --template-file public-vpc.yml \
+    --region us-east-1 \
+    --capabilities CAPABILITY_IAM
 
 List the cluster using `aws ecs list-clusters` command:
 
-```
-{
-    "clusterArns": [
-        "arn:aws:ecs:us-east-1:091144949931:cluster/MyECSCluster-ECSCluster-197YNE1ZHPSOP"
-    ]
-}
-```
+  {
+      "clusterArns": [
+          "arn:aws:ecs:us-east-1:091144949931:cluster/MyECSCluster-ECSCluster-197YNE1ZHPSOP"
+      ]
+  }
 
 === Deployment: Deploy Tasks and Service using ECS CLI
 
@@ -306,27 +300,25 @@ Docker Compose supports environment variable substitution. The `webapp-docker-co
 
 ==== Tear down the resources
 
-```
-ecs-cli compose --verbose \
-      --file greeting-docker-compose.yaml \
-      --task-role-arn $ECSRole \
-      --ecs-params ecs-params_greeting.yaml \
-      --project-name greeting \
-      service down
-ecs-cli compose --verbose \
-      --file name-docker-compose.yaml \
-      --task-role-arn $ECSRole \
-      --ecs-params ecs-params_name.yaml \
-      --project-name name \
-      service down
-ecs-cli compose --verbose \
-      --file webapp-docker-compose.yaml \
-      --task-role-arn $ECSRole \
-      --ecs-params ecs-params_webapp.yaml \
-      --project-name webapp \
-      service down
-aws cloudformation delete-stack --region us-east-1 --stack-name aws-microservices-deploy-options-ecscli
-```
+  ecs-cli compose --verbose \
+        --file greeting-docker-compose.yaml \
+        --task-role-arn $ECSRole \
+        --ecs-params ecs-params_greeting.yaml \
+        --project-name greeting \
+        service down
+  ecs-cli compose --verbose \
+        --file name-docker-compose.yaml \
+        --task-role-arn $ECSRole \
+        --ecs-params ecs-params_name.yaml \
+        --project-name name \
+        service down
+  ecs-cli compose --verbose \
+        --file webapp-docker-compose.yaml \
+        --task-role-arn $ECSRole \
+        --ecs-params ecs-params_webapp.yaml \
+        --project-name webapp \
+        service down
+  aws cloudformation delete-stack --region us-east-1 --stack-name aws-microservices-deploy-options-ecscli
 
 === Deployment: Create Cluster and Deploy Fargate Tasks using CloudFormation
 
@@ -340,20 +332,16 @@ a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudfo
 
 Retrieve the public endpoint to test your application deployment:
 
-```
-aws cloudformation \
+  aws cloudformation \
     describe-stacks \
     --region us-east-1 \
     --stack-name aws-compute-options-fargate \
     --query 'Stacks[].Outputs[?OutputKey==`PublicALBCNAME`].[OutputValue]' \
     --output text
-```
 
 Use the command to test:
 
-```
-curl http://<public_endpoint>
-```
+  curl http://<public_endpoint>
 
 === Deployment: Create Cluster and Deploy EC2 Tasks using CloudFormation
 
@@ -367,14 +355,12 @@ a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudfo
 
 Retrieve the public endpoint to test your application deployment:
 
-```
-aws cloudformation \
+  aws cloudformation \
     describe-stacks \
     --region us-east-1 \
     --stack-name aws-compute-options-ecs \
     --query 'Stacks[].Outputs[?OutputKey==`PublicALBCNAME`].[OutputValue]' \
     --output text
-```
 
 Use the command to test:
 
