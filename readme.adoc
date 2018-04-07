@@ -83,14 +83,13 @@ This is a workaround until https://github.com/aws-samples/aws-compute-options/is
 
   docker service logs myapp_webapp-service
 
-
 == Amazon ECS and AWS Fargate
 
 This section will explain how to deploy these microservices using Fargate on Amazon ECS cluster.
 
 NOTE: AWS Fargate is only supported in `us-east-1` region at this time. The instructions will only work in that region.
 
-=== Deployment: Create Cluster using Fargate CLI
+=== Deployment: Create Cluster and Deploy Services using Fargate CLI
 
 This section explains how to create a Fargate cluster and run services on it.
 
@@ -379,13 +378,7 @@ aws cloudformation \
 
 Use the command to test:
 
-```
-curl http://<public_endpoint>
-```
-
-=== Deployment Pipeline: EC2-mode with AWS CodePipeline
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/104
+  curl http://<public_endpoint>
 
 === Deployment Pipeline: Fargate with AWS CodePipeline
 
@@ -441,6 +434,9 @@ To remove all the resources created by the example, do the following:
 .. S3 Bucket: ArtifactBucket
 .. ECR Repository: Repository
 
+=== Deployment Pipeline: EC2-mode with AWS CodePipeline
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/104
 
 === Monitoring: AWS X-Ray
 
