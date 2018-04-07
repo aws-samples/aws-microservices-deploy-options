@@ -372,12 +372,11 @@ This section will explain how to deploy a Fargate task via CodePipeline
 
 . Create a fork of the Github repository that contains the https://github.com/awslabs/ecs-demo-php-simple-app[Amazon ECS Sample App].
 . Clone the forked repository to your local machine:
+
+  git clone https://github.com/<your_github_username>/ecs-demo-php-simple-app
+
+. Create the CloudFormation stack:
 +
-```
-git clone https://github.com/<your_github_username>/ecs-demo-php-simple-app
-```
-+
-. Create the CloudFormation stack
 |===
 |Region | Launch Template
 | *N. Virginia* (us-east-1)
