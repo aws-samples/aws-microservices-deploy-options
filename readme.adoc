@@ -492,17 +492,13 @@ Make sure `kubectl` CLI is installed and configured for the Kubernetes cluster. 
 . Install Helm in Kubernetes cluster: `helm init`
 . Install the Helm chart: `helm install --name myapp apps/k8s/helm/myapp`
 .. By default, the `latest` tag for an image is used. Alternatively, a different tag for the image can be used:
-+
-```
-helm install --name myapp apps/k8s/helm/myapp --set "docker.tag=<tag>"
-```
-+
+
+  helm install --name myapp apps/k8s/helm/myapp --set "docker.tag=<tag>"
+
 . Access the application:
-+
-```
-curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-```
-+
+
+  curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+
 . Delete the Helm chart: `helm delete --purge myapp`
 
 === Deployment: Ksonnet
@@ -616,11 +612,9 @@ docker image push arungupta/xray:us-west-2
 +
 . Deploy the DaemonSet: `kubectl apply -f xray-daemonset.yaml`
 . Deploy the application link:#deployment-helm[using Helm charts]:
-+
-```
-helm install --name myapp apps/k8s/helm/myapp
-```
-+
+
+  helm install --name myapp apps/k8s/helm/myapp
+
 . Access the application:
 +
 ```
@@ -659,61 +653,51 @@ The complete installation steps for SAM CLI are at https://github.com/awslabs/aw
 aws s3api create-bucket \
   --bucket aws-microservices-deploy-options \
   --region us-west-2 \
-  --create-bucket-configuration LocationConstraint=us-west-2`
+  --create-bucket-configuration LocationConstraint=us-west-2
 ```
 +
 Make sure to use a bucket name that is unique.
 +
 . Package the SAM application. This uploads the deployment package to the specified S3 bucket and generates a new file with the code location:
-+
-```
-cd apps/lambda
-sam package \
-  --template-file sam.yaml \
-  --s3-bucket <s3-bucket> \
-  --output-template-file \
-  sam.transformed.yaml
-```
-+
+
+  cd apps/lambda
+  sam package \
+    --template-file sam.yaml \
+    --s3-bucket aws-microservices-deploy-options \
+    --output-template-file \
+    sam.transformed.yaml
+
 . Create the resources:
-+
-```
-sam deploy \
-  --template-file sam.transformed.yaml \
-  --stack-name aws-microservices-deploy-options-lambda \
-  --capabilities CAPABILITY_IAM
-```
-+
+
+  sam deploy \
+    --template-file sam.transformed.yaml \
+    --stack-name aws-microservices-deploy-options-lambda \
+    --capabilities CAPABILITY_IAM
+
 . Test the application:
 .. Greeting endpoint:
-+
-```
-curl `aws cloudformation \
-  describe-stacks \
-  --stack-name aws-microservices-deploy-options-lambda \
-  --query "Stacks[].Outputs[?OutputKey=='GreetingApiEndpoint'].[OutputValue]" \
-  --output text`
-```
-+
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-microservices-deploy-options-lambda \
+    --query "Stacks[].Outputs[?OutputKey=='GreetingApiEndpoint'].[OutputValue]" \
+    --output text`
+
 .. Name endpoint:
-+
-```
-curl `aws cloudformation \
-  describe-stacks \
-  --stack-name aws-microservices-deploy-options-lambda \
-  --query "Stacks[].Outputs[?OutputKey=='NamesApiEndpoint'].[OutputValue]" \
-  --output text`
-```
-+
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-microservices-deploy-options-lambda \
+    --query "Stacks[].Outputs[?OutputKey=='NamesApiEndpoint'].[OutputValue]" \
+    --output text`
+
 .. Webapp endpoint:
-+
-```
-curl `aws cloudformation \
-  describe-stacks \
-  --stack-name aws-microservices-deploy-options-lambda \
-  --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" \
-  --output text`/1
-```
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-microservices-deploy-options-lambda \
+    --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" \
+    --output text`/1
 
 === Deployment: Test SAM Local
 
@@ -729,7 +713,7 @@ curl `aws cloudformation \
 ==== In Windows
 
 . `sam local start-api --template sam.yaml --env-vars test/env-win.json`
-. Test the urls above in browser
+. Test the urls above in a browser
 
 === Deployment Pipeline: AWS CodePipeline
 
@@ -739,19 +723,17 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 . `aws cloudformation deploy --template-file pipeline.yaml --stack-name aws-compute-options-lambda-pipeline --capabilities CAPABILITY_IAM`
 . `git remote add codecommit $(aws cloudformation describe-stacks --stack-name aws-compute-options-lambda-pipeline --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" --output text)`
 . Setup your Git credential by following the https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html[document]. This is required to push the code into the CodeCommit repo created in the CloudFormation stack. When the Git credential is setup, you can use the following command to push in the code and trigger the pieline to run.
-+
-```
-git push codecommit master
-```
-+
+
+  git push codecommit master
+
 . Get the URL to view the deployment pipeline:
 +
 ```
 aws cloudformation \
-      describe-stacks \
-      --stack-name aws-compute-options-lambda-pipeline \
-      --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
-      --output text
+  describe-stacks \
+  --stack-name aws-compute-options-lambda-pipeline \
+  --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
+  --output text
 ```
 +
 Deployment pipeline in AWS console looks like as shown:
