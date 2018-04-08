@@ -695,6 +695,45 @@ Deployment pipeline in AWS console looks like as shown:
 +
 image::images/lambda-pipeline.png[Lambda Pipeline, 350]
 
+=== Deployment: Deploy to Serverless Application Repository
+
+The https://aws.amazon.com/serverless/serverlessrepo/[AWS Serverless Application Repository] (SAR) enables you to quickly deploy code samples, components, and complete applications for common use cases such as web and mobile back-ends, event and data processing, logging, monitoring, IoT, and more. Each application is packaged with an AWS Serverless Application Model (SAM) template that defines the AWS resources used.
+
+The complete list of applications can be seen at https://serverlessrepo.aws.amazon.com/applications.
+
+This section explains how to publish your SAM application to SAR. Detailed instructions are at https://docs.aws.amazon.com/serverlessrepo/latest/devguide/serverless-app-publishing-applications.html.
+
+. Applications packaged as SAM can be published at https://console.aws.amazon.com/serverlessrepo/home?locale=en&region=us-east-1#/published-applications
+. Add the following policy to your S3 bucket:
++
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service":  "serverlessrepo.amazonaws.com"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::<your-bucket-name>/*"
+        }
+    ]
+}
+```
++
+. Use `sam.transformed.yaml` as the SAM template
+. Publish the application
+. Test the application:
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-serverless-repository-aws-microservices \
+    --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" \
+    --output text`/1
+
+. List of your published applications: https://console.aws.amazon.com/serverlessrepo/home?locale=en&region=us-east-1#/published-applications
+
 === Deployment: Composition using AWS Step Functions
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/76
