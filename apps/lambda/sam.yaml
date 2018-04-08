@@ -2,9 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >-
   Amazon API Gateway.
-Globals:
-  Api:
-    EndpointConfiguration: REGIONAL
 Resources:
   GreetingFunction:
     Type: 'AWS::Serverless::Function'
@@ -28,6 +25,7 @@ Resources:
   GreetingApi:
     Type: AWS::Serverless::Api
     Properties:
+#      EndpointConfiguration: REGIONAL
       StageName: prod
       DefinitionBody:
         swagger: "2.0"
@@ -72,6 +70,7 @@ Resources:
   NamesApi:
     Type: AWS::Serverless::Api
     Properties:
+#      EndpointConfiguration: REGIONAL
       StageName: prod
       DefinitionBody:
         swagger: "2.0"
@@ -157,6 +156,7 @@ Resources:
   WebAppApi:
     Type: AWS::Serverless::Api
     Properties:
+#      EndpointConfiguration: REGIONAL
       StageName: prod
       DefinitionBody:
         swagger: "2.0"
