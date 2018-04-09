@@ -50,7 +50,7 @@ By default, the `latest` tag is used for the image. A different tag may be speci
   docker push <repo>/name:<tag>
   docker push <repo>/webapp:<tag>
 
-This is a workaround until https://github.com/aws-samples/aws-compute-options/issues/4 is fixed.
+This is a workaround until https://github.com/aws-samples/aws-microservices-deploy-options/issues/4 is fixed.
 
 === Deployment to Docker Swarm
 
