@@ -740,14 +740,22 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/76
 
 === Monitoring: AWS X-Ray
 
-AWS X-Ray is fully integrated with AWS Lambda. This integration is explained at https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html.
+AWS X-Ray is fully integrated with AWS Lambda. This can be easily enabled for functions published using SAM by the following property:
+
+```
+Tracing: Active
+```
+
+This is explained at https://github.com/awslabs/serverless-application-model/blob/develop/versions/2016-10-31.md#awsserverlessfunction.
+
+More details about AWS Lambda and X-Ray integration is at https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html.
 
 Deploying the functions as explained above will generate X-Ray service map and traces.
 
 === Deployment: Remove the stack
 
   aws cloudformation delete-stack \
-    --stack-name aws-compute-options-lambda
+    --stack-name aws-microservices-deploy-options-lambda
 
 == License
 
