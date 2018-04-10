@@ -248,6 +248,8 @@ Resources:
             Value: !Ref ArtifactBucket
           - Name: StackName
             Value: !Sub "aws-compute-options-lambda-${ServiceName}"
+          - Name: ServiceName
+            Value: !Ref ServiceName
       Source:
         Type: CODEPIPELINE
         BuildSpec: |
