@@ -130,6 +130,10 @@ Resources:
         EnvironmentVariables:
           - Name: S3Bucket
             Value: !Ref ArtifactBucket
+          - Name: RepoUrl
+            Value: !FindInMap [ServiceToRepo, !Ref ServiceName, Repo]
+          - Name: ServiceName
+            Value: !Ref ServiceName
       Source:
         Type: CODEPIPELINE
         BuildSpec: |
@@ -142,14 +146,11 @@ Resources:
               commands:
                 - mkdir services/
                 - cd services/
-                - !Join 
-                  - ""
-                  - - "git clone "
-                    - !FindInMap [ServiceToRepo, !Ref "ServiceName", Repo]
+                - git clone $RepoUrl
                 - cd services/
                 - mvn clean install -Plambda
                 - cd ../apps/lambda
-                - !Sub "aws cloudformation package --template-file ${ServiceName}Sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml"
+                - aws cloudformation package --template-file ${ServiceName}Sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
           artifacts:
             files: 
               - '**/*'
@@ -250,7 +251,7 @@ Resources:
                 - aws cloudformation deploy --template-file sam.transformed.yaml --stack-name $StackName --capabilities CAPABILITY_IAM
             post_build:
               commands:
-                - $Sub "curl `aws cloudformation describe-stacks --stack-name $StackName --query \"Stacks[].Outputs[?OutputKey=='${ServiceName}ApiEndpoint'].[OutputValue]\" --output text`"
+                - curl `aws cloudformation describe-stacks --stack-name $StackName --query \"Stacks[].Outputs[?OutputKey=='${ServiceName}ApiEndpoint'].[OutputValue]" --output text`"
       TimeoutInMinutes: 10
       Tags:
         - Key: Name
