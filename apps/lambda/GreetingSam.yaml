@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >-
+  Greeting Amazon API Gateway.
+Resources:
+  GreetingFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: org.aws.samples.compute.greeting.GreetingHandler::handleRequest
+      Runtime: java8
+#      CodeUri: ../../services/greeting/target/greeting.zip
+      CodeUri: ../../../microservices-greeting/target/greeting.zip
+      Description: >-
+        Amazon API Gateway.
+      MemorySize: 1024
+      Timeout: 20
+      Tracing: Active
+      Events:
+        greet:
+          Type: Api
+          Properties:
+            Path: /resources/greeting
+            Method: GET
+            RestApiId: !Ref GreetingApi
+  GreetingApi:
+    Type: AWS::Serverless::Api
+    Properties:
+#      EndpointConfiguration: REGIONAL
+      StageName: prod
+      DefinitionBody:
+        swagger: "2.0"
+        paths:
+          "/resources/greeting":
+            get:
+              responses:
+                "200":
+                  content:
+                    text/plain:
+                      scheme:
+                        type: string
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GreetingFunction.Arn}/invocations"
+Outputs:
+  GreetingApiEndpoint:
+    Description: Greeting API URL for application
+    Value: !Sub 'https://${GreetingApi}.execute-api.${AWS::Region}.amazonaws.com/prod/resources/greeting'
