@@ -740,7 +740,14 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
     --stack-name aws-compute-options-lambda-pipeline \
     --capabilities CAPABILITY_IAM
 
-. `git remote add codecommit $(aws cloudformation describe-stacks --stack-name aws-compute-options-lambda-pipeline --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" --output text)`
+. Change to the repo which needs to be included in the pipeline. Add CodeCommit repo:
+
+  git remote add codecommit \
+    $(aws cloudformation describe-stacks \
+    --stack-name aws-compute-options-lambda-pipeline \
+    --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" \
+    --output text)
+
 . Setup your Git credential by following the https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html[document]. This is required to push the code into the CodeCommit repo created in the CloudFormation stack. When the Git credential is setup, you can use the following command to push in the code and trigger the pieline to run.
 
   git push codecommit master
