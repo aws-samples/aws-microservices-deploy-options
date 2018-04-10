@@ -12,6 +12,10 @@ Mappings:
   ServiceToRepo:
     Greeting:
       Repo: https://github.com/arun-gupta/microservices-greeting
+    Name:
+      Repo: https://github.com/arun-gupta/microservices-name
+    WebApp:
+      Repo: https://github.com/arun-gupta/microservices-webapp
 
 Resources:
   Repo:
@@ -144,10 +148,8 @@ Resources:
                 - printenv
             build:
               commands:
-                - mkdir services/
-                - cd services/
-                - git clone $RepoUrl
-                - cd services/
+                - git clone $RepoUrl services
+                - cd services
                 - mvn clean install -Plambda
                 - cd ../apps/lambda
                 - aws cloudformation package --template-file ${ServiceName}Sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
