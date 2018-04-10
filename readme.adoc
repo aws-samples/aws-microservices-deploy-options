@@ -598,6 +598,36 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/79
 
 `mvn clean package -Plambda` in each repo will build the deployment package for each microservice.
 
+=== Deployment: Test SAM Local
+
+==== In Mac
+
+. `sam local start-api --template sam.yaml --env-vars test/env-mac.json`
+. Greeting endpoint: `curl http://127.0.0.1:3000/resources/greeting`
+. Name endpoint:
+.. `curl http://127.0.0.1:3000/resources/names`
+.. `curl http://127.0.0.1:3000/resources/names/1`
+. Webapp endpoint: `curl http://127.0.0.1:3000/`
+
+==== In Windows
+
+. `sam local start-api --template sam.yaml --env-vars test/env-win.json`
+. Test the urls above in a browser
+
+=== Deployment: Debug using IntelliJ
+
+This section will explain how to debug your Lambda functions locally using SAM Local and IntelliJ.
+
+. Start functions using SAM Local and a debug port:
+
+  sam local start-api \
+    --env-vars test/env-mac.json \
+    --template sam.yaml \
+    --debug-port 5858
+
+. In IntelliJ, setup a break point in your Lambda function.
+. Go to `Run`, `Debug`, `Edit Configurations`, specify the port `5858` and click on `Debug`. The breakpoint will hit and you can see the debug state of the function.
+
 === Deployment: Deploy using Serverless Application Model
 
 https://github.com/awslabs/serverless-application-model[Serverless Application Model] (SAM) defines a standard application model for serverless applications. It extends AWS CloudFormation to provide a simplified way of defining the Amazon API Gateway APIs, AWS Lambda functions, and Amazon DynamoDB tables needed by your serverless application.
@@ -657,37 +687,6 @@ Make sure to use a bucket name that is unique.
     --stack-name aws-microservices-deploy-options-lambda \
     --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" \
     --output text`/1
-
-=== Deployment: Test SAM Local
-
-==== In Mac
-
-. `sam local start-api --template sam.yaml --env-vars test/env-mac.json`
-. Greeting endpoint: `curl http://127.0.0.1:3000/resources/greeting`
-. Name endpoint:
-.. `curl http://127.0.0.1:3000/resources/names`
-.. `curl http://127.0.0.1:3000/resources/names/1`
-. Webapp endpoint: `curl http://127.0.0.1:3000/`
-
-==== In Windows
-
-. `sam local start-api --template sam.yaml --env-vars test/env-win.json`
-. Test the urls above in a browser
-
-=== Deployment: Debug using IntelliJ
-
-This section will explain how to debug your Lambda functions locally using SAM Local and IntelliJ.
-
-. Start functions using SAM Local and a debug port:
-
-  sam local start-api \
-    --env-vars test/env-mac.json \
-    --template sam.yaml \
-    --debug-port 5858
-
-. In IntelliJ, setup a break point in your Lambda function.
-. Go to `Run`, `Debug`, `Edit Configurations`, specify the port `5858` and click on `Debug`. The breakpoint will hit and you can see the debug state of the function.
-
 
 === Deployment: Deploy to Serverless Application Repository
 
