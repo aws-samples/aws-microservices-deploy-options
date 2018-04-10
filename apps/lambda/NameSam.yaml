@@ -73,12 +73,12 @@ Resources:
                 httpMethod: POST
                 type: aws_proxy
                 uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NamesFunction.Arn}/invocations"
-	Parameter:
-		Type: "AWS::SSM::Parameter"
-		Properties: 
-			Name: NameApiEndpoint
-			Description: Name API Endpoint
-			Type: String
+  Parameter:
+    Type: "AWS::SSM::Parameter"
+    Properties: 
+      Name: NameApiEndpoint
+      Description: Name API Endpoint
+      Type: String
       Value: !Sub 'https://${NamesApi}.execute-api.${AWS::Region}.amazonaws.com/prod/resources/names'
 Outputs:
   NamesApiEndpoint:
