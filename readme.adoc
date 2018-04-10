@@ -674,6 +674,21 @@ Make sure to use a bucket name that is unique.
 . `sam local start-api --template sam.yaml --env-vars test/env-win.json`
 . Test the urls above in a browser
 
+=== Deployment: Debug using IntelliJ
+
+This section will explain how to debug your Lambda functions locally using SAM Local and IntelliJ.
+
+. Start functions using SAM Local and a debug port:
+
+  sam local start-api \
+    --env-vars test/env-mac.json \
+    --template sam.yaml \
+    --debug-port 5858
+
+. In IntelliJ, setup a break point in your Lambda function.
+. Go to `Run`, `Debug`, `Edit Configurations`, specify the port `5858` and click on `Debug`. The breakpoint will hit and you can see the debug state of the function.
+
+
 === Deployment: Deploy to Serverless Application Repository
 
 The https://aws.amazon.com/serverless/serverlessrepo/[AWS Serverless Application Repository] (SAR) enables you to quickly deploy code samples, components, and complete applications for common use cases such as web and mobile back-ends, event and data processing, logging, monitoring, IoT, and more. Each application is packaged with an AWS Serverless Application Model (SAM) template that defines the AWS resources used.
