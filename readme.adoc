@@ -674,28 +674,6 @@ Make sure to use a bucket name that is unique.
 . `sam local start-api --template sam.yaml --env-vars test/env-win.json`
 . Test the urls above in a browser
 
-=== Deployment Pipeline: AWS CodePipeline
-
-This section will explain how to deploy Lambda + API Gateway via CodePipeline.
-
-. `cd apps/lambda`
-. `aws cloudformation deploy --template-file pipeline.yaml --stack-name aws-compute-options-lambda-pipeline --capabilities CAPABILITY_IAM`. `git remote add codecommit $(aws cloudformation describe-stacks --stack-name aws-compute-options-lambda-pipeline --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" --output text)`
-. Setup your Git credential by following the https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html[document]. This is required to push the code into the CodeCommit repo created in the CloudFormation stack. When the Git credential is setup, you can use the following command to push in the code and trigger the pieline to run.
-
-  git push codecommit master
-
-. Get the URL to view the deployment pipeline:
-+
-  aws cloudformation \
-    describe-stacks \
-    --stack-name aws-compute-options-lambda-pipeline \
-    --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
-    --output text
-+
-Deployment pipeline in AWS console looks like as shown:
-+
-image::images/lambda-pipeline.png[Lambda Pipeline, 350]
-
 === Deployment: Deploy to Serverless Application Repository
 
 The https://aws.amazon.com/serverless/serverlessrepo/[AWS Serverless Application Repository] (SAR) enables you to quickly deploy code samples, components, and complete applications for common use cases such as web and mobile back-ends, event and data processing, logging, monitoring, IoT, and more. Each application is packaged with an AWS Serverless Application Model (SAM) template that defines the AWS resources used.
@@ -734,6 +712,35 @@ This section explains how to publish your SAM application to SAR. Detailed instr
     --output text`/1
 
 . List of your published applications: https://console.aws.amazon.com/serverlessrepo/home?locale=en&region=us-east-1#/published-applications
+
+=== Deployment Pipeline: AWS CodePipeline
+
+This section will explain how to deploy Lambda + API Gateway via CodePipeline.
+
+. Create CloudFormation stack:
+
+  cd apps/lambda
+  aws cloudformation deploy \
+    --template-file pipeline.yaml \
+    --stack-name aws-compute-options-lambda-pipeline \
+    --capabilities CAPABILITY_IAM
+
+. `git remote add codecommit $(aws cloudformation describe-stacks --stack-name aws-compute-options-lambda-pipeline --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" --output text)`
+. Setup your Git credential by following the https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html[document]. This is required to push the code into the CodeCommit repo created in the CloudFormation stack. When the Git credential is setup, you can use the following command to push in the code and trigger the pieline to run.
+
+  git push codecommit master
+
+. Get the URL to view the deployment pipeline:
++
+  aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-lambda-pipeline \
+    --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
+    --output text
++
+Deployment pipeline in AWS console looks like as shown:
++
+image::images/lambda-pipeline.png[Lambda Pipeline, 350]
 
 === Deployment: Composition using AWS Step Functions
 
