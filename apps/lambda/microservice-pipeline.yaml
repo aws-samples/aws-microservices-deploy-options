@@ -125,6 +125,9 @@ Resources:
       Name: !Sub "${AWS::StackName}-BuildProject"
       Description: !Sub ${AWS::StackName}-buildproject
       ServiceRole: !GetAtt BuildProjectRole.Arn
+      Cache:
+        Location: !Sub "${ArtifactBucket}/cache"
+        Type: S3
       Artifacts:
         Type: CODEPIPELINE
       Environment:
@@ -256,7 +259,7 @@ Resources:
                 - aws cloudformation deploy --template-file sam.transformed.yaml --stack-name $StackName --capabilities CAPABILITY_IAM
             post_build:
               commands:
-                - curl `aws cloudformation describe-stacks --stack-name $StackName --query \"Stacks[].Outputs[?OutputKey=='${ServiceName}ApiEndpoint'].[OutputValue]" --output text`"
+                - curl `aws cloudformation describe-stacks --stack-name $StackName --query "Stacks[].Outputs[?OutputKey=='${ServiceName}ApiEndpoint'].[OutputValue]" --output text`
       TimeoutInMinutes: 10
       Tags:
         - Key: Name
