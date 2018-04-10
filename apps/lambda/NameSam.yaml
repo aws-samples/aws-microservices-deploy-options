@@ -2,17 +2,13 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >-
   Amazon API Gateway.
-Parameters:
-  CodeUri:
-    Type: String
-    Default: ../../../microservices-name/target/name.zip
 Resources:
   NamesFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: org.aws.samples.compute.name.NameHandler::handleRequest
       Runtime: java8
-      CodeUri: !Ref CodeUri
+      CodeUri: ../../services/target/name.zip
       Description: >-
         Amazon API Gateway.
       MemorySize: 1024
