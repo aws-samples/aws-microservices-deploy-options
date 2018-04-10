@@ -532,7 +532,9 @@ CloudFormation templates for different regions are listed at https://github.com/
 a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=Codesuite-Demo&templateURL=https://s3.amazonaws.com/codesuite-demo-public/aws-refarch-codesuite-kubernetes.yaml]
 |===
 
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/65
+. Create Git credentials for HTTPS connections to AWS CodeCommit: https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-gc.html?icmpid=docs_acc_console_connect#setting-up-gc-iam
+. Reset any stored git credentials for CodeCommit in the keychain. Open `Keychain Access`, search for `codecommit` and remove any related entries.
+. Get CodeCommit repo URL from CloudFormation output and follow the instructions at https://github.com/aws-samples/aws-kube-codesuite#test-cicd-platform.
 
 === Deployment Pipeline: Jenkins
 
@@ -677,8 +679,7 @@ Make sure to use a bucket name that is unique.
 This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
 . `cd apps/lambda`
-. `aws cloudformation deploy --template-file pipeline.yaml --stack-name aws-compute-options-lambda-pipeline --capabilities CAPABILITY_IAM`
-. `git remote add codecommit $(aws cloudformation describe-stacks --stack-name aws-compute-options-lambda-pipeline --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" --output text)`
+. `aws cloudformation deploy --template-file pipeline.yaml --stack-name aws-compute-options-lambda-pipeline --capabilities CAPABILITY_IAM`. `git remote add codecommit $(aws cloudformation describe-stacks --stack-name aws-compute-options-lambda-pipeline --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" --output text)`
 . Setup your Git credential by following the https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html[document]. This is required to push the code into the CodeCommit repo created in the CloudFormation stack. When the Git credential is setup, you can use the following command to push in the code and trigger the pieline to run.
 
   git push codecommit master
