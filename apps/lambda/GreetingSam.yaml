@@ -2,17 +2,13 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >-
   Greeting Amazon API Gateway.
-Parameters:
-  CodeUri:
-    Type: String
-    Default: ../../../microservices-greeting/target/greeting.zip
 Resources:
   GreetingFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: org.aws.samples.compute.greeting.GreetingHandler::handleRequest
       Runtime: java8
-      CodeUri: !Ref CodeUri
+      CodeUri: ../../services/target/greeting.zip
       Description: >-
         Amazon API Gateway.
       MemorySize: 1024
