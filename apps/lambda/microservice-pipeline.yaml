@@ -10,11 +10,11 @@ Parameters:
       - webapp
 Mappings:
   ServiceToRepo:
-    Greeting:
+    greeting:
       Repo: https://github.com/arun-gupta/microservices-greeting
-    Name:
+    name:
       Repo: https://github.com/arun-gupta/microservices-name
-    WebApp:
+    webapp:
       Repo: https://github.com/arun-gupta/microservices-webapp
 
 Resources:
