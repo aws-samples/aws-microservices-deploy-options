@@ -20,14 +20,14 @@ Resources:
           Properties:
             Path: /resources/names/{id}
             Method: GET
-            RestApiId: !Ref NamesApi
+            RestApiId: !Ref NameApi
         names:
           Type: Api
           Properties:
             Path: /resources/names
             Method: GET
-            RestApiId: !Ref NamesApi
-  NamesApi:
+            RestApiId: !Ref NameApi
+  NameApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: prod
@@ -79,8 +79,8 @@ Resources:
       Name: NameApiEndpoint
       Description: Name API Endpoint
       Type: String
-      Value: !Sub '${NamesApi}.execute-api.${AWS::Region}.amazonaws.com'
+      Value: !Sub '${NameApi}.execute-api.${AWS::Region}.amazonaws.com'
 Outputs:
-  NamesApiEndpoint:
+  NameApiEndpoint:
     Description: Names API URL for application
-    Value: !Sub 'https://${NamesApi}.execute-api.${AWS::Region}.amazonaws.com/prod/resources/names'
+    Value: !Sub 'https://${NameApi}.execute-api.${AWS::Region}.amazonaws.com/prod/resources/names'
