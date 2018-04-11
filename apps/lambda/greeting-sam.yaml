@@ -4,9 +4,6 @@ Description: >-
   Greeting Amazon API Gateway.
 Resources:
   GreetingFunction:
-    DependsOn:
-      - PreTrafficLambdaFunction
-      - PostTrafficLambdaFunction
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: org.aws.samples.compute.greeting.GreetingHandler::handleRequest
@@ -17,23 +14,13 @@ Resources:
       Tracing: Active
       AutoPublishAlias: prod
       DeploymentPreference:
-        Enabled: true
-        Type: Canary10Percent5Minutes
+        Type: Linear10PercentEvery10Minutes
         Alarms:
-          - Ref: LambdaAliasErrorMetricGreaterThanZeroAlarm
-          - Ref: LambdaLatestVersionErrorMetricGreaterThanZeroAlarm
+          - !Ref LambdaLatestVersionErrorMetricGreaterThanZeroAlarm
+          - !Ref LambdaAliasErrorMetricGreaterThanZeroAlarm
         Hooks:
-          PreTraffic: !Ref PreTrafficLambdaFunction
-          PostTraffic: !Ref PostTrafficLambdaFunction
-      Policies:
-        - AWSLambdaBasicExecutionRole
-        - AWSXrayWriteOnlyAccess
-        - Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Action:
-                - "ssm:PutParameter"
-              Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/GreetingApiEndpoint"
+          PreTraffic: LambdaAliasErrorMetricGreaterThanZeroAlarm
+          PostTraffic: LambdaLatestVersionErrorMetricGreaterThanZeroAlarm
       Events:
         greet:
           Type: Api
@@ -75,6 +62,20 @@ Resources:
       Handler: preTrafficHook.handler
       Runtime: nodejs6.10
       FunctionName: !Sub 'CodeDeployHook_gretting_preTrafficHook'
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "codedeploy:PutLifecycleEventHookExecutionStatus"
+            Resource:
+              !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:${ServerlessDeploymentApplication}/*'
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "lambda:InvokeFunction"
+            Resource: !Ref GreetingFunction.Version
   PostTrafficLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -82,6 +83,20 @@ Resources:
       Handler: preTrafficHook.handler
       Runtime: nodejs6.10
       FunctionName: !Sub 'CodeDeployHook_gretting_postTrafficHook'
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "codedeploy:PutLifecycleEventHookExecutionStatus"
+            Resource:
+              !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:${ServerlessDeploymentApplication}/*'
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "lambda:InvokeFunction"
+            Resource: !Ref GreetingFunction.Version
   LambdaAliasErrorMetricGreaterThanZeroAlarm:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
@@ -89,7 +104,7 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: Alias
-          Value: !Ref GreetingFunction.Alias
+          Value: prod
         - Name: FunctionName
           Value: !Ref GreetingFunction
       EvaluationPeriods: 2
