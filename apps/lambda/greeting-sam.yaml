@@ -8,7 +8,7 @@ Resources:
     Properties:
       Handler: org.aws.samples.compute.greeting.GreetingHandler::handleRequest
       Runtime: java8
-      CodeUri: ../../services/Greeting/target/greeting.zip
+      CodeUri: ../../../microservices-greeting/target/greeting.zip
       Description: >-
         Amazon API Gateway.
       MemorySize: 1024

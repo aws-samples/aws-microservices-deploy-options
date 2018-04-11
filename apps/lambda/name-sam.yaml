@@ -8,7 +8,7 @@ Resources:
     Properties:
       Handler: org.aws.samples.compute.name.NameHandler::handleRequest
       Runtime: java8
-      CodeUri: ../../services/Name/target/name.zip
+      CodeUri: ../../../microservices-name/target/name.zip
       Description: >-
         Amazon API Gateway.
       MemorySize: 1024

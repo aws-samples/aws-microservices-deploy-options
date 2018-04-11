@@ -5,9 +5,9 @@ Parameters:
   ServiceName:
     Type: String
     AllowedValues:
-      - Greeting
-      - Name
-      - WebApp
+      - greeting
+      - name
+      - webapp
 Mappings:
   ServiceToRepo:
     Greeting:
@@ -160,7 +160,9 @@ Resources:
                 - cd ${ServiceName}
                 - mvn clean install -Plambda
                 - cd ../../apps/lambda
-                - aws cloudformation package --template-file ${ServiceName}Sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
+                - # Format CodeUri
+                - sed -ie s/CodeUri:.*/CodeUri:\ ..\\/..\\/services\\/${ServiceName}\\/target\\/${ServiceName}.zip/ ${ServiceName}-sam.yaml
+                - aws cloudformation package --template-file ${ServiceName}-sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
           artifacts:
             files: 
               - '**/*'

@@ -17,7 +17,7 @@ Resources:
     Properties:
       Handler: org.aws.samples.compute.webapp.WebappHandler::handleRequest
       Runtime: "java8"
-      CodeUri: ../../services/WebApp/target/webapp.zip
+      CodeUri: ../../../microservices-webapp/target/webapp.zip
       Description: >-
         Amazon API Gateway.
       MemorySize: 1024
