@@ -81,6 +81,6 @@ Resources:
       Type: String
       Value: !Sub '${NameApi}.execute-api.${AWS::Region}.amazonaws.com'
 Outputs:
-  NameApiEndpoint:
+  nameApiEndpoint:
     Description: Names API URL for application
     Value: !Sub 'https://${NameApi}.execute-api.${AWS::Region}.amazonaws.com/prod/resources/names'
