@@ -763,7 +763,7 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
     --parameter-overrides ServiceName=webapp \
     --capabilities CAPABILITY_IAM
 
-. Change to the repo which needs to be included in the pipeline. Add CodeCommit repo:
+. We need to push the SAM templates into the each pipeline to build and deploy each services 
 
   cd ../../
   git remote add greeting-codecommit \
