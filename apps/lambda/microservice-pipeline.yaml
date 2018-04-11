@@ -1,6 +1,22 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: pipeline for Lambda and API Gateway
+Parameters:
+  ServiceName:
+    Type: String
+    AllowedValues:
+      - greeting
+      - name
+      - webapp
+Mappings:
+  ServiceToRepo:
+    greeting:
+      Repo: https://github.com/arun-gupta/microservices-greeting
+    name:
+      Repo: https://github.com/arun-gupta/microservices-name
+    webapp:
+      Repo: https://github.com/arun-gupta/microservices-webapp
+
 Resources:
   Repo:
     Type: AWS::CodeCommit::Repository
@@ -109,6 +125,9 @@ Resources:
       Name: !Sub "${AWS::StackName}-BuildProject"
       Description: !Sub ${AWS::StackName}-buildproject
       ServiceRole: !GetAtt BuildProjectRole.Arn
+      Cache:
+        Location: !Sub "${ArtifactBucket}/cache"
+        Type: S3
       Artifacts:
         Type: CODEPIPELINE
       Environment:
@@ -118,20 +137,32 @@ Resources:
         EnvironmentVariables:
           - Name: S3Bucket
             Value: !Ref ArtifactBucket
+          - Name: RepoUrl
+            Value: !FindInMap [ServiceToRepo, !Ref ServiceName, Repo]
+          - Name: ServiceName
+            Value: !Ref ServiceName
       Source:
         Type: CODEPIPELINE
         BuildSpec: |
           version: 0.2
+          cache:
+            paths:
+              - '/root/.m2/**/*'
           phases:
             install:
               commands:
                 - printenv
             build:
               commands:
-                - cd services/
+                - mkdir -p services/${ServiceName}
+                - cd services
+                - git clone $RepoUrl ${ServiceName}
+                - cd ${ServiceName}
                 - mvn clean install -Plambda
-                - cd ../apps/lambda
-                - aws cloudformation package --template-file sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
+                - cd ../../apps/lambda
+                - # Format CodeUri
+                - sed -ie s/CodeUri:.*/CodeUri:\ ..\\/..\\/services\\/${ServiceName}\\/target\\/${ServiceName}.zip/ ${ServiceName}-sam.yaml
+                - aws cloudformation package --template-file ${ServiceName}-sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
           artifacts:
             files: 
               - '**/*'
@@ -201,6 +232,13 @@ Resources:
               - logs:CreateLogStream
               - logs:PutLogEvents
             Resource: arn:aws:logs:*:*:*
+          - Effect: "Allow"
+            Action:
+              - "ssm:PutParameter"
+              - "ssm:GetParameter"
+            Resource: 
+              - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/NameApiEndpoint"
+              - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/GreetingApiEndpoint"
       Roles:
         -
           !Ref CFDeployerRole
@@ -219,6 +257,10 @@ Resources:
         EnvironmentVariables:
           - Name: S3Bucket
             Value: !Ref ArtifactBucket
+          - Name: StackName
+            Value: !Sub "aws-compute-options-lambda-${ServiceName}"
+          - Name: ServiceName
+            Value: !Ref ServiceName
       Source:
         Type: CODEPIPELINE
         BuildSpec: |
@@ -227,12 +269,10 @@ Resources:
             build:
               commands:
                 - cd apps/lambda
-                - !Sub "aws cloudformation deploy --template-file sam.transformed.yaml --stack-name aws-compute-options-lambda --capabilities CAPABILITY_IAM"
+                - aws cloudformation deploy --template-file sam.transformed.yaml --stack-name $StackName --capabilities CAPABILITY_IAM
             post_build:
               commands:
-                - curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='GreetingApiEndpoint'].[OutputValue]" --output text`
-                - curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='NamesApiEndpoint'].[OutputValue]" --output text`
-                - curl `aws cloudformation describe-stacks --stack-name aws-compute-options-lambda --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" --output text`
+                - curl `aws cloudformation describe-stacks --stack-name $StackName --query "Stacks[].Outputs[?OutputKey=='${ServiceName}ApiEndpoint'].[OutputValue]" --output text`
       TimeoutInMinutes: 10
       Tags:
         - Key: Name
@@ -258,11 +298,9 @@ Resources:
               OutputArtifacts:
                 - Name: SCCheckoutArtifact
               RunOrder: 1
-        -
-          Name: Build
+        - Name: Build
           Actions:
-            -
-              Name: build-lambda-function
+            - Name: build-lambda-function
               ActionTypeId:
                 Category: Build
                 Owner: AWS
