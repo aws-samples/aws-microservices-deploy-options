@@ -744,47 +744,38 @@ This section explains how to publish your SAM application to SAR. Detailed instr
 This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
 . Create CloudFormation stack:
-.. Create pipeline for Greeting service
+.. Create pipeline for `greeting`, `name` and `webapp` services
 
-  cd apps/lambda
+  cd app/lambda
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
     --stack-name aws-compute-options-greeting-lambda-pipeline \
     --parameter-overrides ServiceName=greeting \
     --capabilities CAPABILITY_IAM
-
-.. Create pipeline for Name service
-
-  cd apps/lambda
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
     --stack-name aws-compute-options-name-lambda-pipeline \
     --parameter-overrides ServiceName=name \
     --capabilities CAPABILITY_IAM
-
-.. Create pipeline for WebApp service
-
-  cd apps/lambda
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
     --stack-name aws-compute-options-webapp-lambda-pipeline \
     --parameter-overrides ServiceName=webapp \
     --capabilities CAPABILITY_IAM
 
-. Change to the repo which needs to be included in the pipeline. Add CodeCommit repo:
+. We need to push the SAM templates into the each pipeline to build and deploy each services 
 
+  cd ../../
   git remote add greeting-codecommit \
     $(aws cloudformation describe-stacks \
     --stack-name aws-compute-options-greeting-lambda-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" \
     --output text)
-
   git remote add name-codecommit \
     $(aws cloudformation describe-stacks \
     --stack-name aws-compute-options-name-lambda-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" \
     --output text)
-
   git remote add webapp-codecommit \
     $(aws cloudformation describe-stacks \
     --stack-name aws-compute-options-webapp-lambda-pipeline \
@@ -795,6 +786,9 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
   git push greeting-codecommit master
   git push name-codecommit master
+
+When the `greeting` and `name` services are created, then you can create the `webapp` service by pushing the code into `webapp-pipeline`. Use the following command to push up the code.
+
   git push webapp-codecommit master
 
 . Get the URL to view the deployment pipeline:

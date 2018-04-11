@@ -71,6 +71,6 @@ Resources:
                 type: aws_proxy
                 uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WebAppFunction.Arn}/invocations"
 Outputs:
-  WebAppApiEndpoint:
+  webappApiEndpoint:
     Description: WebApp URL for application
     Value: !Sub "https://${WebAppApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
