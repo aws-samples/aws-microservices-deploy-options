@@ -233,6 +233,7 @@ Resources:
           - Effect: "Allow"
             Action:
               - "ssm:PutParameter"
+              - "ssm:GetParameter"
             Resource: 
               - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/NameApiEndpoint"
               - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/GreetingApiEndpoint"
