@@ -159,7 +159,7 @@ Resources:
                 - git clone $RepoUrl ${ServiceName}
                 - cd ${ServiceName}
                 - mvn clean install -Plambda
-                - cd ../apps/lambda
+                - cd ../../apps/lambda
                 - aws cloudformation package --template-file ${ServiceName}Sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
           artifacts:
             files: 
@@ -230,6 +230,12 @@ Resources:
               - logs:CreateLogStream
               - logs:PutLogEvents
             Resource: arn:aws:logs:*:*:*
+          - Effect: "Allow"
+            Action:
+              - "ssm:PutParameter"
+            Resource: 
+              - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/NameApiEndpoint"
+              - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/GreetingApiEndpoint"
       Roles:
         -
           !Ref CFDeployerRole
