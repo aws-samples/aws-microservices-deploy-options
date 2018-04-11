@@ -786,6 +786,9 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
   git push greeting-codecommit master
   git push name-codecommit master
+
+When the `greeting` and `name` services are created, then you can create the `webapp` service by pushing the code into `webapp-pipeline`. Use the following command to push up the code.
+
   git push webapp-codecommit master
 
 . Get the URL to view the deployment pipeline:
