@@ -744,27 +744,20 @@ This section explains how to publish your SAM application to SAR. Detailed instr
 This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
 . Create CloudFormation stack:
-.. Create pipeline for Greeting service
+.. Create pipeline for Greeting, Name and WebApp services
 
-  cd apps/lambda
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
     --stack-name aws-compute-options-greeting-lambda-pipeline \
     --parameter-overrides ServiceName=greeting \
     --capabilities CAPABILITY_IAM
 
-.. Create pipeline for Name service
-
-  cd apps/lambda
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
     --stack-name aws-compute-options-name-lambda-pipeline \
     --parameter-overrides ServiceName=name \
     --capabilities CAPABILITY_IAM
 
-.. Create pipeline for WebApp service
-
-  cd apps/lambda
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
     --stack-name aws-compute-options-webapp-lambda-pipeline \
