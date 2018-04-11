@@ -8,23 +8,21 @@ Resources:
     Properties:
       Handler: org.aws.samples.compute.greeting.GreetingHandler::handleRequest
       Runtime: java8
-      CodeUri: ../../services/target/greeting.zip
+      CodeUri: ../../services/Greeting/target/greeting.zip
       Description: >-
         Amazon API Gateway.
       MemorySize: 1024
       Timeout: 20
       Tracing: Active
       Policies:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-        - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
-        - PolicyName: "root"
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: "Allow"
-                Action:
-                  - "ssm:PutParameter"
-                Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/GreetingApiEndpoint"
+        - AWSLambdaBasicExecutionRole
+        - AWSXrayWriteOnlyAccess
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "ssm:PutParameter"
+              Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/GreetingApiEndpoint"
       Events:
         greet:
           Type: Api
