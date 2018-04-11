@@ -15,7 +15,8 @@ Resources:
       Timeout: 20
       Tracing: Active
       Policies:
-        - 
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
         - PolicyName: "root"
           PolicyDocument:
             Version: "2012-10-17"
