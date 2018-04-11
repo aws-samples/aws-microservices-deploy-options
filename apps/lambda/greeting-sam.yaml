@@ -85,19 +85,19 @@ Resources:
   LambdaAliasErrorMetricGreaterThanZeroAlarm:
      Type: "AWS::CloudWatch::Alarm"
      Properties:
-        AlarmDescription: Lambda Function Error > 0
-        ComparisonOperator: GreaterThanThreshold
-        Dimensions:
-          - Name: Alias
-            Value: !Ref "GreetingFunction.Alias"
-          - Name: FunctionName
-            Value: !Ref GreetingFunction
-        EvaluationPeriods: 2
-        MetricName: Errors
-        Namespace: AWS/Lambda
-        Period: 60
-        Statistic: Sum
-        Threshold: 0
+       AlarmDescription: Lambda Function Error > 0
+       ComparisonOperator: GreaterThanThreshold
+       Dimensions:
+         - Name: Alias
+           Value: !Ref GreetingFunction.Alias
+         - Name: FunctionName
+           Value: !Ref GreetingFunction
+       EvaluationPeriods: 2
+       MetricName: Errors
+       Namespace: AWS/Lambda
+       Period: 60
+       Statistic: Sum
+       Threshold: 0
   LambdaLatestVersionErrorMetricGreaterThanZeroAlarm:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
@@ -105,7 +105,7 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: Version
-          Value: !Ref "GreetingFunction.Version"
+          Value: !Ref GreetingFunction.Version
         - Name: FunctionName
           Value: !Ref GreetingFunction
       EvaluationPeriods: 2
