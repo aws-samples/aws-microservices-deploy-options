@@ -236,6 +236,7 @@ Resources:
             Action:
               - "ssm:PutParameter"
               - "ssm:GetParameter"
+              - "ssm:GetParameters"
             Resource: 
               - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/NameApiEndpoint"
               - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/GreetingApiEndpoint"
