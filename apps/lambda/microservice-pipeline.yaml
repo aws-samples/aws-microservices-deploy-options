@@ -225,7 +225,8 @@ Resources:
               - iam:AttachRolePolicy
               - cloudformation:*
               - apigateway:*
-              - cloudwatch:PutMetricAlarm
+              - cloudwatch:*
+              - codedeploy:*
             Resource: "*"
           -
             Effect: Allow
