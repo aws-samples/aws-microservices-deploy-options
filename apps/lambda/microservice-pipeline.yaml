@@ -146,7 +146,7 @@ Resources:
         BuildSpec: |
           version: 0.2
           cache:
-            path:
+            paths:
               - '/root/.m2/**/*'
           phases:
             install:
@@ -154,8 +154,10 @@ Resources:
                 - printenv
             build:
               commands:
-                - git clone $RepoUrl services
+                - mkdir -p services/${ServiceName}
                 - cd services
+                - git clone $RepoUrl ${ServiceName}
+                - cd ${ServiceName}
                 - mvn clean install -Plambda
                 - cd ../apps/lambda
                 - aws cloudformation package --template-file ${ServiceName}Sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
