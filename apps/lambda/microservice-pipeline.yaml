@@ -203,6 +203,17 @@ Resources:
               - lambda:GetFunctionConfiguration
               - lambda:GetFunction
               - lambda:UpdateFunctionConfiguration
+              - lambda:ListVersionsByFunction
+              - lambda:CreateAlias
+              - lambda:DeleteAlias
+              - lambda:GetAlias
+              - lambda:ListAliases
+              - lambda:ListVersionsByFunction
+              - lambda:PublishVersion
+              - lambda:PutFunctionConcurrency
+              - lambda:TagResource
+              - lambda:UntagResource
+              - lambda:UpdateAlias
               - iam:CreateRole
               - iam:CreatePolicy
               - iam:GetRole
@@ -214,6 +225,7 @@ Resources:
               - iam:AttachRolePolicy
               - cloudformation:*
               - apigateway:*
+              - cloudwatch:PutMetricAlarm
             Resource: "*"
           -
             Effect: Allow

@@ -17,7 +17,7 @@ Resources:
       Tracing: Active
       AutoPublishAlias: prod
       DeploymentPreference:
-        Enabled: false
+        Enabled: true
         Type: Canary10Percent5Minutes
         Alarms:
           - Ref: LambdaAliasErrorMetricGreaterThanZeroAlarm
