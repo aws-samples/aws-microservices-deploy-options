@@ -13,6 +13,15 @@ Resources:
       Timeout: 20
       Tracing: Active
       AutoPublishAlias: prod
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSXrayWriteOnlyAccess
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "ssm:PutParameter"
+              Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/GreetingApiEndpoint"        
       DeploymentPreference:
         Type: Linear10PercentEvery10Minutes
         Alarms:
