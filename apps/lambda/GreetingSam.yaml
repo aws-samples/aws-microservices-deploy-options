@@ -55,7 +55,7 @@ Resources:
       Name: GreetingApiEndpoint
       Description: Greeting API Endpoint
       Type: String
-      Value: !Sub 'https://${GreetingApi}.execute-api.${AWS::Region}.amazonaws.com/prod/resources/greeting'
+      Value: !Sub 'https://${GreetingApi}.execute-api.${AWS::Region}.amazonaws.com'
 Outputs:
   GreetingApiEndpoint:
     Description: Greeting API URL for application
