@@ -8,7 +8,7 @@ Resources:
     Properties:
       Handler: org.aws.samples.compute.name.NameHandler::handleRequest
       Runtime: java8
-      CodeUri: ../../services/target/name.zip
+      CodeUri: ../../services/Name/target/name.zip
       Description: >-
         Amazon API Gateway.
       MemorySize: 1024
@@ -79,7 +79,7 @@ Resources:
       Name: NameApiEndpoint
       Description: Name API Endpoint
       Type: String
-      Value: !Sub 'https://${NamesApi}.execute-api.${AWS::Region}.amazonaws.com/prod/resources/names'
+      Value: !Sub '${NamesApi}.execute-api.${AWS::Region}.amazonaws.com'
 Outputs:
   NamesApiEndpoint:
     Description: Names API URL for application
