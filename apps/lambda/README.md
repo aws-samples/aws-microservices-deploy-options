@@ -11,14 +11,8 @@ The example application consists of there Microservices, they are Greeting Servi
 
 To start with, please use the following commands to clone these services source code into the workspace
 
-Clone Greeting Service Source Code
+Clone Greeting Service Source Code from each service repo 
 
-```
-cd ../ && mkdir -p services && cd ../services/
-git clone https://github.com/arun-gupta/microservices-greeting Greeting
-git clone https://github.com/arun-gupta/microservices-name Name
-git clone https://github.com/arun-gupta/microservices-webapp WebApp
-```
 
 ## Compile
 
