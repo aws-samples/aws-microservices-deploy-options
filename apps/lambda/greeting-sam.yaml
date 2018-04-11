@@ -4,16 +4,27 @@ Description: >-
   Greeting Amazon API Gateway.
 Resources:
   GreetingFunction:
+    DependsOn:
+      - PreTrafficLambdaFunction
+      - PostTrafficLambdaFunction
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: org.aws.samples.compute.greeting.GreetingHandler::handleRequest
       Runtime: java8
       CodeUri: ../../../microservices-greeting/target/greeting.zip
-      Description: >-
-        Amazon API Gateway.
       MemorySize: 1024
       Timeout: 20
       Tracing: Active
+      AutoPublishAlias: prod
+      DeploymentPreference:
+        Enabled: false
+        Type: Canary10Percent5Minutes
+        Alarms:
+          - Ref: LambdaAliasErrorMetricGreaterThanZeroAlarm
+          - Ref: LambdaLatestVersionErrorMetricGreaterThanZeroAlarm
+        Hooks:
+          PreTraffic: !Ref PreTrafficLambdaFunction
+          PostTraffic: !Ref PostTrafficLambdaFunction
       Policies:
         - AWSLambdaBasicExecutionRole
         - AWSXrayWriteOnlyAccess
@@ -56,6 +67,53 @@ Resources:
       Description: Greeting API Endpoint
       Type: String
       Value: !Sub '${GreetingApi}.execute-api.${AWS::Region}.amazonaws.com'
+
+  PreTrafficLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./hooks/
+      Handler: preTrafficHook.handler
+      Runtime: nodejs6.10
+      FunctionName: !Sub 'CodeDeployHook_gretting_preTrafficHook'
+  PostTrafficLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./hooks/
+      Handler: preTrafficHook.handler
+      Runtime: nodejs6.10
+      FunctionName: !Sub 'CodeDeployHook_gretting_postTrafficHook'
+  LambdaAliasErrorMetricGreaterThanZeroAlarm:
+     Type: "AWS::CloudWatch::Alarm"
+     Properties:
+        AlarmDescription: Lambda Function Error > 0
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: Alias
+            Value: !Ref "GreetingFunction.Alias"
+          - Name: FunctionName
+            Value: !Ref GreetingFunction
+        EvaluationPeriods: 2
+        MetricName: Errors
+        Namespace: AWS/Lambda
+        Period: 60
+        Statistic: Sum
+        Threshold: 0
+  LambdaLatestVersionErrorMetricGreaterThanZeroAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmDescription: Lambda Function Error > 0
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: Version
+          Value: !Ref "GreetingFunction.Version"
+        - Name: FunctionName
+          Value: !Ref GreetingFunction
+      EvaluationPeriods: 2
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Period: 60
+      Statistic: Sum
+      Threshold: 0
 Outputs:
   greetingApiEndpoint:
     Description: Greeting API URL for application
