@@ -602,16 +602,28 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/79
 
 ==== In Mac
 
-. `sam local start-api --template sam.yaml --env-vars test/env-mac.json`
-. Greeting endpoint: `curl http://127.0.0.1:3000/resources/greeting`
-. Name endpoint:
-.. `curl http://127.0.0.1:3000/resources/names`
-.. `curl http://127.0.0.1:3000/resources/names/1`
-. Webapp endpoint: `curl http://127.0.0.1:3000/`
+. Start Greeting Service
+.. `sam local start-api --template greeting-sam.yaml --port 3001`
+
+. Greeting endpoint: `curl http://127.0.0.1:3001/resources/greeting`
+
+. Start Name Service:
+.. `sam local start-api --template name-sam.yaml --port 3002`
+
+. Name Endpoint `curl http://127.0.0.1:3002/resources/names`
+.. `curl http://127.0.0.1:3002/resources/names/1`
+
+. Start WebApp Service
+.. `sam local start-api --template webapp-sam.yaml --env-vars test/env-mac.json --port 3000`
+
+. WebApp Endpoint
+.. `curl http://127.0.0.1:3000/1`
 
 ==== In Windows
 
-. `sam local start-api --template sam.yaml --env-vars test/env-win.json`
+Firstly start the Greeting and Name service as Mac, and then start the WebApp service using the following command
+
+. `sam local start-api --template webapp-sam.yaml --env-vars test/env-win.json --port 3000`
 . Test the urls above in a browser
 
 === Deployment: Debug using IntelliJ
@@ -732,30 +744,76 @@ This section explains how to publish your SAM application to SAR. Detailed instr
 This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
 . Create CloudFormation stack:
+.. Create pipeline for Greeting service
 
   cd apps/lambda
   aws cloudformation deploy \
-    --template-file pipeline.yaml \
-    --stack-name aws-compute-options-lambda-pipeline \
+    --template-file microservice-pipeline.yaml \
+    --stack-name aws-compute-options-greeting-lambda-pipeline \
+    --parameter-overrides ServiceName=greeting \
+    --capabilities CAPABILITY_IAM
+
+.. Create pipeline for Name service
+
+  cd apps/lambda
+  aws cloudformation deploy \
+    --template-file microservice-pipeline.yaml \
+    --stack-name aws-compute-options-name-lambda-pipeline \
+    --parameter-overrides ServiceName=name \
+    --capabilities CAPABILITY_IAM
+
+.. Create pipeline for WebApp service
+
+  cd apps/lambda
+  aws cloudformation deploy \
+    --template-file microservice-pipeline.yaml \
+    --stack-name aws-compute-options-webapp-lambda-pipeline \
+    --parameter-overrides ServiceName=webapp \
     --capabilities CAPABILITY_IAM
 
 . Change to the repo which needs to be included in the pipeline. Add CodeCommit repo:
 
-  git remote add codecommit \
+  git remote add greeting-codecommit \
     $(aws cloudformation describe-stacks \
-    --stack-name aws-compute-options-lambda-pipeline \
+    --stack-name aws-compute-options-greeting-lambda-pipeline \
+    --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" \
+    --output text)
+
+  git remote add name-codecommit \
+    $(aws cloudformation describe-stacks \
+    --stack-name aws-compute-options-name-lambda-pipeline \
+    --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" \
+    --output text)
+
+  git remote add webapp-codecommit \
+    $(aws cloudformation describe-stacks \
+    --stack-name aws-compute-options-webapp-lambda-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" \
     --output text)
 
 . Setup your Git credential by following the https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html[document]. This is required to push the code into the CodeCommit repo created in the CloudFormation stack. When the Git credential is setup, you can use the following command to push in the code and trigger the pieline to run.
 
-  git push codecommit master
+  git push greeting-codecommit master
+  git push name-codecommit master
+  git push webapp-codecommit master
 
 . Get the URL to view the deployment pipeline:
 +
   aws cloudformation \
     describe-stacks \
-    --stack-name aws-compute-options-lambda-pipeline \
+    --stack-name aws-compute-options-greeting-lambda-pipeline \
+    --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
+    --output text
+
+  aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-name-lambda-pipeline \
+    --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
+    --output text
+
+  aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-webapp-lambda-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
 +
