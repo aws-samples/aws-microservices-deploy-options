@@ -1,0 +1,203 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+
+
+Parameters:
+  LaunchType:
+    Type: String
+    Default: Fargate
+    AllowedValues:
+      - Fargate
+      - EC2
+
+  Subnet1:
+    Type: String
+
+  Subnet2:
+    Type: String
+
+  Subnet3:
+    Type: String
+
+  Subnet4:
+    Type: String
+
+  VpcId:
+    Type: String
+
+
+Conditions:
+  EC2: !Equals [ !Ref LaunchType, "EC2" ]
+
+
+Resources:
+  SecurityGroupPublic:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: !Sub ${AWS::StackName}-alb
+      SecurityGroupIngress:
+        - CidrIp: "0.0.0.0/0"
+          IpProtocol: "TCP"
+          FromPort: 80
+          ToPort: 80
+      VpcId: !Ref VpcId
+
+  SecurityGroupWebapp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: WebAppSecurityGroup
+      GroupDescription: WebAppSecurityGroupRules
+      VpcId: !Ref VpcId
+
+  IngressRuleWebapp:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 8080
+      ToPort: 8080
+      SourceSecurityGroupId: !GetAtt SecurityGroupPublic.GroupId
+      GroupId: !GetAtt SecurityGroupWebapp.GroupId
+
+  IngressRuleWebapp001:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 8081
+      ToPort: 8082
+      SourceSecurityGroupId: !GetAtt SecurityGroupWebapp.GroupId
+      GroupId: !GetAtt SecurityGroupWebapp.GroupId
+
+  ALBPublic:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internet-facing
+      SecurityGroups:
+        - !GetAtt SecurityGroupPublic.GroupId
+      Subnets:
+        - !Ref Subnet1
+        - !Ref Subnet2
+
+  ALBPrivate:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internal
+      SecurityGroups:
+        - !GetAtt SecurityGroupWebapp.GroupId
+      Subnets:
+        - !Ref Subnet3
+        - !Ref Subnet4
+
+  LoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref ALBPrivate
+      Port: 8081
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+
+  LoadBalancerListener001:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref ALBPrivate
+      Port: 8082
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup001
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: ALBPrivate
+    Properties:
+      VpcId: !Ref VpcId
+      Port: 8081
+      Protocol: HTTP
+      Matcher:
+        HttpCode: 200-299
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: /resources/greeting
+      Name: greeting
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      TargetType: !If [ EC2, "instance", "ip" ]
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 30
+
+  TargetGroup001:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: ALBPrivate
+    Properties:
+      VpcId: !Ref VpcId
+      Port: 8082
+      Protocol: HTTP
+      Matcher:
+        HttpCode: 200-299
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: /resources/name/1
+      Name: name
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      TargetType: !If [ EC2, "instance", "ip" ]
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 30
+
+  ListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !Ref LoadBalancerListener
+      Priority: 1
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /
+      Actions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+
+  ListenerRule001:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !Ref LoadBalancerListener001
+      Priority: 1
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /
+      Actions:
+        - TargetGroupArn: !Ref TargetGroup001
+          Type: forward
+
+Outputs:
+  TargetGroup:
+    Value: !Ref TargetGroup
+
+  TargetGroup001:
+    Value: !Ref TargetGroup001
+
+  ServiceUrl:
+    Description: URL of the load balancer for the sample service.
+    Value: !Sub http://${ALBPublic.DNSName}
+
+  SecurityGroup:
+    Value: !Ref SecurityGroupPublic
+
+  SecurityGroupWebapp:
+    Value: !GetAtt SecurityGroupWebapp.GroupId
+
+  ALBPublic:
+    Value: !Ref ALBPublic
+
+  ALBPrivate:
+    Value: !Ref ALBPrivate
+
+  ALBPublicCNAME:
+    Value: !GetAtt ALBPublic.DNSName
+
+  ALBPrivateCNAME:
+    Value: !GetAtt ALBPrivate.DNSName
