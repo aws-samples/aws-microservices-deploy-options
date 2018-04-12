@@ -700,6 +700,17 @@ Make sure to use a bucket name that is unique.
     --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" \
     --output text`/1
 
+=== Deployment: Use Serverless Safe Deployment (Canary)
+
+The `greeting` service has implemented Lambda SAM Safe Deployment using. By default the function is deployed using Canary10Percent5Minutes deployment type. 
+
+The `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment type, and push the changes to `greeting` codecommit repository.
+
+  git add .
+  git commit -m "switch canary deployment"
+  git push greeting-codecommit
+
+
 === Deployment: Deploy to Serverless Application Repository
 
 The https://aws.amazon.com/serverless/serverlessrepo/[AWS Serverless Application Repository] (SAR) enables you to quickly deploy code samples, components, and complete applications for common use cases such as web and mobile back-ends, event and data processing, logging, monitoring, IoT, and more. Each application is packaged with an AWS Serverless Application Model (SAM) template that defines the AWS resources used.
