@@ -2,6 +2,23 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >-
   Greeting Amazon API Gateway.
+Parameters:
+  LambdaAlias:
+    Type: String
+    Default: prod
+  CanaryDeploymentType:
+    Type: String
+    Default: Canary10Percent5Minutes
+    AllowedValues:
+      - Canary10Percent30Minutes
+      - Canary10Percent5Minutes
+      - Canary10Percent10Minutes
+      - Canary10Percent15Minutes
+      - AllAtOnce
+      - Linear10PercentEvery10Minutes
+      - Linear10PercentEvery1Minute
+      - Linear10PercentEvery2Minutes
+      - Linear10PercentEvery3Minutes
 Resources:
   GreetingFunction:
     Type: 'AWS::Serverless::Function'
@@ -12,7 +29,7 @@ Resources:
       MemorySize: 1024
       Timeout: 20
       Tracing: Active
-      AutoPublishAlias: prod
+      AutoPublishAlias: !Ref LambdaAlias
       Policies:
         - AWSLambdaBasicExecutionRole
         - AWSXrayWriteOnlyAccess
@@ -22,14 +39,6 @@ Resources:
               Action:
                 - "ssm:PutParameter"
               Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/GreetingApiEndpoint"        
-      DeploymentPreference:
-        Type: Linear10PercentEvery10Minutes
-        Alarms:
-          - !Ref LambdaLatestVersionErrorMetricGreaterThanZeroAlarm
-          - !Ref LambdaAliasErrorMetricGreaterThanZeroAlarm
-        Hooks:
-          PreTraffic: LambdaAliasErrorMetricGreaterThanZeroAlarm
-          PostTraffic: LambdaLatestVersionErrorMetricGreaterThanZeroAlarm
       Events:
         greet:
           Type: Api
@@ -37,6 +46,11 @@ Resources:
             Path: /resources/greeting
             Method: GET
             RestApiId: !Ref GreetingApi
+      DeploymentPreference:
+        Type: Canary10Percent5Minutes
+        Alarms:
+          - LambdaAliasErrorMetricGreaterThanZeroAlarm
+          - LambdaLatestVersionErrorMetricGreaterThanZeroAlarm
   GreetingApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -55,7 +69,7 @@ Resources:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
-                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GreetingFunction.Arn}/invocations"
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GreetingFunction.Arn}:${LambdaAlias}/invocations"
   Parameter:
     Type: "AWS::SSM::Parameter"
     Properties: 
@@ -70,50 +84,52 @@ Resources:
       CodeUri: ./hooks/
       Handler: preTrafficHook.handler
       Runtime: nodejs6.10
-      FunctionName: !Sub 'CodeDeployHook_gretting_preTrafficHook'
+      FunctionName: CodeDeployHook_gretting_preTrafficHook
+      DeploymentPreference:
+        Enabled: false  
       Policies:
         - Version: "2012-10-17"
           Statement:
-          - Effect: "Allow"
-            Action:
-              - "codedeploy:PutLifecycleEventHookExecutionStatus"
-            Resource:
-              !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:${ServerlessDeploymentApplication}/*'
+            - Effect: "Allow"
+              Action:
+                - "codedeploy:PutLifecycleEventHookExecutionStatus"
+              Resource: "*"
         - Version: "2012-10-17"
           Statement:
-          - Effect: "Allow"
-            Action:
-              - "lambda:InvokeFunction"
-            Resource: !Ref GreetingFunction.Version
+            - Effect: "Allow"
+              Action:
+                - "lambda:InvokeFunction"
+              Resource: "*"
   PostTrafficLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./hooks/
       Handler: preTrafficHook.handler
       Runtime: nodejs6.10
-      FunctionName: !Sub 'CodeDeployHook_gretting_postTrafficHook'
+      FunctionName: CodeDeployHook_gretting_postTrafficHook
+      DeploymentPreference:
+        Enabled: false  
       Policies:
         - Version: "2012-10-17"
           Statement:
-          - Effect: "Allow"
-            Action:
-              - "codedeploy:PutLifecycleEventHookExecutionStatus"
-            Resource:
-              !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:${ServerlessDeploymentApplication}/*'
+            - Effect: "Allow"
+              Action:
+                - "codedeploy:PutLifecycleEventHookExecutionStatus"
+              Resource: "*"
         - Version: "2012-10-17"
           Statement:
-          - Effect: "Allow"
-            Action:
-              - "lambda:InvokeFunction"
-            Resource: !Ref GreetingFunction.Version
+            - Effect: "Allow"
+              Action:
+                - "lambda:InvokeFunction"
+              Resource: "*"
   LambdaAliasErrorMetricGreaterThanZeroAlarm:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
       AlarmDescription: Lambda Function Error > 0
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
-        - Name: Alias
-          Value: prod
+        - Name: Resource
+          Value: !Sub "${GreetingFunction}:prod"
         - Name: FunctionName
           Value: !Ref GreetingFunction
       EvaluationPeriods: 2
@@ -128,7 +144,7 @@ Resources:
       AlarmDescription: Lambda Function Error > 0
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
-        - Name: Version
+        - Name: Resource
           Value: !Ref GreetingFunction.Version
         - Name: FunctionName
           Value: !Ref GreetingFunction

@@ -161,7 +161,7 @@ Resources:
                 - mvn clean install -Plambda
                 - cd ../../apps/lambda
                 - # Format CodeUri
-                - sed -ie s/CodeUri:.*/CodeUri:\ ..\\/..\\/services\\/${ServiceName}\\/target\\/${ServiceName}.zip/ ${ServiceName}-sam.yaml
+                - sed -ie s/CodeUri: \.\..*/CodeUri:\ ..\\/..\\/services\\/${ServiceName}\\/target\\/${ServiceName}.zip/ ${ServiceName}-sam.yaml
                 - aws cloudformation package --template-file ${ServiceName}-sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
           artifacts:
             files: 
@@ -194,35 +194,19 @@ Resources:
           -
             Effect: Allow
             Action:
-              - lambda:AddPermission
-              - lambda:CreateFunction
-              - lambda:DeleteFunction
-              - lambda:InvokeFunction
-              - lambda:RemovePermission
-              - lambda:UpdateFunctionCode
-              - lambda:GetFunctionConfiguration
-              - lambda:GetFunction
-              - lambda:UpdateFunctionConfiguration
-              - lambda:ListVersionsByFunction
-              - lambda:CreateAlias
-              - lambda:DeleteAlias
-              - lambda:GetAlias
-              - lambda:ListAliases
-              - lambda:ListVersionsByFunction
-              - lambda:PublishVersion
-              - lambda:PutFunctionConcurrency
-              - lambda:TagResource
-              - lambda:UntagResource
-              - lambda:UpdateAlias
-              - iam:CreateRole
+              - lambda:*
+              - iam:AttachRolePolicy
               - iam:CreatePolicy
-              - iam:GetRole
+              - iam:CreateRole
               - iam:DeleteRole
-              - iam:PutRolePolicy
-              - iam:PassRole
               - iam:DeleteRolePolicy
               - iam:DetachRolePolicy
-              - iam:AttachRolePolicy
+              - iam:GetRole
+              - iam:GetRolePolicy
+              - iam:ListRolePolicies
+              - iam:ListRoles
+              - iam:PassRole
+              - iam:PutRolePolicy
               - cloudformation:*
               - apigateway:*
               - cloudwatch:*
