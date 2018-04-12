@@ -704,7 +704,7 @@ Make sure to use a bucket name that is unique.
 
 The `greeting` service has implemented Lambda SAM Safe Deployment using. By default the function is deployed using Canary10Percent5Minutes deployment type. 
 
-The `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment type, and push the changes to `greeting` codecommit repository.
+The `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment https://github.com/awslabs/serverless-application-model/blob/develop/docs/safe_lambda_deployments.rst#traffic-shifting-configurations[types], and push the changes to `greeting` codecommit repository.
 
   git add .
   git commit -m "switch canary deployment"
