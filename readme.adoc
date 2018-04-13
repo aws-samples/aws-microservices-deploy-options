@@ -373,14 +373,14 @@ This section will explain how to deploy a Fargate task via CodePipeline
 . Create a fork of the Github repository that contains the https://github.com/awslabs/ecs-demo-php-simple-app[Amazon ECS Sample App].
 . Clone the forked repository to your local machine:
 
-  git clone https://github.com/<your_github_username>/ecs-demo-php-simple-app
+  git clone https://github.com/<your_github_username>/microservices-greeting
 
 . Create the CloudFormation stack:
 +
 |===
 |Region | Launch Template
 | *N. Virginia* (us-east-1)
-a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=ECS-ContinuousDeployment&templateURL=https://s3.amazonaws.com/ecs-refarch-continuous-deployment/ecs-refarch-continuous-deployment.yaml&param_LaunchType=Fargate]
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=ECS-ContinuousDeployment&templateURL=https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/ecs-refarch-continuous-deployment.yamll&param_LaunchType=Fargate]
 |===
 
 The CloudFormation template requires the following input parameters: 
