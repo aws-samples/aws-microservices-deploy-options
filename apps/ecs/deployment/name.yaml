@@ -53,6 +53,7 @@ Resources:
     Properties:
       Cluster: !Ref Cluster
       DesiredCount: !Ref DesiredCount
+      HealthCheckGracePeriodSeconds: 60
       TaskDefinition: !Ref TaskDefinition
       LaunchType: FARGATE
       NetworkConfiguration:

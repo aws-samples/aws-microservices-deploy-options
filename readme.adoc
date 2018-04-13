@@ -177,7 +177,7 @@ The following resources are needed in order to deploy the sample application:
 
 ==== Deployment: Simple ECS Cluster
 
-This section explains how to create a ECS cluster with no additional resources. The cluster can be created with a private VPC or a public VPC. The CloudFormation templates for different types are available at https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/ECS/EC2LaunchType/clusters. 
+This section explains how to create a ECS cluster with no additional resources. The cluster can be created with a private VPC or a public VPC. The CloudFormation templates for different types are available at https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/ECS/EC2LaunchType/clusters.
 
 This section will create a 3-instance cluster using a public VPC:
 
@@ -235,7 +235,7 @@ a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudfo
     ecs-cli configure --cluster $ECSCluster --region us-east-1 --default-launch-type FARGATE
 
 . Create the task definition parameters for each of the service:
-    
+
     ecs-params-create.sh greeting
     ecs-params-create.sh name
     ecs-params-create.sh webapp
@@ -370,10 +370,10 @@ Use the command to test:
 
 This section will explain how to deploy a Fargate task via CodePipeline
 
-. Create a fork of the Github repository that contains the https://github.com/awslabs/ecs-demo-php-simple-app[Amazon ECS Sample App].
+. Fork each of the repositories in the *Build and Test Services using Maven* section.
 . Clone the forked repository to your local machine:
 
-  git clone https://github.com/<your_github_username>/ecs-demo-php-simple-app
+  git clone https://github.com/<your_github_username>/microservice-greeting
 
 . Create the CloudFormation stack:
 +
@@ -382,13 +382,14 @@ This section will explain how to deploy a Fargate task via CodePipeline
 | *N. Virginia* (us-east-1)
 a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=ECS-ContinuousDeployment&templateURL=https://s3.amazonaws.com/ecs-refarch-continuous-deployment/ecs-refarch-continuous-deployment.yaml&param_LaunchType=Fargate]
 |===
+*TODO* Replace link with the URL of the ecs-refarch-continuous-deployment.yaml file in S3.
 
-The CloudFormation template requires the following input parameters: 
+The CloudFormation template requires the following input parameters:
 
 . Cluster Configuration
 .. *Launch Type:* Select Fargate.
 . GitHub Configuration
-.. *Repo:* The repository name for the sample service. This has to be the forked repo.
+.. *Repo:* The repository name for each of the sample services. These have been populated for you.
 .. *Branch:* The branch of the repository to deploy continuously, e.g. master.
 .. *User:* Your GitHub username.
 .. *Personal Access Token:* A token for the user specified above. Use https://github.com/settings/tokens to create a new token. See https://help.github.com/enterprise/2.12/user/articles/creating-a-personal-access-token-for-the-command-line/[Creating a personal access token for the command line] for more details.
@@ -396,13 +397,13 @@ The CloudFormation template requires the following input parameters:
 The CloudFormation stack has the following outputs:
 
 . *ServiceUrl:* The URL of the sample service that is being deployed.
-. *PipelineUrl:* A deep link for the pipeline in the AWS Management Console. 
+. *PipelineUrl:* A deep link for the pipeline in the AWS Management Console.
 
-Once the stack has been provisioned, *click* the link for the *PipelineUrl*. This will open the CodePipline console.  Clicking on the pipeline will display a diagram that looks like this: 
+Once the stack has been provisioned, *click* the link for the *PipelineUrl*. This will open the CodePipline console.  Clicking on the pipeline will display a diagram that looks like this:
 
 image::images/fargate-pipeline.png[Fargate Pipeline, 350]
 
-Now that a deployment pipeline has been established, you can modify files in the repository we cloned earlier and push your changes to GitHub which will cause the following actions to occur: 
+Now that a deployment pipeline has been established for our services, you can modify files in the repositories we cloned earlier and push your changes to GitHub.  This will cause the following actions to occur: 
 
 . The latest changes will be pulled from GitHub.
 . A new Docker image will be created and pushed to ECR.
@@ -412,10 +413,10 @@ Now that a deployment pipeline has been established, you can modify files in the
 
 ==== Cleaning up the example resources
 
-To remove all the resources created by the example, do the following: 
+To remove all the resources created by the example, do the following:
 
-. Delete the main CloudFromation stack which deletes the sub stacks and resouces. 
-. Manually delete the resources which may contain content: 
+. Delete the main CloudFromation stack which deletes the sub stacks and resouces.
+. Manually delete the resources which may contain content:
 .. S3 Bucket: ArtifactBucket
 .. ECR Repository: Repository
 
@@ -557,7 +558,7 @@ This will create a Kubernetes cluster on AWS using kops. This cluster will have 
 
 . Import the project in Jenkins X:
 +
-  jx import 
+  jx import
 +
 This will generate `Dockerfile` and Helm charts, if they don't already exist. It also creates a `Jenkinsfile` with different build stages identified. Finally, it triggers a Jenkins build and deploy the application in a staging environment by default.
 +
