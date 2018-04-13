@@ -3,21 +3,27 @@ AWSTemplateFormatVersion: 2010-09-09
 
 
 Parameters:
-  Subnet3:
+  Subnet1:
     Type: String
 
-  Subnet4:
+  Subnet2:
     Type: String
 
-  PrivateALB:
+  PublicALB:
     Type: String
 
   Cluster:
     Type: String
 
+  ExecutionRole:
+    Type: String
+
   DesiredCount:
     Type: Number
     Default: 1
+
+  ALBPrivateCNAME:
+    Type: String
 
   LaunchType:
     Type: String
@@ -38,22 +44,7 @@ Conditions:
 
   EC2: !Equals [ !Ref LaunchType, "EC2" ]
 
-
 Resources:
-  TaskExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      Path: /
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Action: sts:AssumeRole
-            Effect: Allow
-            Principal:
-              Service: ecs-tasks.amazonaws.com
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -61,6 +52,7 @@ Resources:
 
   FargateService:
     Type: AWS::ECS::Service
+    DependsOn: TaskDefinition
     Condition: Fargate
     Properties:
       Cluster: !Ref Cluster
@@ -74,11 +66,11 @@ Resources:
           SecurityGroups:
             - !Ref SecurityGroup
           Subnets:
-            - !Ref Subnet3
-            - !Ref Subnet4
+            - !Ref Subnet1
+            - !Ref Subnet2
       LoadBalancers:
-        - ContainerName: greeting
-          ContainerPort: 8081
+        - ContainerName: webapp
+          ContainerPort: 8080
           TargetGroupArn: !Ref TargetGroup
 
   EC2Service:
@@ -90,27 +82,41 @@ Resources:
       TaskDefinition: !Ref TaskDefinition
       LaunchType: EC2
       LoadBalancers:
-        - ContainerName: greeting
-          ContainerPort: 8081
+        - ContainerName: webapp
+          ContainerPort: 8080
           TargetGroupArn: !Ref TargetGroup
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
-      Family: !Sub ${AWS::StackName}-greeting
+      Family: !Sub ${AWS::StackName}-webapp
       RequiresCompatibilities:
         - !If [ Fargate, "FARGATE", "EC2" ]
       Memory: 1GB
       Cpu: 256
       NetworkMode: !If [ Fargate, "awsvpc", "bridge" ]
-      ExecutionRoleArn: !Ref TaskExecutionRole
+      ExecutionRoleArn: !Ref ExecutionRole
       ContainerDefinitions:
-        - Name: greeting
-          Image: arungupta/greeting
+        - Name: webapp
+          Environment:
+            - Name: NAME_SERVICE_HOST
+              Value: !Ref ALBPrivateCNAME
+            - Name: NAME_SERVICE_PORT
+              Value: "8082"
+            - Name: NAME_SERVICE_PATH
+              Value: /resources/names/1
+            - Name: GREETING_SERVICE_HOST
+              Value: !Ref ALBPrivateCNAME
+            - Name: GREETING_SERVICE_PORT
+              Value: "8081"
+            - Name: GREETING_SERVICE_PATH
+              Value: /resources/greeting
+          Image: arungupta/webapp
           Essential: true
           Memory: 500
+          Cpu: 10
           PortMappings:
-            - ContainerPort: 8081
+            - ContainerPort: 8080
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -122,5 +128,3 @@ Resources:
 Outputs:
   Service:
     Value: !If [ Fargate, !Ref FargateService, !Ref EC2Service ]
-  ExecutionRole:
-    Value: !Ref TaskExecutionRole

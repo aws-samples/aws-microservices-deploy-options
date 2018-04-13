@@ -107,6 +107,16 @@ Resources:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup001
 
+  LoadBalancerListener002:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref ALBPublic
+      Port: 8080
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup002
+
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: ALBPrivate
@@ -116,7 +126,7 @@ Resources:
       Protocol: HTTP
       Matcher:
         HttpCode: 200-299
-      HealthCheckIntervalSeconds: 10
+      HealthCheckIntervalSeconds: 60
       HealthCheckPath: /resources/greeting
       Name: greeting
       HealthCheckProtocol: HTTP
@@ -136,9 +146,29 @@ Resources:
       Protocol: HTTP
       Matcher:
         HttpCode: 200-299
-      HealthCheckIntervalSeconds: 10
+      HealthCheckIntervalSeconds: 60
       HealthCheckPath: /resources/name/1
       Name: name
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      TargetType: !If [ EC2, "instance", "ip" ]
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 30
+
+  TargetGroup002:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: ALBPublic
+    Properties:
+      VpcId: !Ref VpcId
+      Port: 8080
+      Protocol: HTTP
+      Matcher:
+        HttpCode: 200-299
+      HealthCheckIntervalSeconds: 60
+      HealthCheckPath: /
+      Name: webapp
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
@@ -173,12 +203,28 @@ Resources:
         - TargetGroupArn: !Ref TargetGroup001
           Type: forward
 
+  ListenerRule002:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !Ref LoadBalancerListener002
+      Priority: 1
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /
+      Actions:
+        - TargetGroupArn: !Ref TargetGroup002
+          Type: forward
+
 Outputs:
   TargetGroup:
     Value: !Ref TargetGroup
 
   TargetGroup001:
     Value: !Ref TargetGroup001
+
+  TargetGroup002:
+    Value: !Ref TargetGroup002
 
   ServiceUrl:
     Description: URL of the load balancer for the sample service.

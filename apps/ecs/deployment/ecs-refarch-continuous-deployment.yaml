@@ -36,6 +36,11 @@ Parameters:
     Default: microservices-name
     Description: The repo name of the name service.
 
+  GitHubRepo002:
+    Type: String
+    Default: microservices-webapp
+    Description: The repo name of the webapp service.
+
   GitHubBranch:
     Type: String
     Default: master
@@ -63,6 +68,8 @@ Metadata:
         default: "Repo1"
       GitHubRepo001:
         default: "Repo2"
+      GitHubRepo002:
+        default: "Repo3"
       GitHubBranch:
         default: "Branch"
       GitHubToken:
@@ -79,6 +86,7 @@ Metadata:
         Parameters:
           - GitHubRepo
           - GitHubRepo001
+          - GitHubRepo002
           - GitHubBranch
           - GitHubUser
           - GitHubToken
@@ -122,6 +130,22 @@ Resources:
         GitHubUser: !Ref GitHubUser
         GitHubToken: !Ref GitHubToken
         GitHubRepo001: !Ref GitHubRepo001
+        GitHubBranch: !Ref GitHubBranch
+        CodeBuildServiceRole: !GetAtt DeploymentPipeline.Outputs.CodeBuildServiceRole
+        CodePipelineServiceRoleArn: !GetAtt DeploymentPipeline.Outputs.CodePipelineServiceRoleArn
+        ArtifactBucketName: !GetAtt DeploymentPipeline.Outputs.ArtifactBucketName
+
+  DeploymentPipeline002:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: DeploymentPipeline
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/jicowan-ecs-greeting-pipeline/templates/deployment-pipeline-webapp.yaml
+      Parameters:
+        Cluster: !GetAtt Cluster.Outputs.ClusterName
+        Service: !GetAtt Name.Outputs.Service
+        GitHubUser: !Ref GitHubUser
+        GitHubToken: !Ref GitHubToken
+        GitHubRepo002: !Ref GitHubRepo002
         GitHubBranch: !Ref GitHubBranch
         CodeBuildServiceRole: !GetAtt DeploymentPipeline.Outputs.CodeBuildServiceRole
         CodePipelineServiceRoleArn: !GetAtt DeploymentPipeline.Outputs.CodePipelineServiceRoleArn
@@ -189,6 +213,20 @@ Resources:
         TargetGroup001: !GetAtt LoadBalancer.Outputs.TargetGroup001
         ExecutionRole: !GetAtt Greeting.Outputs.ExecutionRole
 
+  Webapp:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/jicowan-ecs-greeting-pipeline/templates/webapp.yaml
+      Parameters:
+        Subnet1: !GetAtt VPC.Outputs.Subnet1
+        Subnet2: !GetAtt VPC.Outputs.Subnet2
+        PublicALB: !GetAtt LoadBalancer.Outputs.ALBPublic
+        Cluster: !GetAtt Cluster.Outputs.ClusterName
+        LaunchType: !Ref LaunchType
+        SecurityGroup: !GetAtt LoadBalancer.Outputs.SecurityGroup
+        TargetGroup: !GetAtt LoadBalancer.Outputs.TargetGroup002
+        ExecutionRole: !GetAtt Greeting.Outputs.ExecutionRole
+        ALBPrivateCNAME: !GetAtt LoadBalancer.Outputs.ALBPrivateCNAME
 
 
 Outputs:
