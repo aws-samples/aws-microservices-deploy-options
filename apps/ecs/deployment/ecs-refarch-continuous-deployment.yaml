@@ -47,13 +47,6 @@ Parameters:
     Description: >
       Token for the user specified above. (https://github.com/settings/tokens)
 
-  TemplateBucket:
-    Type: String
-    Default: ecs-refarch-continuous-deployment
-    Description: >
-      The S3 bucket from which to fetch the templates used by this stack.
-
-
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterLabels:
