@@ -85,9 +85,6 @@ Metadata:
           - GitHubToken
       - Label:
           default: Stack Configuration
-        Parameters:
-          - TemplateBucket
-
 
 Resources:
   Cluster:
