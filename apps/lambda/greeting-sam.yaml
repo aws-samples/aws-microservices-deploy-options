@@ -47,7 +47,7 @@ Resources:
             Method: GET
             RestApiId: !Ref GreetingApi
       DeploymentPreference:
-        Type: Canary10Percent5Minutes
+        Type: !Ref CanaryDeploymentType
         Alarms:
           - LambdaAliasErrorMetricGreaterThanZeroAlarm
           - LambdaLatestVersionErrorMetricGreaterThanZeroAlarm
