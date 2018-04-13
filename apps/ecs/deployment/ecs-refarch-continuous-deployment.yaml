@@ -92,7 +92,7 @@ Resources:
   Cluster:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/jicowan-ecs-greeting-pipeline/templates/ecs-cluster.yaml
+      TemplateURL: https://s3.console.aws.amazon.com/s3/buckets/aws-microservices-deploy-options-ecs-deployment/ecs-cluster.yaml
       Parameters:
         LaunchType: !Ref LaunchType
         SourceSecurityGroup: !GetAtt LoadBalancer.Outputs.SecurityGroup
@@ -102,7 +102,7 @@ Resources:
   DeploymentPipeline:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/jicowan-ecs-greeting-pipeline/templates/deployment-pipeline.yaml
+      TemplateURL: https://s3.console.aws.amazon.com/s3/buckets/aws-microservices-deploy-options-ecs-deployment/deployment-pipeline.yaml
       Parameters:
         Cluster: !GetAtt Cluster.Outputs.ClusterName
         Service: !GetAtt Greeting.Outputs.Service
@@ -115,7 +115,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     DependsOn: DeploymentPipeline
     Properties:
-      TemplateURL: https://s3.amazonaws.com/jicowan-ecs-greeting-pipeline/templates/deployment-pipeline-name.yaml
+      TemplateURL: https://s3.console.aws.amazon.com/s3/buckets/aws-microservices-deploy-options-ecs-deployment/deployment-pipeline-name.yaml
       Parameters:
         Cluster: !GetAtt Cluster.Outputs.ClusterName
         Service: !GetAtt Name.Outputs.Service
@@ -130,7 +130,7 @@ Resources:
   LoadBalancer:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/jicowan-ecs-greeting-pipeline/templates/load-balancer.yaml
+      TemplateURL: https://s3.console.aws.amazon.com/s3/buckets/aws-microservices-deploy-options-ecs-deployment/load-balancer.yaml
       Parameters:
         LaunchType: !Ref LaunchType
         Subnet1: !GetAtt VPC.Outputs.Subnet1
@@ -142,7 +142,7 @@ Resources:
   VPC:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/jicowan-ecs-greeting-pipeline/templates/vpc.yaml
+      TemplateURL: https://s3.console.aws.amazon.com/s3/buckets/aws-microservices-deploy-options-ecs-deployment/vpc.yaml
       Parameters:
         Name: !Ref AWS::StackName
         VpcCIDR: 10.215.0.0/16
@@ -165,7 +165,7 @@ Resources:
   Greeting:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/jicowan-ecs-greeting-pipeline/templates/greeting.yaml
+      TemplateURL: https://s3.console.aws.amazon.com/s3/buckets/aws-microservices-deploy-options-ecs-deployment/greeting.yaml
       Parameters:
         Subnet3: !GetAtt VPC.Outputs.Subnet3
         Subnet4: !GetAtt VPC.Outputs.Subnet4
@@ -178,7 +178,7 @@ Resources:
   Name:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/jicowan-ecs-greeting-pipeline/templates/name.yaml
+      TemplateURL: https://s3.console.aws.amazon.com/s3/buckets/aws-microservices-deploy-options-ecs-deployment/name.yaml
       Parameters:
         Subnet3: !GetAtt VPC.Outputs.Subnet3
         Subnet4: !GetAtt VPC.Outputs.Subnet4
