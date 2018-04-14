@@ -421,10 +421,6 @@ To remove all the resources created by the example, do the following:
 .. S3 Bucket: ArtifactBucket
 .. ECR Repository: Repository
 
-=== Deployment Pipeline: EC2-mode with AWS CodePipeline
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/104
-
 === Monitoring: AWS X-Ray
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/55
