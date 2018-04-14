@@ -628,12 +628,10 @@ Istio is deployed as a sidecar proxy into each of your pods; this means it can s
 . Install the Servicegraph addon; Servicegraph queries Prometheus, which obtains details of the mesh traffic flows from Istio:
 
   istio-0.7.1 $ kubectl apply -f install/kubernetes/addons/servicegraph.yaml
-  deployment "servicegraph" created
-  service "servicegraph" created
 
 . Generate some traffic to the application:
 
-  curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+  curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 
 . View the ServiceGraph UI:
 
