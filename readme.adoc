@@ -373,9 +373,9 @@ This section will explain how to deploy a Fargate task via CodePipeline
 . Fork each of the repositories in the *Build and Test Services using Maven* section.
 . Clone the forked repositories to your local machine:
 
-  `git clone https://github.com/<your_github_username>/microservice-greeting`
-  `git clone https://github.com/<your_github_username>/microservice-name`
-  `git clone https://github.com/<your_github_username>/microservice-webapp`
+  git clone https://github.com/<your_github_username>/microservice-greeting
+  git clone https://github.com/<your_github_username>/microservice-name
+  git clone https://github.com/<your_github_username>/microservice-webapp
 
 . Create the CloudFormation stack:
 +
