@@ -615,6 +615,10 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
 
 . Open the https://us-west-2.console.aws.amazon.com/xray/home?region=us-west-2#/service-map[X-Ray console] and watch the service map and traces. This is tracked as https://github.com/aws-samples/aws-microservices-deploy-options/issues/60[#60].
 
+=== Monitoring: Istio and Prometheus
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/233
+
 === Monitoring: Prometheus and Grafana
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/79
