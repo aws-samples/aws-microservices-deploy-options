@@ -371,9 +371,11 @@ Use the command to test:
 This section will explain how to deploy a Fargate task via CodePipeline
 
 . Fork each of the repositories in the *Build and Test Services using Maven* section.
-. Clone the forked repository to your local machine:
+. Clone the forked repositories to your local machine:
 
   git clone https://github.com/<your_github_username>/microservice-greeting
+  git clone https://github.com/<your_github_username>/microservice-name
+  git clone https://github.com/<your_github_username>/microservice-webapp
 
 . Create the CloudFormation stack:
 +
@@ -382,7 +384,6 @@ This section will explain how to deploy a Fargate task via CodePipeline
 | *N. Virginia* (us-east-1)
 a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=Fargate-ContinuousDeployment&templateURL=https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/ecs-refarch-continuous-deployment.yaml&param_LaunchType=Fargate]
 |===
-*TODO* Replace link with the URL of the ecs-refarch-continuous-deployment.yaml file in S3.
 
 The CloudFormation template requires the following input parameters:
 
@@ -403,13 +404,13 @@ Once the stack has been provisioned, *click* the link for the *PipelineUrl*. Thi
 
 image::images/fargate-pipeline.png[Fargate Pipeline, 350]
 
-Now that a deployment pipeline has been established for our services, you can modify files in the repositories we cloned earlier and push your changes to GitHub.  This will cause the following actions to occur: 
+Now that a deployment pipeline has been established for our services, you can modify files in the repositories we cloned earlier and push your changes to GitHub.  This will cause the following actions to occur:
 
 . The latest changes will be pulled from GitHub.
 . A new Docker image will be created and pushed to ECR.
 . A new revision of the task definition will be created using the latest version of the Docker image.
 . The service definition will be updated with the latest version of the task definition.
-.  ECS will deploy a new version of the Fargate task.
+. ECS will deploy a new version of the Fargate task.
 
 ==== Cleaning up the example resources
 
