@@ -513,10 +513,35 @@ This will generate `manifests/vendor` folder.
 This will create `manifests/output` folder with an installer script and final manifests.
 +
 . Install package: `./manifests/output/install.sh`
-. Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
+. Access the application:
+
+  curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+
 . Delete the application: `kubectl delete -R -f manifests/output`
 
-=== Deployment: Canary Deployment for Lambda Functions
+=== Deployment: Canary Deployment for Lambda Functions (work in progress)
+
+https://istio.io/[Istio] allows the deployment of canary services. This is done by using a simple DSL that controls how API calls and layer-4 traffic flow across various services in the application deployment.
+
+. Install Istio in the Kubernetes cluster:
+
+  curl -L https://git.io/getLatestIstio | sh -
+  cd istio-0.7.1/
+  kubectl apply -f install/kubernetes/istio.yaml
+
+. Create route rules:
+
+  kubectl apply -f apps/k8s/canary/route.yaml
+
+. Deploy the application:
+
+  kubectl apply -f apps/k8s/canary/manifest.yaml
+
+. Access the application:
++
+  curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
++
+Access the endpoint multiple times and notice how `Hello` and `Howdy` greeting is returned.
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/189
 
