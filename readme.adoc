@@ -516,6 +516,10 @@ This will create `manifests/output` folder with an installer script and final ma
 . Access the application: `curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')`
 . Delete the application: `kubectl delete -R -f manifests/output`
 
+=== Deployment: Canary Deployment for Lambda Functions
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/189
+
 === Deployment Pipeline: AWS Codepipeline
 
 This section explains how to setup a deployment pipeline using AWS CodePipeline.
