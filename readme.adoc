@@ -519,7 +519,7 @@ This will create `manifests/output` folder with an installer script and final ma
 
 . Delete the application: `kubectl delete -R -f manifests/output`
 
-=== Deployment: Canary Deployment of Services (work in progress)
+=== Deployment: Canary Deployment with Istio (work in progress)
 
 https://istio.io/[Istio] allows the deployment of canary services. This is done by using a simple DSL that controls how API calls and layer-4 traffic flow across various services in the application deployment.
 
@@ -617,7 +617,7 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
 
 . Open the https://us-west-2.console.aws.amazon.com/xray/home?region=us-west-2#/service-map[X-Ray console] and watch the service map and traces. This is tracked as https://github.com/aws-samples/aws-microservices-deploy-options/issues/60[#60].
 
-=== Monitoring: Istio and Prometheus
+=== Monitoring: Istio and Prometheus (work in progress)
 
 Istio is deployed as a sidecar proxy into each of your pods; this means it can see and monitor all the traffic flows between your microservices and generate a graphical representation of your mesh traffic.
 
