@@ -46,11 +46,9 @@ By default, the `latest` tag is used for the image. A different tag may be speci
 
 === Push Docker Images to Registry
 
-  docker push <repo>/greeting:<tag>
-  docker push <repo>/name:<tag>
-  docker push <repo>/webapp:<tag>
+Push Docker images to the registry:
 
-This is a workaround until https://github.com/aws-samples/aws-microservices-deploy-options/issues/4 is fixed.
+  mvn install -Pdocker
 
 === Deployment to Docker Swarm
 
