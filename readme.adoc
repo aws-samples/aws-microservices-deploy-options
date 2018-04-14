@@ -600,26 +600,42 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/79
 
 `mvn clean package -Plambda` in each repo will build the deployment package for each microservice.
 
-=== Deployment: Test SAM Local
+=== Deployment: Test Lambda Functions Locally
+
+https://github.com/awslabs/serverless-application-model[Serverless Application Model] (SAM) defines a standard application model for serverless applications. It extends AWS CloudFormation to provide a simplified way of defining the Amazon API Gateway APIs, AWS Lambda functions, and Amazon DynamoDB tables needed by your serverless application.
+
+`sam` is the AWS CLI tool for managing Serverless applications written with SAM. Install SAM CLI as:
+
+  npm install -g aws-sam-local
+
+The complete installation steps for SAM CLI are at https://github.com/awslabs/aws-sam-local#installation.
 
 ==== In Mac
 
-. Start Greeting Service
-.. `sam local start-api --template greeting-sam.yaml --port 3001`
+. Start `greeting` service:
 
-. Greeting endpoint: `curl http://127.0.0.1:3001/resources/greeting`
+  sam local start-api --template greeting-sam.yaml --port 3001
 
-. Start Name Service:
-.. `sam local start-api --template name-sam.yaml --port 3002`
+. Test `greeting` endpoint:
 
-. Name Endpoint `curl http://127.0.0.1:3002/resources/names`
-.. `curl http://127.0.0.1:3002/resources/names/1`
+  curl http://127.0.0.1:3001/resources/greeting
 
-. Start WebApp Service
-.. `sam local start-api --template webapp-sam.yaml --env-vars test/env-mac.json --port 3000`
+. Start `name` service:
 
-. WebApp Endpoint
-.. `curl http://127.0.0.1:3000/1`
+  sam local start-api --template name-sam.yaml --port 3002
+
+. Test `name` dndpoint:
+
+  curl http://127.0.0.1:3002/resources/names
+  curl http://127.0.0.1:3002/resources/names/1
+
+. Start `webapp` service:
+
+  sam local start-api --template webapp-sam.yaml --env-vars test/env-mac.json --port 3000
+
+. Test `webapp` endpoint:
+
+  curl http://127.0.0.1:3000/1
 
 ==== In Windows
 
@@ -643,14 +659,6 @@ This section will explain how to debug your Lambda functions locally using SAM L
 . Go to `Run`, `Debug`, `Edit Configurations`, specify the port `5858` and click on `Debug`. The breakpoint will hit and you can see the debug state of the function.
 
 === Deployment: Deploy using Serverless Application Model
-
-https://github.com/awslabs/serverless-application-model[Serverless Application Model] (SAM) defines a standard application model for serverless applications. It extends AWS CloudFormation to provide a simplified way of defining the Amazon API Gateway APIs, AWS Lambda functions, and Amazon DynamoDB tables needed by your serverless application.
-
-`sam` is the AWS CLI tool for managing Serverless applications written with SAM. Install SAM CLI as:
-
-  npm install -g aws-sam-local
-
-The complete installation steps for SAM CLI are at https://github.com/awslabs/aws-sam-local#installation.
 
 . Serverless applications are stored as a deployment packages in a S3 bucket. Create a S3 bucket:
 +
@@ -702,6 +710,17 @@ Make sure to use a bucket name that is unique.
     --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" \
     --output text`/1
 
+=== Deployment: Canary Deployment for Lambda Functions
+
+The `greeting` service has implemented Lambda SAM Safe Deployment. By default, the function is deployed using `Canary10Percent5Minutes` deployment type. This means that 10% of the traffic will be shifted to the new Lambda function. If there are no errors or CloudWatch alarms are triggered, the remaining traffic is shifted after 5 minutes. This is further explained at https://docs.aws.amazon.com/lambda/latest/dg/automating-updates-to-serverless-apps.html.
+
+The `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment https://github.com/awslabs/serverless-application-model/blob/develop/docs/safe_lambda_deployments.rst#traffic-shifting-configurations[types], and push the changes to `greeting` CodeCommit repository.
+
+  git add .
+  git commit -m "switch canary deployment"
+  git push greeting-codecommit
+
+
 === Deployment: Deploy to Serverless Application Repository
 
 The https://aws.amazon.com/serverless/serverlessrepo/[AWS Serverless Application Repository] (SAR) enables you to quickly deploy code samples, components, and complete applications for common use cases such as web and mobile back-ends, event and data processing, logging, monitoring, IoT, and more. Each application is packaged with an AWS Serverless Application Model (SAM) template that defines the AWS resources used.
@@ -745,8 +764,7 @@ This section explains how to publish your SAM application to SAR. Detailed instr
 
 This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
-. Create CloudFormation stack:
-.. Create pipeline for `greeting`, `name` and `webapp` services
+. Create pipeline for `greeting`, `name` and `webapp` services
 
   cd app/lambda
   aws cloudformation deploy \
@@ -765,7 +783,7 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
     --parameter-overrides ServiceName=webapp \
     --capabilities CAPABILITY_IAM
 
-. We need to push the SAM templates into the each pipeline to build and deploy each services
+. Push the SAM templates into each pipeline to build and deploy each services:
 
   cd ../../
   git remote add greeting-codecommit \
@@ -785,14 +803,14 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
     --output text)
 
 . Setup your Git credential by following the https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html[document]. This is required to push the code into the CodeCommit repo created in the CloudFormation stack. When the Git credential is setup, you can use the following command to push in the code and trigger the pieline to run.
-
++
   git push greeting-codecommit master
   git push name-codecommit master
-
++
 When the `greeting` and `name` services are created, then you can create the `webapp` service by pushing the code into `webapp-pipeline`. Use the following command to push up the code.
-
++
   git push webapp-codecommit master
-
++
 . Get the URL to view the deployment pipeline:
 +
   aws cloudformation \
@@ -800,13 +818,11 @@ When the `greeting` and `name` services are created, then you can create the `we
     --stack-name aws-compute-options-greeting-lambda-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
-
   aws cloudformation \
     describe-stacks \
     --stack-name aws-compute-options-name-lambda-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
-
   aws cloudformation \
     describe-stacks \
     --stack-name aws-compute-options-webapp-lambda-pipeline \
