@@ -519,7 +519,7 @@ This will create `manifests/output` folder with an installer script and final ma
 
 . Delete the application: `kubectl delete -R -f manifests/output`
 
-=== Deployment: Canary Deployment for Lambda Functions (work in progress)
+=== Deployment: Canary Deployment of Services (work in progress)
 
 https://istio.io/[Istio] allows the deployment of canary services. This is done by using a simple DSL that controls how API calls and layer-4 traffic flow across various services in the application deployment.
 
@@ -537,13 +537,15 @@ This will deploy the application with 3 microservices. Each microservice is depl
 +
 . Create route rules:
 
-  kubectl apply -f apps/k8s/canary/route.yaml
+  kubectl apply -f apps/k8s/canary/route-50-50.yaml
 
 . Access the application:
 +
   curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 +
 Access the endpoint multiple times and notice how `Hello` and `Howdy` greeting is returned. Its not a round-robin but over 100 requests, 50% would be split between different greeting message.
+
+Another route with the traffic split of 90% and 10% is at `apps/k8s/canary/route-90-10.yaml`.
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/189
 
@@ -616,6 +618,36 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
 . Open the https://us-west-2.console.aws.amazon.com/xray/home?region=us-west-2#/service-map[X-Ray console] and watch the service map and traces. This is tracked as https://github.com/aws-samples/aws-microservices-deploy-options/issues/60[#60].
 
 === Monitoring: Istio and Prometheus
+
+Istio is deployed as a sidecar proxy into each of your pods; this means it can see and monitor all the traffic flows between your microservices and generate a graphical representation of your mesh traffic.
+
+. Prometheus addon will obtain the metrics from Istio. Install Prometheus:
+
+  istio-0.7.1 $ kubectl apply -f install/kubernetes/addons/prometheus.yaml
+
+. Install the Servicegraph addon; Servicegraph queries Prometheus, which obtains details of the mesh traffic flows from Istio:
+
+  istio-0.7.1 $ kubectl apply -f install/kubernetes/addons/servicegraph.yaml
+  deployment "servicegraph" created
+  service "servicegraph" created
+
+. Generate some traffic to the application:
+
+  curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+
+. View the ServiceGraph UI:
+
+  kubectl -n istio-system \
+    port-forward $(kubectl -n istio-system \
+      get pod \
+      -l app=servicegraph \
+      -o jsonpath='{.items[0].metadata.name}') \
+      8088:8088 &
+  open http://localhost:8088/dotviz
+
+. You should see a distributed trace that looks something like this. It may take a few seconds for Servicegraph to become available, so refresh the browser if you do not receive a response.
++
+images::servicegraph.png[]
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/233
 
