@@ -400,7 +400,7 @@ The CloudFormation stack has the following outputs:
 
 Once the stack has been provisioned, *click* the link for the *PipelineUrl*. This will open the CodePipline console.  Clicking on the pipeline will display a diagram that looks like this:
 
-image::images/fargate-pipeline.png[Fargate Pipeline, 350]
+image::./images/fargate-pipeline.png[Fargate Pipeline, 350]
 
 Now that a deployment pipeline has been established for our services, you can modify files in the repositories we cloned earlier and push your changes to GitHub.  This will cause the following actions to occur:
 
@@ -628,11 +628,11 @@ Istio is deployed as a sidecar proxy into each of your pods; this means it can s
 
 . Prometheus addon will obtain the metrics from Istio. Install Prometheus:
 
-  istio-0.7.1 $ kubectl apply -f install/kubernetes/addons/prometheus.yaml
+  kubectl apply -f install/kubernetes/addons/prometheus.yaml
 
 . Install the Servicegraph addon; Servicegraph queries Prometheus, which obtains details of the mesh traffic flows from Istio:
 
-  istio-0.7.1 $ kubectl apply -f install/kubernetes/addons/servicegraph.yaml
+  kubectl apply -f install/kubernetes/addons/servicegraph.yaml
 
 . Generate some traffic to the application:
 
@@ -650,9 +650,7 @@ Istio is deployed as a sidecar proxy into each of your pods; this means it can s
 
 . You should see a distributed trace that looks something like this. It may take a few seconds for Servicegraph to become available, so refresh the browser if you do not receive a response.
 +
-images::servicegraph.png[]
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/233
+image::images/istio-servicegraph.png[]
 
 === Monitoring: Prometheus and Grafana
 
