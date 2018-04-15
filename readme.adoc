@@ -545,6 +545,11 @@ This will deploy the application with 3 microservices. Each microservice is depl
 +
 Access the endpoint multiple times and notice how `Hello` and `Howdy` greeting is returned. Its not a round-robin but over 100 requests, 50% would be split between different greeting message.
 
+Here are some convenient commands to manage route rules:
+
+. `istioctl get routerules` shows the list of all route rules
+. `istioctl delete routerule <name>` deletes a route rule by name
+
 Another route with the traffic split of 90% and 10% is at `apps/k8s/istio/route-90-10.yaml`.
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/189
