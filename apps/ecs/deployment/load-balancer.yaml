@@ -43,6 +43,15 @@ Resources:
           ToPort: 80
       VpcId: !Ref VpcId
 
+  IngressRulePublic:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 8080
+      ToPort: 8080
+      SourceSecurityGroupId: !GetAtt SecurityGroupPublic.GroupId
+      GroupId: !GetAtt SecurityGroupPublic.GroupId
+
   SecurityGroupWebapp:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -140,7 +149,7 @@ Resources:
       Port: 8082
       Protocol: HTTP
       HealthCheckIntervalSeconds: 60
-      HealthCheckPath: /resources/name/1
+      HealthCheckPath: /resources/names/1
       Name: name
       HealthCheckProtocol: HTTP
       UnhealthyThresholdCount: 10
