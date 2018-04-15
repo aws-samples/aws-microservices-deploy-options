@@ -519,7 +519,7 @@ This will create `manifests/output` folder with an installer script and final ma
 
 . Delete the application: `kubectl delete -R -f manifests/output`
 
-=== Deployment: Canary Deployment with Istio (work in progress)
+=== Deployment: Canary Deployment with Istio
 
 https://istio.io/[Istio] allows the deployment of canary services. This is done by using a simple DSL that controls how API calls and layer-4 traffic flow across various services in the application deployment.
 
@@ -544,6 +544,8 @@ This will deploy the application with 3 microservices. Each microservice is depl
   curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 +
 Access the endpoint multiple times and notice how `Hello` and `Howdy` greeting is returned. Its not a round-robin but over 100 requests, 50% would be split between different greeting message.
++
+This is causing https://github.com/aws-samples/aws-microservices-deploy-options/issues/239.
 
 Here are some convenient commands to manage route rules:
 
@@ -551,8 +553,6 @@ Here are some convenient commands to manage route rules:
 . `istioctl delete routerule <name>` deletes a route rule by name
 
 Another route with the traffic split of 90% and 10% is at `apps/k8s/istio/route-90-10.yaml`.
-
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/189
 
 === Deployment Pipeline: AWS Codepipeline
 
