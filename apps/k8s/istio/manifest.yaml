@@ -45,11 +45,11 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: greeting
+  name: greeting-hello
   labels:
-    name: greeting
+    name: greeting-hello
 spec:
-  replicas: 
+  replicas: 1
   template:
     metadata:
       labels:
@@ -74,11 +74,11 @@ spec:
 ---apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: greeting
+  name: greeting-howdy
   labels:
-    name: greeting
+    name: greeting-howdy
 spec:
-  replicas: 
+  replicas: 1
   template:
     metadata:
       labels:
@@ -108,7 +108,7 @@ metadata:
   labels:
     name: name
 spec:
-  replicas: 
+  replicas: 1
   template:
     metadata:
       labels:
@@ -137,7 +137,7 @@ metadata:
   labels:
     name: webapp
 spec:
-  replicas: 
+  replicas: 1
   template:
     metadata:
       labels:
