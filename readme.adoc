@@ -622,7 +622,7 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
 
 . Open the https://us-west-2.console.aws.amazon.com/xray/home?region=us-west-2#/service-map[X-Ray console] and watch the service map and traces. This is tracked as https://github.com/aws-samples/aws-microservices-deploy-options/issues/60[#60].
 
-=== Monitoring: Istio and Prometheus (work in progress)
+=== Monitoring: Istio and Prometheus
 
 Istio is deployed as a sidecar proxy into each of your pods; this means it can see and monitor all the traffic flows between your microservices and generate a graphical representation of your mesh traffic.
 
