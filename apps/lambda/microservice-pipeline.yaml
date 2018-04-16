@@ -8,25 +8,45 @@ Parameters:
       - greeting
       - name
       - webapp
+  GitHubSetting:
+    Type: String
+    Default: "USE-DEFAULT"
+    Description: Github Service Repo
+  GitHubOwner:
+    Type: String
+    Default: "USE-DEFAULT"
+    Description: Optional to provide user's own github repo
+  GitHubBranch:
+    Type: String
+    Default: "USE-DEFAULT"
+    Description: Optional to provide user's own github repo branch
+  GitHubOAuthToken:
+    Type: String
+    NoEcho: true
+    Description: Guthub personal access token 
 Mappings:
   ServiceToRepo:
     greeting:
-      Repo: https://github.com/arun-gupta/microservices-greeting
+      Repo: microservices-greeting
+      Owner: arun-gupta
+      Branch: master
     name:
-      Repo: https://github.com/arun-gupta/microservices-name
+      Repo: microservices-name
+      Owner: arun-gupta
+      Branch: master
     webapp:
-      Repo: https://github.com/arun-gupta/microservices-webapp
+      Repo: microservices-webapp
+      Owner: arun-gupta
+      Branch: master
+
+Conditions:
+  OverrideDefaultRepo: !Not [ !Equals [!Ref GitHubSetting, "USE-DEFAULT"] ]
 
 Resources:
-  Repo:
-    Type: AWS::CodeCommit::Repository
-    Properties:
-      RepositoryDescription: Holds Lambda and API Gateway Code
-      RepositoryName: !Sub "${AWS::StackName}-Repo"
   ArtifactBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
-  PipeLineRole:
+  PipelineRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -137,8 +157,6 @@ Resources:
         EnvironmentVariables:
           - Name: S3Bucket
             Value: !Ref ArtifactBucket
-          - Name: RepoUrl
-            Value: !FindInMap [ServiceToRepo, !Ref ServiceName, Repo]
           - Name: ServiceName
             Value: !Ref ServiceName
       Source:
@@ -154,14 +172,7 @@ Resources:
                 - printenv
             build:
               commands:
-                - mkdir -p services/${ServiceName}
-                - cd services
-                - git clone $RepoUrl ${ServiceName}
-                - cd ${ServiceName}
                 - mvn clean install -Plambda
-                - cd ../../apps/lambda
-                - # Format CodeUri
-                - sed -ie s/CodeUri:\ \\.\\..*/CodeUri:\ ..\\/..\\/services\\/${ServiceName}\\/target\\/${ServiceName}.zip/ ${ServiceName}-sam.yaml
                 - aws cloudformation package --template-file ${ServiceName}-sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
           artifacts:
             files: 
@@ -266,7 +277,6 @@ Resources:
           phases:
             build:
               commands:
-                - cd apps/lambda
                 - aws cloudformation deploy --template-file sam.transformed.yaml --stack-name $StackName --capabilities CAPABILITY_IAM
             post_build:
               commands:
@@ -277,26 +287,28 @@ Resources:
           Value: !Ref AWS::StackName
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
-    DependsOn: PipeLineRole
+    DependsOn: PipelineRole
     Properties:
-      RoleArn: !GetAtt PipeLineRole.Arn
+      RoleArn: !GetAtt PipelineRole.Arn
       Name: !Ref AWS::StackName
       Stages:
         - Name: source-code-checkout
           Actions:
-            - Name: App
+            - Name: Source
               ActionTypeId:
                 Category: Source
-                Owner: AWS
+                Owner: ThirdParty
                 Version: 1
-                Provider: CodeCommit
+                Provider: GitHub
               Configuration:
-                RepositoryName: !GetAtt Repo.Name
-                BranchName: master
+                Owner: !If [ OverrideDefaultRepo, !Ref GitHubOwner, !FindInMap [ ServiceToRepo, !Ref ServiceName, Owner ]]
+                Repo: !If [ OverrideDefaultRepo, !Ref GitHubOwner, !FindInMap [ ServiceToRepo, !Ref ServiceName, Repo ]]
+                Branch: !If [ OverrideDefaultRepo, !Ref GitHubOwner, !FindInMap [ ServiceToRepo, !Ref ServiceName, Branch ]]
+                OAuthToken: !Ref GitHubOAuthToken
               OutputArtifacts:
                 - Name: SCCheckoutArtifact
               RunOrder: 1
-        - Name: Build
+        - Name: build-lambda-function
           Actions:
             - Name: build-lambda-function
               ActionTypeId:
@@ -311,7 +323,7 @@ Resources:
                 - Name: SCCheckoutArtifact
               OutputArtifacts:
                 - Name: BuildOutput
-        - Name: Deploy
+        - Name: deploy-microservice
           Actions:
             - 
               Name: deploy-lambda-apigateway
@@ -332,12 +344,6 @@ Outputs:
   ArtifactBucket:
     Description: ArtifactBucket to be Used
     Value: !Ref ArtifactBucket
-  RepositoryHttpUrl:
-    Description: CodeCommit Repository HTTP URL to push Service Catalog Related Artifacts
-    Value: !GetAtt Repo.CloneUrlHttp
-  RepositorySSHUrl:
-    Description: CodeCommit Repository SSH URL to push Service Catalog Related Artifacts
-    Value: !GetAtt Repo.CloneUrlSsh
   CodePipelineUrl:
     Description: CodePipeline AWS Console HTTP URL
     Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/codepipeline/home?region=${AWS::Region}#/view/${AWS::StackName}"

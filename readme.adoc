@@ -733,7 +733,6 @@ Make sure to use a bucket name that is unique.
 +
 . Package the SAM application. This uploads the deployment package to the specified S3 bucket and generates a new file with the code location:
 
-  cd apps/lambda
   sam package \
     --template-file sam.yaml \
     --s3-bucket aws-microservices-deploy-options \
@@ -776,7 +775,7 @@ Make sure to use a bucket name that is unique.
 
 The `greeting` service has implemented Lambda SAM Safe Deployment. By default, the function is deployed using `Canary10Percent5Minutes` deployment type. This means that 10% of the traffic will be shifted to the new Lambda function. If there are no errors or CloudWatch alarms are triggered, the remaining traffic is shifted after 5 minutes. This is further explained at https://docs.aws.amazon.com/lambda/latest/dg/automating-updates-to-serverless-apps.html.
 
-The `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment https://github.com/awslabs/serverless-application-model/blob/develop/docs/safe_lambda_deployments.rst#traffic-shifting-configurations[types], and push the changes to `greeting` CodeCommit repository.
+The `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment https://github.com/awslabs/serverless-application-model/blob/develop/docs/safe_lambda_deployments.rst#traffic-shifting-configurations[types], and push the changes to `greeting` service repository.
 
   git add .
   git commit -m "switch canary deployment"
@@ -826,55 +825,31 @@ This section explains how to publish your SAM application to SAR. Detailed instr
 
 This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
-. Create pipeline for `greeting`, `name` and `webapp` services
+. Create CloudFormation stack:
+.. Create pipeline for `greeting`, `name` and `webapp` services. Users please following the instruction in the (https://docs.aws.amazon.com/codepipeline/latest/userguide/GitHub-rotate-personal-token-CLI.html)[document] to generate GitHut personal access token. Note: user can override the defualt repository to forked public repo by providing URL to the parameter `Git`
 
   cd app/lambda
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
     --stack-name aws-compute-options-greeting-lambda-pipeline \
-    --parameter-overrides ServiceName=greeting \
+    --parameter-overrides ServiceName=greeting GitHubOAuthToken=XXXXX \
     --capabilities CAPABILITY_IAM
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
     --stack-name aws-compute-options-name-lambda-pipeline \
-    --parameter-overrides ServiceName=name \
+    --parameter-overrides ServiceName=name GitHubOAuthToken=XXXXX \
     --capabilities CAPABILITY_IAM
+
+when both `greeting` and `name` services are created successfully, user can deploy the `webapp` service by using the following command
+
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
     --stack-name aws-compute-options-webapp-lambda-pipeline \
-    --parameter-overrides ServiceName=webapp \
+    --parameter-overrides ServiceName=webapp GitHubOAuthToken=XXXXX \
     --capabilities CAPABILITY_IAM
 
-. Push the SAM templates into each pipeline to build and deploy each services:
-
-  cd ../../
-  git remote add greeting-codecommit \
-    $(aws cloudformation describe-stacks \
-    --stack-name aws-compute-options-greeting-lambda-pipeline \
-    --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" \
-    --output text)
-  git remote add name-codecommit \
-    $(aws cloudformation describe-stacks \
-    --stack-name aws-compute-options-name-lambda-pipeline \
-    --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" \
-    --output text)
-  git remote add webapp-codecommit \
-    $(aws cloudformation describe-stacks \
-    --stack-name aws-compute-options-webapp-lambda-pipeline \
-    --query "Stacks[].Outputs[?OutputKey=='RepositoryHttpUrl'].OutputValue" \
-    --output text)
-
-. Setup your Git credential by following the https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html[document]. This is required to push the code into the CodeCommit repo created in the CloudFormation stack. When the Git credential is setup, you can use the following command to push in the code and trigger the pieline to run.
-+
-  git push greeting-codecommit master
-  git push name-codecommit master
-+
-When the `greeting` and `name` services are created, then you can create the `webapp` service by pushing the code into `webapp-pipeline`. Use the following command to push up the code.
-+
-  git push webapp-codecommit master
-+
 . Get the URL to view the deployment pipeline:
-+
+
   aws cloudformation \
     describe-stacks \
     --stack-name aws-compute-options-greeting-lambda-pipeline \
@@ -890,6 +865,7 @@ When the `greeting` and `name` services are created, then you can create the `we
     --stack-name aws-compute-options-webapp-lambda-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
+
 +
 Deployment pipeline in AWS console looks like as shown:
 +
