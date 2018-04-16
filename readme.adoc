@@ -368,7 +368,7 @@ Use the command to test:
 
 This section will explain how to deploy a Fargate task via CodePipeline
 
-. Fork each of the repositories in the *Build and Test Services using Maven* section.
+. Fork each of the repositories in the link:#build-and-test-services-using-maven[Build and Test Services using Maven] section.
 . Clone the forked repositories to your local machine:
 
   git clone https://github.com/<your_github_username>/microservice-greeting
