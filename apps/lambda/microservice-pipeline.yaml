@@ -11,19 +11,26 @@ Parameters:
   GitHubSetting:
     Type: String
     Default: "USE-DEFAULT"
-    Description: Github Service Repo
+    AllowedValues:
+      - "USE-DEFAULT"
+      - "OVERRIDE"
+    Description: GitHub setting (USE-DEFAULT or OVERRIDE)
+  GitHubRepo:
+    Type: String
+    Default: "USE-DEFAULT"
+    Description: GitHub  Repo
   GitHubOwner:
     Type: String
     Default: "USE-DEFAULT"
-    Description: Optional to provide user's own github repo
+    Description: GitHub repo owner
   GitHubBranch:
     Type: String
     Default: "USE-DEFAULT"
-    Description: Optional to provide user's own github repo branch
+    Description: GitHub repo branch
   GitHubOAuthToken:
     Type: String
     NoEcho: true
-    Description: Guthub personal access token 
+    Description: GutHub personal access token 
 Mappings:
   ServiceToRepo:
     greeting:
@@ -40,7 +47,7 @@ Mappings:
       Branch: master
 
 Conditions:
-  OverrideDefaultRepo: !Not [ !Equals [!Ref GitHubSetting, "USE-DEFAULT"] ]
+  OverrideDefaultRepo: !Equals [ !Ref GitHubSetting, "OVERRIDE" ]
 
 Resources:
   ArtifactBucket:
@@ -302,7 +309,7 @@ Resources:
                 Provider: GitHub
               Configuration:
                 Owner: !If [ OverrideDefaultRepo, !Ref GitHubOwner, !FindInMap [ ServiceToRepo, !Ref ServiceName, Owner ]]
-                Repo: !If [ OverrideDefaultRepo, !Ref GitHubOwner, !FindInMap [ ServiceToRepo, !Ref ServiceName, Repo ]]
+                Repo: !If [ OverrideDefaultRepo, !Ref GitHubRepo, !FindInMap [ ServiceToRepo, !Ref ServiceName, Repo ]]
                 Branch: !If [ OverrideDefaultRepo, !Ref GitHubOwner, !FindInMap [ ServiceToRepo, !Ref ServiceName, Branch ]]
                 OAuthToken: !Ref GitHubOAuthToken
               OutputArtifacts:
