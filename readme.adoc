@@ -843,17 +843,6 @@ Make sure to use a bucket name that is unique.
     --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" \
     --output text`/1
 
-=== Deployment: Canary Deployment for Lambda Functions
-
-The `greeting` service has implemented Lambda SAM Safe Deployment. By default, the function is deployed using `Canary10Percent5Minutes` deployment type. This means that 10% of the traffic will be shifted to the new Lambda function. If there are no errors or CloudWatch alarms are triggered, the remaining traffic is shifted after 5 minutes. This is further explained at https://docs.aws.amazon.com/lambda/latest/dg/automating-updates-to-serverless-apps.html.
-
-The `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment https://github.com/awslabs/serverless-application-model/blob/develop/docs/safe_lambda_deployments.rst#traffic-shifting-configurations[types], and push the changes to `greeting` service repository.
-
-  git add .
-  git commit -m "switch canary deployment"
-  git push greeting-codecommit
-
-
 === Deployment: Deploy to Serverless Application Repository
 
 The https://aws.amazon.com/serverless/serverlessrepo/[AWS Serverless Application Repository] (SAR) enables you to quickly deploy code samples, components, and complete applications for common use cases such as web and mobile back-ends, event and data processing, logging, monitoring, IoT, and more. Each application is packaged with an AWS Serverless Application Model (SAM) template that defines the AWS resources used.
@@ -950,6 +939,16 @@ image::images/lambda-pipeline.png[Lambda Pipeline, 350]
     --stack-name lambda-microservices-webapp \
     --query "Stacks[].Outputs[?OutputKey=='webappApiEndpoint'].[OutputValue]" \
     --output text`/1
+
+=== Deployment: Canary Deployment for Lambda Functions
+
+The `greeting` service has implemented Lambda SAM Safe Deployment. By default, the function is deployed using `Canary10Percent5Minutes` deployment type. This means that 10% of the traffic will be shifted to the new Lambda function. If there are no errors or CloudWatch alarms are triggered, the remaining traffic is shifted after 5 minutes. This is further explained at https://docs.aws.amazon.com/lambda/latest/dg/automating-updates-to-serverless-apps.html.
+
+The `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment https://github.com/awslabs/serverless-application-model/blob/develop/docs/safe_lambda_deployments.rst#traffic-shifting-configurations[types], and push the changes to `greeting` service repository.
+
+  git add .
+  git commit -m "switch canary deployment"
+  git push greeting-codecommit
 
 === Deployment: Composition using AWS Step Functions
 
