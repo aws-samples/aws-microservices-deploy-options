@@ -37,7 +37,7 @@
         },
         {
           "name": "NAME_SERVICE_PATH",
-          "value": "/resources/names/1"
+          "value": "/resources/names"
         }
       ]
     }
