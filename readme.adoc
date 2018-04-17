@@ -855,16 +855,38 @@ when both `greeting` and `name` services are created successfully, user can depl
     --stack-name aws-compute-options-greeting-lambda-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
+
   aws cloudformation \
     describe-stacks \
     --stack-name aws-compute-options-name-lambda-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
+
   aws cloudformation \
     describe-stacks \
     --stack-name aws-compute-options-webapp-lambda-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
+
+. Get the URL to test microservices:
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-lambda-greeting \
+    --query "Stacks[].Outputs[?OutputKey=='greetingApiEndpoint'].OutputValue" \
+    --output text`
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-lambda-name \
+    --query "Stacks[].Outputs[?OutputKey=='nameApiEndpoint'].OutputValue" \
+    --output text`
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-lambda-webapp \
+    --query "Stacks[].Outputs[?OutputKey=='webappApiEndpoint'].OutputValue" \
+    --output text`/1
 
 +
 Deployment pipeline in AWS console looks like as shown:
