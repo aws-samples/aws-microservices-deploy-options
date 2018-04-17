@@ -917,16 +917,39 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
     --stack-name lambda-microservices-greeting-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
+
   aws cloudformation \
     describe-stacks \
     --stack-name lambda-microservices-name-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
+
   aws cloudformation \
     describe-stacks \
     --stack-name lambda-microservices-webapp-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
+
+. Get the URL to test microservices:
++
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-lambda-greeting \
+    --query "Stacks[].Outputs[?OutputKey=='greetingApiEndpoint'].OutputValue" \
+    --output text`
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-lambda-name \
+    --query "Stacks[].Outputs[?OutputKey=='nameApiEndpoint'].OutputValue" \
+    --output text`
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-lambda-webapp \
+    --query "Stacks[].Outputs[?OutputKey=='webappApiEndpoint'].OutputValue" \
+    --output text`/1
+
 +
 Deployment pipeline in the AWS console looks like as shown:
 +
