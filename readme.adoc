@@ -825,50 +825,50 @@ This section explains how to publish your SAM application to SAR. Detailed instr
 
 This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
+. Generate new https://github.com/settings/tokens/new[GitHub personal access token].
 . Create CloudFormation stack:
-.. Create pipeline for `greeting`, `name` and `webapp` services. Users please following the instruction in the (https://docs.aws.amazon.com/codepipeline/latest/userguide/GitHub-rotate-personal-token-CLI.html)[document] to generate GitHut personal access token. Note: user can override the defualt repository to forked public repo by providing URL to the parameter `Git`
+.. Create pipeline for `greeting` and `name` services.  Note: user can override the default repository to forked public repo by providing URL to the parameter `Git`
 
   cd app/lambda
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
-    --stack-name aws-compute-options-greeting-lambda-pipeline \
-    --parameter-overrides ServiceName=greeting GitHubOAuthToken=XXXXX \
+    --stack-name lambda-microservices-greeting-pipeline \
+    --parameter-overrides ServiceName=greeting GitHubOAuthToken=<github-token> \
     --capabilities CAPABILITY_IAM
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
-    --stack-name aws-compute-options-name-lambda-pipeline \
-    --parameter-overrides ServiceName=name GitHubOAuthToken=XXXXX \
+    --stack-name lambda-microservices-name-pipeline \
+    --parameter-overrides ServiceName=name GitHubOAuthToken=<github-token> \
     --capabilities CAPABILITY_IAM
 
-when both `greeting` and `name` services are created successfully, user can deploy the `webapp` service by using the following command
+.. After both `greeting` and `name` services are created successfully, deploy the `webapp` service:
 
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
-    --stack-name aws-compute-options-webapp-lambda-pipeline \
-    --parameter-overrides ServiceName=webapp GitHubOAuthToken=XXXXX \
+    --stack-name lambda-microservices-webapp-pipeline \
+    --parameter-overrides ServiceName=webapp GitHubOAuthToken=<github-token> \
     --capabilities CAPABILITY_IAM
 
-. Get the URL to view the deployment pipeline:
+. Get the Deployment Pipeline URL:
 
   aws cloudformation \
     describe-stacks \
-    --stack-name aws-compute-options-greeting-lambda-pipeline \
+    --stack-name lambda-microservices-greeting-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
   aws cloudformation \
     describe-stacks \
-    --stack-name aws-compute-options-name-lambda-pipeline \
+    --stack-name lambda-microservices-name-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
   aws cloudformation \
     describe-stacks \
-    --stack-name aws-compute-options-webapp-lambda-pipeline \
+    --stack-name lambda-microservices-webapp-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
 
-+
-Deployment pipeline in AWS console looks like as shown:
-+
+Deployment pipeline in the AWS console looks like as shown:
+
 image::images/lambda-pipeline.png[Lambda Pipeline, 350]
 
 === Deployment: Composition using AWS Step Functions
