@@ -850,7 +850,7 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
     --capabilities CAPABILITY_IAM
 
 . Get the Deployment Pipeline URL:
-
++
   aws cloudformation \
     describe-stacks \
     --stack-name lambda-microservices-greeting-pipeline \
@@ -866,10 +866,20 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
     --stack-name lambda-microservices-webapp-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
-
++
 Deployment pipeline in the AWS console looks like as shown:
-
++
 image::images/lambda-pipeline.png[Lambda Pipeline, 350]
++
+. After one run of the `webapp` pipeline, access the endpoint:
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name lambda-microservices-webapp \
+    --query "Stacks[].Outputs[?OutputKey=='webappApiEndpoint'].[OutputValue]" \
+    --output text`
+
+This is causing https://github.com/aws-samples/aws-microservices-deploy-options/issues/251.
 
 === Deployment: Composition using AWS Step Functions
 
