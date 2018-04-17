@@ -700,7 +700,7 @@ The complete installation steps for SAM CLI are at https://github.com/awslabs/aw
 
   sam local start-api --template name-sam.yaml --port 3002
 
-. Test `name` dndpoint:
+. Test `name` endpoint:
 
   curl http://127.0.0.1:3002/resources/names
   curl http://127.0.0.1:3002/resources/names/1
