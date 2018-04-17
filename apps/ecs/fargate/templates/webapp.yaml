@@ -36,7 +36,7 @@ Resources:
             - Name: NAME_SERVICE_PORT
               Value: "8082"
             - Name: NAME_SERVICE_PATH
-              Value: /resources/names/1
+              Value: /resources/names
             - Name: GREETING_SERVICE_HOST
               Value: !Ref ALBPrivateCNAME
             - Name: GREETING_SERVICE_PORT
