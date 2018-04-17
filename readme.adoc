@@ -85,65 +85,13 @@ This section will explain how to deploy these microservices using Fargate on Ama
 
 NOTE: AWS Fargate is only supported in `us-east-1` region at this time. The instructions will only work in that region.
 
-=== Deployment: Create Cluster and Deploy Services using Fargate CLI
-
-This section explains how to create a Fargate cluster and run services on it.
-
-. Download CLI from http://somanymachines.com/fargate/
-. Create the LoadBalancer:
-
-  fargate lb create options-lb --port 80
-
-. Get URL of the LoadBalancer:
-
-  fargate lb info options-lb
-
-. Create `greeting` service:
-
-  fargate service create greeting-service \
-    --lb options-lb \
-    -m 1024 \
-    -i arungupta/greeting \
-    -p http:8081 \
-    --rule path=/resources/greeting
-
-. Create `name` service:
-
-  fargate service create name-service \
-    --lb options-lb \
-    -m 1024 \
-    -i arungupta/name \
-    -p http:8082 \
-    --rule path=/resources/names/*
-
-. Create `webapp` service:
-
-  fargate service create webapp-service \
-    --lb options-lb \
-    -m 1024 \
-    -i arungupta/webapp \
-    -p http:8080 \
-    -e GREETING_SERVICE_HOST=<lb> \
-    -e GREETING_SERVICE_PORT=80 \
-    -e GREETING_SERVICE_PATH=/resources/greeting \
-    -e NAME_SERVICE_HOST=<lb> \
-    -e NAME_SERVICE_PORT=80 \
-    -e NAME_SERVICE_PATH=/resources/names
-
-. Test the application:
-
-  curl http://<lb>
-  curl http://<lb>/2
-
-. Scale the service: `fargate service scale webapp-service +3`
-
-NOTE: As described at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_limits.html, the number of tasks using the Fargate launch type, per region, per account is 20. This limit can be increased by filing a support ticket from the AWS Console.
-
 === Deployment: Create Cluster using AWS Console
 
 This section will explain how to create an ECS cluster using AWS Console.
 
 Complete instructions are available at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create_cluster.html.
+
+Use the cluster name `fargate-cluster`.
 
 === Deployment: Create Cluster using AWS CloudFormation
 
@@ -193,6 +141,68 @@ List the cluster using `aws ecs list-clusters` command:
           "arn:aws:ecs:us-east-1:091144949931:cluster/MyECSCluster-ECSCluster-197YNE1ZHPSOP"
       ]
   }
+
+=== Deployment: Create Cluster and Deploy Services using Fargate CLI
+
+This section explains how to create a Fargate cluster and run services on it.
+
+. Download CLI from http://somanymachines.com/fargate/
+. Create the LoadBalancer:
+
+  fargate lb create \
+    microservices-lb \
+    --port 80
+
+. Create `greeting` service:
+
+  fargate service create greeting-service \
+    --lb microservices-lb \
+    -m 1024 \
+    -i arungupta/greeting \
+    -p http:8081 \
+    --rule path=/resources/greeting
+
+. Create `name` service:
+
+  fargate service create name-service \
+    --lb microservices-lb \
+    -m 1024 \
+    -i arungupta/name \
+    -p http:8082 \
+    --rule path=/resources/names/*
+
+. Get URL of the LoadBalancer:
+
+  fargate lb info microservices-lb
+
+. Create `webapp` service:
+
+  fargate service create webapp-service \
+    --lb microservices-lb \
+    -m 1024 \
+    -i arungupta/webapp \
+    -p http:8080 \
+    -e GREETING_SERVICE_HOST=<lb> \
+    -e GREETING_SERVICE_PORT=80 \
+    -e GREETING_SERVICE_PATH=/resources/greeting \
+    -e NAME_SERVICE_HOST=<lb> \
+    -e NAME_SERVICE_PORT=80 \
+    -e NAME_SERVICE_PATH=/resources/names
+
+. Test the application:
+
+  curl http://<lb>
+  curl http://<lb>/0
+
+. Scale the service: `fargate service scale webapp-service +3`
+. Clean up the resources:
+
+  fargate service scale greeting-service 0
+  fargate service scale name-service 0
+  fargate service scale webapp-service 0
+  fargate lb destroy microservices-lb
+
+NOTE: As described at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_limits.html, the number of tasks using the Fargate launch type, per region, per account is 20. This limit can be increased by filing a support ticket from the AWS Console.
 
 === Deployment: Deploy Tasks and Service using ECS CLI
 
@@ -429,6 +439,10 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/78
 
 == Kubernetes
 
+=== Deployment: Create EKS Cluster
+
+Create an EKS cluster based upon Limited Preview instructions.
+
 === Deployment: Create Cluster using kops
 
 . Install kops
@@ -519,41 +533,6 @@ This will create `manifests/output` folder with an installer script and final ma
 
 . Delete the application: `kubectl delete -R -f manifests/output`
 
-=== Deployment: Canary Deployment with Istio
-
-https://istio.io/[Istio] allows the deployment of canary services. This is done by using a simple DSL that controls how API calls and layer-4 traffic flow across various services in the application deployment.
-
-. Install Istio in the Kubernetes cluster:
-
-  curl -L https://git.io/getLatestIstio | sh -
-  cd istio-0.7.1/
-  kubectl apply -f install/kubernetes/istio.yaml
-
-. Istio uses the Envoy proxy to manage all inbound/outbound traffic in the service mesh. Envoy proxy needs to be injected as sidecar into the application. So, we'll deploy the application:
-+
-  kubectl apply -f <(istioctl kube-inject -f apps/k8s/istio/manifest.yaml)
-+
-This will deploy the application with 3 microservices. Each microservice is deployed in its own pod, with the Envoy proxy injected into the pod; Envoy will now take over all network communications between the pods.
-+
-. Create route rules:
-
-  kubectl apply -f apps/k8s/istio/route-50-50.yaml
-
-. Access the application:
-+
-  curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-+
-Access the endpoint multiple times and notice how `Hello` and `Howdy` greeting is returned. Its not a round-robin but over 100 requests, 50% would be split between different greeting message.
-+
-This is causing https://github.com/aws-samples/aws-microservices-deploy-options/issues/239.
-
-Here are some convenient commands to manage route rules:
-
-. `istioctl get routerules` shows the list of all route rules
-. `istioctl delete routerule <name>` deletes a route rule by name
-
-Another route with the traffic split of 90% and 10% is at `apps/k8s/istio/route-90-10.yaml`.
-
 === Deployment Pipeline: AWS Codepipeline
 
 This section explains how to setup a deployment pipeline using AWS CodePipeline.
@@ -603,6 +582,41 @@ This will generate `Dockerfile` and Helm charts, if they don't already exist. It
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
 
+=== Deployment: Canary Deployment with Istio
+
+https://istio.io/[Istio] allows the deployment of canary services. This is done by using a simple DSL that controls how API calls and layer-4 traffic flow across various services in the application deployment.
+
+. Install Istio in the Kubernetes cluster:
+
+  curl -L https://git.io/getLatestIstio | sh -
+  cd istio-0.7.1/
+  kubectl apply -f install/kubernetes/istio.yaml
+
+. Istio uses the Envoy proxy to manage all inbound/outbound traffic in the service mesh. Envoy proxy needs to be injected as sidecar into the application. So, we'll deploy the application:
++
+  kubectl apply -f <(istioctl kube-inject -f apps/k8s/istio/manifest.yaml)
++
+This will deploy the application with 3 microservices. Each microservice is deployed in its own pod, with the Envoy proxy injected into the pod; Envoy will now take over all network communications between the pods.
++
+. Create route rules:
+
+  kubectl apply -f apps/k8s/istio/route-50-50.yaml
+
+. Access the application:
++
+  curl http://$(kubectl get svc/webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
++
+Access the endpoint multiple times and notice how `Hello` and `Howdy` greeting is returned. Its not a round-robin but over 100 requests, 50% would be split between different greeting message.
++
+This is causing https://github.com/aws-samples/aws-microservices-deploy-options/issues/239.
+
+Here are some convenient commands to manage route rules:
+
+. `istioctl get routerules` shows the list of all route rules
+. `istioctl delete routerule <name>` deletes a route rule by name
+
+Another route with the traffic split of 90% and 10% is at `apps/k8s/istio/route-90-10.yaml`.
+
 === Monitoring: AWS X-Ray
 
 . `arungupta/xray:us-west-2` Docker image is already available on Docker Hub. Optionally, you may build the image:
@@ -621,6 +635,62 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
   curl http://$(kubectl get svc/myapp-webapp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 
 . Open the https://us-west-2.console.aws.amazon.com/xray/home?region=us-west-2#/service-map[X-Ray console] and watch the service map and traces.
+
+=== Monitoring: Conduit
+https://conduit.io/[Conduit] is a small, ultralight, incredibly fast service mesh centered around a zero config approach. It can be used for gaining remarkable visibility in your Kubernetes deployments.
+
+. Confirm that both Kubernetes client and server versions are v1.8.0 or greater using `kubectl version --short`
+
+. Install the Conduit CLI on your local machine:
+
+  curl https://run.conduit.io/install | sh
+
+. Add the `conduit` command into your PATH:
+
+  export PATH=$PATH:$HOME/.conduit/bin
+
+. Verify the CLI is installed and running correctly. You will see a message that says 'Server version: unavailable' because you have not installed Conduit in your deployments.
+
+  conduit version
+
+. Install Conduit on your Kubernetes cluster. It will install into a separate `conduit` namespace, where it can be easily removed.
+
+  conduit install | kubectl apply -f -
+
+. Verify installation of Conduit into your cluster. Your Client and Server versions should now be the same.
+
+  conduit version
+
+. Verify the Conduit dashboard opens and that you can connect to Conduit in your cluster.
+
+  conduit dashboard
+
+. Install the demo app to see how Conduit handles monitoring of your Kubernetes applications.
+
+  curl https://raw.githubusercontent.com/runconduit/conduit-examples/master/emojivoto/emojivoto.yml | conduit inject - | kubectl apply -f -
+
+. You now have a demo application running on your Kubernetes cluster and also added to the Conduit service mesh. You can see a http://emoji.voto/[live version] of this app (not in your cluster) to understand what this demo app is. Click to vote your favorite emoji. One of them has an error. Which one is it? You can also see the local version of this app running in your cluster:
+
+  kubectl get svc web-svc -n emojivoto -o jsonpath="{.status.loadBalancer.ingress[0].*}"
+
+The demo app includes a service (`vote-bot`) constantly running traffic through the demo app. Look back at the `conduit dashboard`. You should be able to browse all the services that are running as part of the application to view success rate, request rates, latency distribution percentiles, upstream and downstream dependencies, and various other bits of information about live traffic.
+
+You can also see useful data about live traffic from the `conduit` CLI.
+
+. Check the status of the demo app (`emojivoto`) deployment named `web`. You should see good latency, but a success rate indicating some errors.
+
+  conduit stat -n emojivoto deployment web
+
+. Determine what other deployments in the `emojivoto` namespace talk to the web deployment.
+
+  conduit stat deploy --all-namespaces --from web --from-namespace emojivoto
+
+. You should see that `web` talks to both the `emoji` and `voting` services. Based on their success rates, you should see that the `voting` service is responsible for the low success rate of requests to `web`. Determine what else talks to the `voting` service.
+
+  conduit stat deploy --to voting --to-namespace emojivoto --all-namespaces
+
+. You should see that it only talks to `web`. You now have a plausible target to investigate further since the `voting` service is returning a low success rate. From here, you might look into the logs, or traces, or other forms of deeper investigation to determine how to fix the error.
+
 
 === Monitoring: Istio and Prometheus
 
@@ -674,6 +744,8 @@ The complete installation steps for SAM CLI are at https://github.com/awslabs/aw
 
 ==== In Mac
 
+All commands are given from `apps/lambda` directory.
+
 . Start `greeting` service:
 
   sam local start-api --template greeting-sam.yaml --port 3001
@@ -686,7 +758,7 @@ The complete installation steps for SAM CLI are at https://github.com/awslabs/aw
 
   sam local start-api --template name-sam.yaml --port 3002
 
-. Test `name` dndpoint:
+. Test `name` endpoint:
 
   curl http://127.0.0.1:3002/resources/names
   curl http://127.0.0.1:3002/resources/names/1
@@ -771,17 +843,6 @@ Make sure to use a bucket name that is unique.
     --query "Stacks[].Outputs[?OutputKey=='WebappApiEndpoint'].[OutputValue]" \
     --output text`/1
 
-=== Deployment: Canary Deployment for Lambda Functions
-
-The `greeting` service has implemented Lambda SAM Safe Deployment. By default, the function is deployed using `Canary10Percent5Minutes` deployment type. This means that 10% of the traffic will be shifted to the new Lambda function. If there are no errors or CloudWatch alarms are triggered, the remaining traffic is shifted after 5 minutes. This is further explained at https://docs.aws.amazon.com/lambda/latest/dg/automating-updates-to-serverless-apps.html.
-
-The `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment https://github.com/awslabs/serverless-application-model/blob/develop/docs/safe_lambda_deployments.rst#traffic-shifting-configurations[types], and push the changes to `greeting` service repository.
-
-  git add .
-  git commit -m "switch canary deployment"
-  git push greeting-codecommit
-
-
 === Deployment: Deploy to Serverless Application Repository
 
 The https://aws.amazon.com/serverless/serverlessrepo/[AWS Serverless Application Repository] (SAR) enables you to quickly deploy code samples, components, and complete applications for common use cases such as web and mobile back-ends, event and data processing, logging, monitoring, IoT, and more. Each application is packaged with an AWS Serverless Application Model (SAM) template that defines the AWS resources used.
@@ -825,51 +886,52 @@ This section explains how to publish your SAM application to SAR. Detailed instr
 
 This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
+. Generate new https://github.com/settings/tokens/new[GitHub personal access token].
 . Create CloudFormation stack:
-.. Create pipeline for `greeting`, `name` and `webapp` services. Users please following the instruction in the (https://docs.aws.amazon.com/codepipeline/latest/userguide/GitHub-rotate-personal-token-CLI.html)[document] to generate GitHut personal access token. Note: user can override the defualt repository to forked public repo by providing URL to the parameter `Git`
+.. Create pipeline for `greeting` and `name` services. The default repository can be overridden to forked public repo by providing URL to the parameter `Git`:
 
-  cd app/lambda
+  cd apps/lambda
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
-    --stack-name aws-compute-options-greeting-lambda-pipeline \
-    --parameter-overrides ServiceName=greeting GitHubOAuthToken=XXXXX \
+    --stack-name lambda-microservices-greeting-pipeline \
+    --parameter-overrides ServiceName=greeting GitHubOAuthToken=<github-token> \
     --capabilities CAPABILITY_IAM
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
-    --stack-name aws-compute-options-name-lambda-pipeline \
-    --parameter-overrides ServiceName=name GitHubOAuthToken=XXXXX \
+    --stack-name lambda-microservices-name-pipeline \
+    --parameter-overrides ServiceName=name GitHubOAuthToken=<github-token> \
     --capabilities CAPABILITY_IAM
 
-when both `greeting` and `name` services are created successfully, user can deploy the `webapp` service by using the following command
+.. Wait for `greeting` and `name` pipelines to be created successfully. Then, create the pipeline for the `webapp` service:
 
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
-    --stack-name aws-compute-options-webapp-lambda-pipeline \
-    --parameter-overrides ServiceName=webapp GitHubOAuthToken=XXXXX \
+    --stack-name lambda-microservices-webapp-pipeline \
+    --parameter-overrides ServiceName=webapp GitHubOAuthToken=<github-token> \
     --capabilities CAPABILITY_IAM
 
-. Get the URL to view the deployment pipeline:
-
+. Get the Deployment Pipeline URL:
++
   aws cloudformation \
     describe-stacks \
-    --stack-name aws-compute-options-greeting-lambda-pipeline \
+    --stack-name lambda-microservices-greeting-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
 
   aws cloudformation \
     describe-stacks \
-    --stack-name aws-compute-options-name-lambda-pipeline \
+    --stack-name lambda-microservices-name-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
 
   aws cloudformation \
     describe-stacks \
-    --stack-name aws-compute-options-webapp-lambda-pipeline \
+    --stack-name lambda-microservices-webapp-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
 
 . Get the URL to test microservices:
-
++
   curl `aws cloudformation \
     describe-stacks \
     --stack-name aws-compute-options-lambda-greeting \
@@ -889,9 +951,27 @@ when both `greeting` and `name` services are created successfully, user can depl
     --output text`/1
 
 +
-Deployment pipeline in AWS console looks like as shown:
+Deployment pipeline in the AWS console looks like as shown:
 +
 image::images/lambda-pipeline.png[Lambda Pipeline, 350]
++
+. After one run of the `webapp` pipeline, access the endpoint:
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name lambda-microservices-webapp \
+    --query "Stacks[].Outputs[?OutputKey=='webappApiEndpoint'].[OutputValue]" \
+    --output text`/1
+
+=== Deployment: Canary Deployment for Lambda Functions
+
+The `greeting` service has implemented Lambda SAM Safe Deployment. By default, the function is deployed using `Canary10Percent5Minutes` deployment type. This means that 10% of the traffic will be shifted to the new Lambda function. If there are no errors or CloudWatch alarms are triggered, the remaining traffic is shifted after 5 minutes. This is further explained at https://docs.aws.amazon.com/lambda/latest/dg/automating-updates-to-serverless-apps.html.
+
+The `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment https://github.com/awslabs/serverless-application-model/blob/develop/docs/safe_lambda_deployments.rst#traffic-shifting-configurations[types], and push the changes to `greeting` service repository.
+
+  git add .
+  git commit -m "switch canary deployment"
+  git push greeting-codecommit
 
 === Deployment: Composition using AWS Step Functions
 
