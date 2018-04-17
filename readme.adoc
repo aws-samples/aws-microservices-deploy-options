@@ -744,6 +744,8 @@ The complete installation steps for SAM CLI are at https://github.com/awslabs/aw
 
 ==== In Mac
 
+All commands are given from `apps/lambda` directory.
+
 . Start `greeting` service:
 
   sam local start-api --template greeting-sam.yaml --port 3001
@@ -756,7 +758,7 @@ The complete installation steps for SAM CLI are at https://github.com/awslabs/aw
 
   sam local start-api --template name-sam.yaml --port 3002
 
-. Test `name` dndpoint:
+. Test `name` endpoint:
 
   curl http://127.0.0.1:3002/resources/names
   curl http://127.0.0.1:3002/resources/names/1
@@ -897,9 +899,9 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
 
 . Generate new https://github.com/settings/tokens/new[GitHub personal access token].
 . Create CloudFormation stack:
-.. Create pipeline for `greeting` and `name` services.  Note: user can override the default repository to forked public repo by providing URL to the parameter `Git`
+.. Create pipeline for `greeting` and `name` services. The default repository can be overridden to forked public repo by providing URL to the parameter `Git`:
 
-  cd app/lambda
+  cd apps/lambda
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
     --stack-name lambda-microservices-greeting-pipeline \
@@ -911,7 +913,7 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
     --parameter-overrides ServiceName=name GitHubOAuthToken=<github-token> \
     --capabilities CAPABILITY_IAM
 
-.. After both `greeting` and `name` services are created successfully, deploy the `webapp` service:
+.. Wait for `greeting` and `name` pipelines to be created successfully. Then, create the pipeline for the `webapp` service:
 
   aws cloudformation deploy \
     --template-file microservice-pipeline.yaml \
@@ -947,9 +949,7 @@ image::images/lambda-pipeline.png[Lambda Pipeline, 350]
     describe-stacks \
     --stack-name lambda-microservices-webapp \
     --query "Stacks[].Outputs[?OutputKey=='webappApiEndpoint'].[OutputValue]" \
-    --output text`
-
-This is causing https://github.com/aws-samples/aws-microservices-deploy-options/issues/251.
+    --output text`/1
 
 === Deployment: Composition using AWS Step Functions
 
