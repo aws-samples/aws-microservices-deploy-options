@@ -85,6 +85,14 @@ This section will explain how to deploy these microservices using Fargate on Ama
 
 NOTE: AWS Fargate is only supported in `us-east-1` region at this time. The instructions will only work in that region.
 
+=== Deployment: Create Cluster using AWS Console
+
+This section will explain how to create an ECS cluster using AWS Console.
+
+Complete instructions are available at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create_cluster.html.
+
+Use the cluster name `fargate-cluster`.
+
 === Deployment: Create Cluster and Deploy Services using Fargate CLI
 
 This section explains how to create a Fargate cluster and run services on it.
@@ -92,16 +100,14 @@ This section explains how to create a Fargate cluster and run services on it.
 . Download CLI from http://somanymachines.com/fargate/
 . Create the LoadBalancer:
 
-  fargate lb create options-lb --port 80
-
-. Get URL of the LoadBalancer:
-
-  fargate lb info options-lb
+  fargate lb create \
+    microservices-lb \
+    --port 80
 
 . Create `greeting` service:
 
   fargate service create greeting-service \
-    --lb options-lb \
+    --lb microservices-lb \
     -m 1024 \
     -i arungupta/greeting \
     -p http:8081 \
@@ -110,16 +116,20 @@ This section explains how to create a Fargate cluster and run services on it.
 . Create `name` service:
 
   fargate service create name-service \
-    --lb options-lb \
+    --lb microservices-lb \
     -m 1024 \
     -i arungupta/name \
     -p http:8082 \
     --rule path=/resources/names/*
 
+. Get URL of the LoadBalancer:
+
+  fargate lb info microservices-lb
+
 . Create `webapp` service:
 
   fargate service create webapp-service \
-    --lb options-lb \
+    --lb microservices-lb \
     -m 1024 \
     -i arungupta/webapp \
     -p http:8080 \
@@ -133,17 +143,17 @@ This section explains how to create a Fargate cluster and run services on it.
 . Test the application:
 
   curl http://<lb>
-  curl http://<lb>/2
+  curl http://<lb>/0
 
 . Scale the service: `fargate service scale webapp-service +3`
+. Clean up the resources:
+
+  fargate service scale greeting-service 0
+  fargate service scale name-service 0
+  fargate service scale webapp-service 0
+  fargate lb destroy microservices-lb
 
 NOTE: As described at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_limits.html, the number of tasks using the Fargate launch type, per region, per account is 20. This limit can be increased by filing a support ticket from the AWS Console.
-
-=== Deployment: Create Cluster using AWS Console
-
-This section will explain how to create an ECS cluster using AWS Console.
-
-Complete instructions are available at https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create_cluster.html.
 
 === Deployment: Create Cluster using AWS CloudFormation
 
