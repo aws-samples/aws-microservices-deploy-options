@@ -439,6 +439,10 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/78
 
 == Kubernetes
 
+=== Deployment: Create EKS Cluster
+
+Create an EKS cluster based upon Limited Preview instructions.
+
 === Deployment: Create Cluster using kops
 
 . Install kops
