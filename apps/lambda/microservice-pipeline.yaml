@@ -274,7 +274,7 @@ Resources:
           - Name: S3Bucket
             Value: !Ref ArtifactBucket
           - Name: StackName
-            Value: !Sub "aws-compute-options-lambda-${ServiceName}"
+            Value: !Sub "lambda-microservices-${ServiceName}"
           - Name: ServiceName
             Value: !Ref ServiceName
       Source:
