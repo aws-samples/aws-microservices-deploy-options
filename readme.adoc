@@ -632,6 +632,62 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
 
 . Open the https://us-west-2.console.aws.amazon.com/xray/home?region=us-west-2#/service-map[X-Ray console] and watch the service map and traces.
 
+=== Monitoring: Conduit
+https://conduit.io/[Conduit] is a small, ultralight, incredibly fast service mesh centered around a zero config approach. It can be used for gaining remarkable visibility in your Kubernetes deployments.
+
+. Confirm that both Kubernetes client and server versions are v1.8.0 or greater using `kubectl version --short`
+
+. Install the Conduit CLI on your local machine:
+
+  curl https://run.conduit.io/install | sh
+
+. Add the `conduit` command into your PATH:
+
+  export PATH=$PATH:$HOME/.conduit/bin
+
+. Verify the CLI is installed and running correctly. You will see a message that says 'Server version: unavailable' because you have not installed Conduit in your deployments.
+
+  conduit version
+
+. Install Conduit on your Kubernetes cluster. It will install into a separate `conduit` namespace, where it can be easily removed.
+
+  conduit install | kubectl apply -f -
+
+. Verify installation of Conduit into your cluster. Your Client and Server versions should now be the same.
+
+  conduit version
+
+. Verify the Conduit dashboard opens and that you can connect to Conduit in your cluster.
+
+  conduit dashboard
+
+. Install the demo app to see how Conduit handles monitoring of your Kubernetes applications.
+
+  curl https://raw.githubusercontent.com/runconduit/conduit-examples/master/emojivoto/emojivoto.yml | conduit inject - | kubectl apply -f -
+
+. You now have a demo application running on your Kubernetes cluster and also added to the Conduit service mesh. You can see a http://emoji.voto/[live version] of this app (not in your cluster) to understand what this demo app is. Click to vote your favorite emoji. One of them has an error. Which one is it? You can also see the local version of this app running in your cluster:
+
+  kubectl get svc web-svc -n emojivoto -o jsonpath="{.status.loadBalancer.ingress[0].*}"
+
+The demo app includes a service (`vote-bot`) constantly running traffic through the demo app. Look back at the `conduit dashboard`. You should be able to browse all the services that are running as part of the application to view success rate, request rates, latency distribution percentiles, upstream and downstream dependencies, and various other bits of information about live traffic.
+
+You can also see useful data about live traffic from the `conduit` CLI.
+
+. Check the status of the demo app (`emojivoto`) deployment named `web`. You should see good latency, but a success rate indicating some errors.
+
+  conduit stat -n emojivoto deployment web
+
+. Determine what other deployments in the `emojivoto` namespace talk to the web deployment.
+
+  conduit stat deploy --all-namespaces --from web --from-namespace emojivoto
+
+. You should see that `web` talks to both the `emoji` and `voting` services. Based on their success rates, you should see that the `voting` service is responsible for the low success rate of requests to `web`. Determine what else talks to the `voting` service.
+
+  conduit stat deploy --to voting --to-namespace emojivoto --all-namespaces
+
+. You should see that it only talks to `web`. You now have a plausible target to investigate further since the `voting` service is returning a low success rate. From here, you might look into the logs, or traces, or other forms of deeper investigation to determine how to fix the error.
+
+
 === Monitoring: Istio and Prometheus
 
 Istio is deployed as a sidecar proxy into each of your pods; this means it can see and monitor all the traffic flows between your microservices and generate a graphical representation of your mesh traffic.
