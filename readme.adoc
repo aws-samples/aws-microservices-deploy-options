@@ -989,6 +989,15 @@ To test the Canary deployment, please follow the following steps
     --parameter-overrides ServiceName=greeting GitHubOAuthToken=<github-token> GitHubSetting=OVERRIDE GitHubRepo=<forked-repo-name> GitHubOwner=<github-owner-user-name> GitHubBranch=master \
     --capabilities CAPABILITY_IAM
 
+To checkout Canary deployment progress, navigate to AWS Console CodeDeploy Service and open Application `lambda-microservices-greeting-ServerlessDeploymentApplication-<random-string>` in the consle.  Please see the following example:
+
+image::images/lambda-codedeploy.png[Lambda CodeDeploy, 640]
+
+To monitor the deployment progress, select the in progress deployment link, you will see the progress like the following screenshot.
+
+image::images/lambda-canary.png[Lambda Canary, 640]
+
+
 
 === Deployment: Composition using AWS Step Functions
 
