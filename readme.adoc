@@ -636,6 +636,14 @@ Another route with the traffic split of 90% and 10% is at `apps/k8s/istio/route-
 
 . Open the https://us-west-2.console.aws.amazon.com/xray/home?region=us-west-2#/service-map[X-Ray console] and watch the service map and traces.
 
+X-Ray Service map looks like:
+
+image::images/k8s-xray-service-map.png[]
+
+X-Ray traces looks like:
+
+image::images/k8s-xray-traces.png[]
+
 === Monitoring: Conduit
 https://conduit.io/[Conduit] is a small, ultralight, incredibly fast service mesh centered around a zero config approach. It can be used for gaining remarkable visibility in your Kubernetes deployments.
 
