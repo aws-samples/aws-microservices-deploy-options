@@ -30,7 +30,7 @@ Parameters:
   GitHubOAuthToken:
     Type: String
     NoEcho: true
-    Description: GutHub personal access token 
+    Description: GutHub personal access token
 Mappings:
   ServiceToRepo:
     greeting:
@@ -182,7 +182,7 @@ Resources:
                 - mvn clean install -Plambda
                 - aws cloudformation package --template-file ${ServiceName}-sam.yaml --s3-bucket ${S3Bucket} --output-template-file sam.transformed.yaml
           artifacts:
-            files: 
+            files:
               - '**/*'
       TimeoutInMinutes: 15
       Tags:
@@ -252,7 +252,7 @@ Resources:
               - "ssm:PutParameter"
               - "ssm:GetParameter"
               - "ssm:GetParameters"
-            Resource: 
+            Resource:
               - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/NameApiEndpoint"
               - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/GreetingApiEndpoint"
       Roles:
@@ -310,7 +310,7 @@ Resources:
               Configuration:
                 Owner: !If [ OverrideDefaultRepo, !Ref GitHubOwner, !FindInMap [ ServiceToRepo, !Ref ServiceName, Owner ]]
                 Repo: !If [ OverrideDefaultRepo, !Ref GitHubRepo, !FindInMap [ ServiceToRepo, !Ref ServiceName, Repo ]]
-                Branch: !If [ OverrideDefaultRepo, !Ref GitHubOwner, !FindInMap [ ServiceToRepo, !Ref ServiceName, Branch ]]
+                Branch: !If [ OverrideDefaultRepo, !Ref GitHubBranch, !FindInMap [ ServiceToRepo, !Ref ServiceName, Branch ]]
                 OAuthToken: !Ref GitHubOAuthToken
               OutputArtifacts:
                 - Name: SCCheckoutArtifact
@@ -332,7 +332,7 @@ Resources:
                 - Name: BuildOutput
         - Name: deploy-microservice
           Actions:
-            - 
+            -
               Name: deploy-lambda-apigateway
               ActionTypeId:
                 Category: Build
