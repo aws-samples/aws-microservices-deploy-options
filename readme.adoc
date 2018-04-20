@@ -925,16 +925,39 @@ This section will explain how to deploy Lambda + API Gateway via CodePipeline.
     --stack-name lambda-microservices-greeting-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
+
   aws cloudformation \
     describe-stacks \
     --stack-name lambda-microservices-name-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
+
   aws cloudformation \
     describe-stacks \
     --stack-name lambda-microservices-webapp-pipeline \
     --query "Stacks[].Outputs[?OutputKey=='CodePipelineUrl'].[OutputValue]" \
     --output text
+
+. Get the URL to test microservices:
++
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-lambda-greeting \
+    --query "Stacks[].Outputs[?OutputKey=='greetingApiEndpoint'].OutputValue" \
+    --output text`
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-lambda-name \
+    --query "Stacks[].Outputs[?OutputKey=='nameApiEndpoint'].OutputValue" \
+    --output text`
+
+  curl `aws cloudformation \
+    describe-stacks \
+    --stack-name aws-compute-options-lambda-webapp \
+    --query "Stacks[].Outputs[?OutputKey=='webappApiEndpoint'].OutputValue" \
+    --output text`/1
+
 +
 Deployment pipeline in the AWS console looks like as shown:
 +
@@ -952,11 +975,37 @@ image::images/lambda-pipeline.png[Lambda Pipeline, 350]
 
 The `greeting` service has implemented Lambda SAM Safe Deployment. By default, the function is deployed using `Canary10Percent5Minutes` deployment type. This means that 10% of the traffic will be shifted to the new Lambda function. If there are no errors or CloudWatch alarms are triggered, the remaining traffic is shifted after 5 minutes. This is further explained at https://docs.aws.amazon.com/lambda/latest/dg/automating-updates-to-serverless-apps.html.
 
-The `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment https://github.com/awslabs/serverless-application-model/blob/develop/docs/safe_lambda_deployments.rst#traffic-shifting-configurations[types], and push the changes to `greeting` service repository.
+In the `microservice-greeting` repository, we prepared the `greeting-sam.yaml` template allows users to change the deployment types supported by safe deployment. You can update the default setting to another support deployment https://github.com/awslabs/serverless-application-model/blob/develop/docs/safe_lambda_deployments.rst#traffic-shifting-configurations[types]. 
 
-  git add .
-  git commit -m "switch canary deployment"
-  git push greeting-codecommit
+To test the Canary deployment, please follow the following steps
+
+. Fork (https://github.com/arun-gupta/microservices-greeting#fork-destination-box)[microservice-greeting] github repository.  
+. Checkout the forked repository localy
+. Modify the Lambda function source code `src/main/java/org/aws/samples/compute/greeting/GreetingEndpoint.java` to return response "Hi" instead of "Hello". 
+. Use the following command to commit the change.
++
+  git add src/main/java/org/aws/samples/compute/greeting/GreetingEndpoint.java 
+  git commit -m "say hi to canary"
+  git push origin master
+
+. Navigate to this repo, and run the following command to update CodePipeline stack for the `greeting` service. 
++
+  cd apps/lambda
+  aws cloudformation deploy \
+    --template-file microservice-pipeline.yaml \
+    --stack-name lambda-microservices-greeting-pipeline \
+    --parameter-overrides ServiceName=greeting GitHubOAuthToken=<github-token> GitHubSetting=OVERRIDE GitHubRepo=<forked-repo-name> GitHubOwner=<github-owner-user-name> GitHubBranch=master \
+    --capabilities CAPABILITY_IAM
+
+To checkout Canary deployment progress, navigate to AWS Console CodeDeploy Service and open Application `lambda-microservices-greeting-ServerlessDeploymentApplication-<random-string>` in the console.  Please see the following example:
+
+image::images/lambda-codedeploy.png[Lambda CodeDeploy, 640]
+
+To monitor the deployment progress, select the in progress deployment link, you will see the progress like the following screenshot.
+
+image::images/lambda-canary.png[Lambda Canary, 640]
+
+
 
 === Deployment: Composition using AWS Step Functions
 
