@@ -578,6 +578,34 @@ This will generate `Dockerfile` and Helm charts, if they don't already exist. It
 . Get the staging URL using `jx get apps` and view the output from the application in a browser window.
 . Now change the message in displayed from `HelloHandler` and push to the GitHub repo. Make sure to change the corresponding test as well otherwise the pipeline will fail. Wait for the deployment to complete and then refresh the browser page to see the updated output.
 
+=== Deployment Pipeline: Gitkube
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/88
+
+. Deploy the greeting service
+. Install Gitkube:
+
+  kubectl create -f https://storage.googleapis.com/gitkube/gitkube-setup-stable.yaml
+  kubectl --namespace kube-system expose deployment gitkubed --type=LoadBalancer --name=gitkubed
+
+. Configure secret for Docker registry in the cluster:
+
+  kubectl create secret \
+    docker-registry gitkube-secret \
+    --docker-server=https://index.docker.io/v1/ \
+    --docker-username=arungupta \
+    --docker-password='<password>' \
+    --docker-email=help@example.com
+
+. Create a Remote resource manifest based upon `greeting-remote.yaml`
+. Create the Remote resource:
+
+  kubectl apply -f greeting-remote.yaml
+
+. Add remote to git repo:
+
+  git remote add gitkube `kubectl get remote greeting -o jsonpath='{.status.remoteUrl}'`
+
 === Deployment Pipeline: Spinnaker
 
 https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
