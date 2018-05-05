@@ -533,6 +533,31 @@ This will create `manifests/output` folder with an installer script and final ma
 
 . Delete the application: `kubectl delete -R -f manifests/output`
 
+=== Deployment: Local Dev & Test using Draft
+
+https://github.com/aws-samples/aws-microservices-deploy-options/issues/208
+
+. Install Draft:
+
+  brew tap Azure/draft
+  brew install Azure/draft/draft
+
+. Initialize:
+
+  draft init
+
+. Create Draft artifacts to containerize and deploy to k8s:
+
+  draft create
+
+Following issues are identified so far:
+
+. https://github.com/Azure/draft/issues/726
+. https://github.com/Azure/draft/issues/727
+. https://github.com/Azure/draft/issues/728
+. https://github.com/Azure/draft/issues/729
+. https://github.com/Azure/draft/issues/730
+
 === Deployment Pipeline: AWS Codepipeline
 
 This section explains how to setup a deployment pipeline using AWS CodePipeline.
