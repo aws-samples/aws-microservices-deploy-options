@@ -25,6 +25,8 @@ Runs a Skaffold pipeline once, exits on any errors in the pipeline. Use for:
 
 Skaffold has a pluggable architecture that allows you to choose which tools you want to use.  In the following exercise, you will build the container locally using the Docker daemon, push it to an ECR registry, and deploy it to EKS by applying a Kubernetes manifest. 
 
+![plugabbility](https://github.com/jicowan/aws-microservices-deploy-options/blob/master/images/skaffold.jpg)
+
 ## Prerequisites
 
 ### Install ECR Credential Helper
