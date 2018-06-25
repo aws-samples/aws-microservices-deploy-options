@@ -38,7 +38,7 @@ The ECR credential helper makes it easier to use ECR by seamless passing your AW
 Install the credential helper with  `go get`:
 
 ```
-`go get -u github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login`
+go get -u github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login
 ```
 
 Place the `docker-credential-ecr-login` binary on your `PATH` and add the following to the contents of your `~/.docker/config.json` file: 
@@ -60,8 +60,8 @@ This configures the daemon to use the credential helper for a specific ECR regis
 Download and install the latest release of [eksctl](https://eksctl.io/) from Weave. 
 
 ```
-`curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-sudo mv /tmp/eksctl /usr/local/bin`
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
 ```
 
 To create a basic cluster, run: 
@@ -86,7 +86,8 @@ REPOSITORY_URI=$(aws ecr create-repository --repository-name k8s-skaffold/skaffo
 Download the latest OSX build: 
 
 ```
-`curl -Lo skaffold` ``https://storage.googleapis.com/skaffold/releases/latest/skaffold-darwin-amd64`` `&& chmod +x skaffold && sudo mv skaffold /usr/local/bin`
+curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-darwin-amd64 \
+&& chmod +x skaffold && sudo mv skaffold /usr/local/bin
 ```
 
 ## Getting Started
