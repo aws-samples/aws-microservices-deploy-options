@@ -74,6 +74,8 @@ In this exercise you'll be using Docker's automated build service to create Dock
 4. Press **Select** under Public and Private connection type.
     The system will prompt you to enter your Github credentials. 
 
+![linked-account](https://github.com/jicowan/aws-microservices-deploy-options/blob/master/images/linked-acct.png)
+
 After you grant access to you code repository, the system returns you to Docker Hub and the link is complete. 
 
 ## Create an automated build repository
