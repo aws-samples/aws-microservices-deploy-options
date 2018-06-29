@@ -90,9 +90,9 @@ Automated build repositories build an image when changes are pushed to your sour
 5. Customize the automated build by pressing the **Click here to customize** this behavior link.
     1. Enter “Spin Kub Build Demo” for **Short Description**.
     2. Set the **Docker Tag value** for **Push Type: Branch** to latest
-    3. Add a** Push Type: Tag** with the Docker Tag Name of 1.0
+    3. Add a **Push Type: Tag** with the Docker Tag Name of 1.0
 6. Click **Create**.
-7. Click **Build Settings.**
+7. Click **Build Settings**.
 8. Click **Trigger** to trigger the build manually.  
 
 ## Add docker registry provider
@@ -171,7 +171,7 @@ kubectl get secrets
 
 The output should include a secret named similarly to **spinnaker-robot-token-xxxx**.  Copy that token name for use below.
 
-Retrieve the token from the s**pinnaker-robot-token-xxxx **using the following command:
+Retrieve the token from the **spinnaker-robot-token-xxxx** using the following command:
 
 ```
 kubectl get secret <secret name> -o jsonpath="{['data']['token']}" | base64 -D
