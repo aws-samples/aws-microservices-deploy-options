@@ -571,6 +571,10 @@ This will generate `Dockerfile` and Helm charts, if they don't already exist. It
 
 [Deploy with Spinnaker](./spinnaker.md)
 
+=== Deployment Pipeline: Skaffold
+
+[Deployment with Skaffold](./skaffold.md)
+
 === Monitoring: AWS X-Ray
 
 . `arungupta/xray:us-west-2` Docker image is already available on Docker Hub. Optionally, you may build the image:
