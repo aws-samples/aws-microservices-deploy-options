@@ -569,7 +569,7 @@ This will generate `Dockerfile` and Helm charts, if they don't already exist. It
 
 === Deployment Pipeline: Spinnaker
 
-[Deploy with Spinnaker] (./spinnaker.md)
+[Deploy with Spinnaker](./spinnaker.md)
 
 === Monitoring: AWS X-Ray
 
