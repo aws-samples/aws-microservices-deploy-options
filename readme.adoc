@@ -569,7 +569,7 @@ This will generate `Dockerfile` and Helm charts, if they don't already exist. It
 
 === Deployment Pipeline: Spinnaker
 
-https://github.com/aws-samples/aws-microservices-deploy-options/issues/66
+[Deploy with Spinnaker](./spinnaker.md)
 
 === Monitoring: AWS X-Ray
 
