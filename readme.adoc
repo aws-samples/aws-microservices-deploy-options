@@ -633,11 +633,11 @@ https://github.com/aws-samples/aws-microservices-deploy-options/issues/88
 
 === Deployment Pipeline: Spinnaker
 
-[Deploy with Spinnaker](./spinnaker.md)
+link:spinnaker.md[Deploy with Spinnaker]
 
 === Deployment Pipeline: Skaffold
 
-[Deployment with Skaffold](./skaffold.md)
+link:skaffold.md[Deployment with Skaffold]
 
 === Deployment: Canary Deployment with Istio
 
