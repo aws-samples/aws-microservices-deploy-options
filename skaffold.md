@@ -46,7 +46,7 @@ Place the `docker-credential-ecr-login` binary on your `PATH` and add the follow
 ```
 {
     "credHelpers": {
-        "[account_number].dkr.ecr.[region].amazonaws.com>": "ecr-login" 
+        "[account_number].dkr.ecr.[region].amazonaws.com": "ecr-login" 
         }
 }
 ```
