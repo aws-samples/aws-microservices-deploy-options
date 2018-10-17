@@ -83,7 +83,9 @@ Push Docker images to the registry:
 
 This section will explain how to deploy these microservices using Fargate on Amazon ECS cluster.
 
-NOTE: AWS Fargate is only supported in `us-east-1` region at this time. The instructions will only work in that region.
+NOTE: AWS Fargate is not supported in all AWS regions.
+These instructions will only work in supported regions.
+Check the AWS's link:https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/[Regions Table] for details.
 
 === Deployment: Create Cluster using AWS Console
 
