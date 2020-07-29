@@ -83,7 +83,7 @@ Resources:
     Properties:
       CodeUri: ./hooks/
       Handler: preTrafficHook.handler
-      Runtime: nodejs6.10
+      Runtime: nodejs10.x
       FunctionName: CodeDeployHook_gretting_preTrafficHook
       DeploymentPreference:
         Enabled: false  
@@ -105,7 +105,7 @@ Resources:
     Properties:
       CodeUri: ./hooks/
       Handler: preTrafficHook.handler
-      Runtime: nodejs6.10
+      Runtime: nodejs10.x
       FunctionName: CodeDeployHook_gretting_postTrafficHook
       DeploymentPreference:
         Enabled: false  
