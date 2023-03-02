@@ -5,12 +5,12 @@ Resources:
   Infrastructure:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/compute-options-public/infrastructure.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/infrastructure.yaml
 
   Greeting:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/compute-options-public/greeting.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/greeting.yaml
       Parameters:
         PrivateSubnet1: !GetAtt Infrastructure.Outputs.PrivateSubnet1
         PrivateSubnet2: !GetAtt Infrastructure.Outputs.PrivateSubnet2
@@ -21,7 +21,7 @@ Resources:
   Name:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/compute-options-public/name.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/name.yaml
       Parameters:
         PrivateSubnet1: !GetAtt Infrastructure.Outputs.PrivateSubnet1
         PrivateSubnet2: !GetAtt Infrastructure.Outputs.PrivateSubnet2
@@ -32,7 +32,7 @@ Resources:
   Webapp:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/compute-options-public/webapp.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/webapp.yaml
       Parameters:
         PublicSubnet1: !GetAtt Infrastructure.Outputs.PublicSubnet1
         PublicSubnet2: !GetAtt Infrastructure.Outputs.PublicSubnet2

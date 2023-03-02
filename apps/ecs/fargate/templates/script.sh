@@ -1,1 +1,1 @@
-aws s3 cp . s3://compute-options-public/ --recursive --acl public-read
+aws s3 cp . s3://DOC-EXAMPLE-BUCKET/ --recursive --acl public-read
