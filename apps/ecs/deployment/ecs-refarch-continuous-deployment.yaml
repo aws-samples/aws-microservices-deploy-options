@@ -88,7 +88,7 @@ Resources:
   Cluster:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/ecs-cluster.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/ecs-cluster.yaml
       Parameters:
         LaunchType: !Ref LaunchType
         SourceSecurityGroup: !GetAtt LoadBalancer.Outputs.SecurityGroup
@@ -98,7 +98,7 @@ Resources:
   DeploymentPipeline:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/deployment-pipeline.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/deployment-pipeline.yaml
       Parameters:
         Cluster: !GetAtt Cluster.Outputs.ClusterName
         Service: !GetAtt Greeting.Outputs.Service
@@ -111,7 +111,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     DependsOn: DeploymentPipeline
     Properties:
-      TemplateURL: https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/deployment-pipeline-name.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/deployment-pipeline-name.yaml
       Parameters:
         Cluster: !GetAtt Cluster.Outputs.ClusterName
         Service: !GetAtt Name.Outputs.Service
@@ -127,7 +127,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     DependsOn: DeploymentPipeline
     Properties:
-      TemplateURL: https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/deployment-pipeline-webapp.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/deployment-pipeline-webapp.yaml
       Parameters:
         Cluster: !GetAtt Cluster.Outputs.ClusterName
         Service: !GetAtt Name.Outputs.Service
@@ -142,7 +142,7 @@ Resources:
   LoadBalancer:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/load-balancer.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/load-balancer.yaml
       Parameters:
         LaunchType: !Ref LaunchType
         Subnet1: !GetAtt VPC.Outputs.Subnet1
@@ -154,7 +154,7 @@ Resources:
   VPC:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/vpc.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/vpc.yaml
       Parameters:
         Name: !Ref AWS::StackName
         VpcCIDR: 10.215.0.0/16
@@ -166,7 +166,7 @@ Resources:
   Greeting:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/greeting.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/greeting.yaml
       Parameters:
         Subnet3: !GetAtt VPC.Outputs.Subnet3
         Subnet4: !GetAtt VPC.Outputs.Subnet4
@@ -179,7 +179,7 @@ Resources:
   Name:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/name.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/name.yaml
       Parameters:
         Subnet3: !GetAtt VPC.Outputs.Subnet3
         Subnet4: !GetAtt VPC.Outputs.Subnet4
@@ -193,7 +193,7 @@ Resources:
   Webapp:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/webapp.yaml
+      TemplateURL: https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/webapp.yaml
       Parameters:
         Subnet1: !GetAtt VPC.Outputs.Subnet1
         Subnet2: !GetAtt VPC.Outputs.Subnet2

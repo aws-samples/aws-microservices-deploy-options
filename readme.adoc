@@ -360,7 +360,7 @@ This section creates an ECS cluster and deploys EC2 tasks to the cluster:
 |===
 |Region | Launch Template
 | *N. Virginia* (us-east-1)
-a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=aws-compute-options-ecs&templateURL=https://s3.amazonaws.com/aws-compute-options-bucket/master.yaml]
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=aws-compute-options-ecs&templateURL=https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/master.yaml]
 |===
 
 Retrieve the public endpoint to test your application deployment:
@@ -392,7 +392,7 @@ This section will explain how to deploy a Fargate task via CodePipeline
 |===
 |Region | Launch Template
 | *N. Virginia* (us-east-1)
-a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=Fargate-ContinuousDeployment&templateURL=https://s3.amazonaws.com/aws-microservices-deploy-options-ecs-deployment/ecs-refarch-continuous-deployment.yaml&param_LaunchType=Fargate]
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=Fargate-ContinuousDeployment&templateURL=https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/ecs-refarch-continuous-deployment.yaml&param_LaunchType=Fargate]
 |===
 
 The CloudFormation template requires the following input parameters:
@@ -569,7 +569,7 @@ CloudFormation templates for different regions are listed at https://github.com/
 |===
 |Region | Launch Template
 | *Oregon* (us-west-2)
-a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=Codesuite-Demo&templateURL=https://s3.amazonaws.com/codesuite-demo-public/aws-refarch-codesuite-kubernetes.yaml]
+a| image::./images/deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=Codesuite-Demo&templateURL=https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/aws-refarch-codesuite-kubernetes.yaml]
 |===
 
 . Create Git credentials for HTTPS connections to AWS CodeCommit: https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-gc.html?icmpid=docs_acc_console_connect#setting-up-gc-iam
