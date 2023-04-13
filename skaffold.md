@@ -38,7 +38,7 @@ The ECR credential helper makes it easier to use ECR by seamless passing your AW
 Install the credential helper with  `go get`:
 
 ```
-go get -u github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login
+go install github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login@latest
 ```
 
 Place the `docker-credential-ecr-login` binary on your `PATH` and add the following to the contents of your `~/.docker/config.json` file: 
